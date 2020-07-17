@@ -8,7 +8,7 @@
     >
     <v-toolbar-title >Tempat Uji Kompetensi Prodi Teknologi Informasi UMY</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn text href="">
+      <v-btn text href="/login-peserta">
         masuk atau daftar
       </v-btn>
       <template v-slot:extension >
@@ -25,6 +25,7 @@
             v-if="profil.length"
             bottom
             left
+
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn

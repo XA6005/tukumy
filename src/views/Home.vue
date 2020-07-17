@@ -36,11 +36,11 @@
           :key="card.title"
           :cols="4"
         >
-          <v-card height="350">
+          <v-card height="450">
             <v-img
               :src="card.src"
               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-              height="200px">
+              height="300px">
             </v-img>
             <v-card-title class="justify-center" v-text="card.title"></v-card-title>
             <v-card-actions class="justify-center">
