@@ -2,15 +2,21 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Berita from '../views/Berita.vue'
-import Skema from '../views/Skema.vue'
-import DaftarSertifikasi from '../views/DaftarSertifikasi.vue'
-import SOP from '../views/SOP.vue'
-import StrukturOrganisasi from '../views/StrukturOrganisasi.vue'
-import VisiMisi from '../views/VisiMisi.vue'
-import LoginPeserta from '../views/LoginPeserta.vue' 
-import DaftarPeserta from '../views/DaftarPeserta.vue' 
-import LoginAdmin from '../views/LoginAdmin.vue' 
-import DasboardPeserta from '../views/DasboardPeserta.vue'
+import Skema from '../views/sertifikasi/Skema.vue' 
+import DaftarSertifikasi from '../views/sertifikasi/DaftarSertifikasi.vue'
+import SOP from '../views/profil/SOP.vue'
+import StrukturOrganisasi from '../views/profil/StrukturOrganisasi.vue'
+import VisiMisi from '../views/profil/VisiMisi.vue'
+import LoginPeserta from '../views/peserta/LoginPeserta.vue' 
+import DaftarPeserta from '../views/peserta/DaftarPeserta.vue' 
+import LoginAdmin from '../views/admin/LoginAdmin.vue' 
+import DasboardPeserta from '../views/peserta/DasboardPeserta.vue'
+import DasboardAdmin from '../views/admin/DasboardAdmin.vue'
+import KelolaSertifikasi from '../views/admin/KelolaSertifikasi.vue'
+import KelolaBerita from '../views/admin/KelolaBerita.vue'
+import KelolaPembayaran from '../views/admin/KelolaPembayaran.vue'
+
+
 
 Vue.use(VueRouter)
 
@@ -69,6 +75,26 @@ Vue.use(VueRouter)
     path: '/login-admin',
     name: 'Login Admin',
     component: LoginAdmin
+  },
+  {
+    path: '/dasboard-admin',
+    name: 'dasboard Admin',
+    component: DasboardAdmin
+  },
+  {
+    path: '/kelola-sertifikasi',
+    name: 'kelola sertifikasi',
+    component: KelolaSertifikasi
+  },
+  {
+    path: '/kelola-berita',
+    name: 'kelola berita',
+    component: KelolaBerita
+  },
+  {
+    path: '/kelola-pembayaran',
+    name: 'kelola pembayaran',
+    component: KelolaPembayaran
   },
 ]
 

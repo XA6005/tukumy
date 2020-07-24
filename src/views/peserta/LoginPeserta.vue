@@ -1,10 +1,10 @@
 <template>
-    <v-app id="DaftarPeserta">
+    <v-app id="LoginPeserta">
         <v-main>
             <div class="container mt-5" >
                 <div class="grey lighten-3 rounded-xl col-md-5 mx-auto my-auto">
                     <h1 class="text-center">
-                        Daftar
+                        Masuk
                     </h1>
                     <h2 class="text-center">
                         Portal PESERTA Tempat Uji Kompetensi(TUK)<br>
@@ -32,14 +32,20 @@
                             <v-btn
                             class="white--text"
                             color="#065139"
-                            href="/">
-                             daftar
+                            href="/dasboard-peserta">
+                             masuk
                             </v-btn>
                         </div>
                         <div class="row align-center justify-center">
                             <a
-                            href="/login-peserta">
-                             Login
+                            href="/daftar-peserta">
+                             daftar
+                            </a>
+                        </div>
+                        <div align="right">
+                            <a
+                            href="/login-admin">
+                             masuk sebagai admin
                             </a>
                         </div>
                         </div>
