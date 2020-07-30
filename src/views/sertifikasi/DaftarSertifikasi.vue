@@ -21,7 +21,8 @@
             <v-card-actions class="justify-center">
               <v-btn
               color="#065139"
-              text >
+              text
+              href="/sertifikasi" >
               Selengkapnya
               </v-btn>
             </v-card-actions>

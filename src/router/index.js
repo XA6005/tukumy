@@ -15,8 +15,10 @@ import DasboardAdmin from '../views/admin/DasboardAdmin.vue'
 import KelolaSertifikasi from '../views/admin/KelolaSertifikasi.vue'
 import KelolaBerita from '../views/admin/KelolaBerita.vue'
 import KelolaPembayaran from '../views/admin/KelolaPembayaran.vue'
-
-
+import Sertifikasi from '../views/sertifikasi/SatuSertifikasi.vue' 
+import loginDaftar from '../views/sertifikasi/LoginDaftar.vue'
+import FormDaftar from '../views/sertifikasi/FormDaftar.vue'
+import DaftarAkun from '../views/sertifikasi/DaftarAkun.vue'
 
 Vue.use(VueRouter)
 
@@ -45,6 +47,11 @@ Vue.use(VueRouter)
     path: '/daftar-sertifikasi',
     name: 'Daftar Sertifikasi',
     component: DaftarSertifikasi
+  },
+  {
+    path: '/sertifikasi',
+    name: 'Sertifikasi',
+    component: Sertifikasi
   },
   {
     path: '/visi-misi',
@@ -95,6 +102,21 @@ Vue.use(VueRouter)
     path: '/kelola-pembayaran',
     name: 'kelola pembayaran',
     component: KelolaPembayaran
+  },
+  {
+    path: '/login-daftar',
+    name: 'Login Peserta',
+    component: loginDaftar
+  },
+  {
+    path: '/form-daftar',
+    name: 'Form Daftar',
+    component: FormDaftar
+  },
+  {
+    path: '/daftar-akun',
+    name: 'Daftar Peserta',
+    component: DaftarAkun
   },
 ]
 
