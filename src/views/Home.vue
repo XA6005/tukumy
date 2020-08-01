@@ -32,21 +32,22 @@
     <v-container>
       <v-row>
         <v-col
-          v-for="card in cards"
-          :key="card.title"
+          v-for="(item, index) in cardberita"
+          :key="index"
           :cols="4"
         >
           <v-card height="450">
             <v-img
-              :src="card.src"
+              :src="item.image"
               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
               height="300px">
             </v-img>
-            <v-card-title class="justify-center" v-text="card.title"></v-card-title>
+            <v-card-title class="justify-center" v-text="item.judul"></v-card-title>
             <v-card-actions class="justify-center">
               <v-btn
+              class="white--text"
               color="#065139"
-              text >
+              :to="{ name: 'detail-berita', params: { slug: item.slug } }">
               Selengkapnya
               </v-btn>
             </v-card-actions>
@@ -62,9 +63,11 @@
 </template>
 
 <script>
+import axios from 'axios';
   export default {
     data () {
       return {
+        cardberita: [],
         colors: [
           'indigo',
           'warning',
@@ -79,16 +82,18 @@
           'Fourth',
           'Fifth',
         ],
-        cards: [
-        { title: 'Uji Kompetensi Periode Juni 2020 Skema Programmer', src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg' },
-        { title: 'Uji Kompetensi Periode Juli 2020 Skema Programmer', src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg' },
-        { title: 'Uji Kompetensi Periode Juli 2020 Skema Programmer', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg' },
-        { title: 'Uji Kompetensi Periode Juni 2020 Skema Programmer', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg' },
-        { title: 'Uji Kompetensi Periode Juli 2020 Skema Programmer', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg' },
-        { title: 'Uji Kompetensi Periode Juni 2020 Skema Programmer', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg' },
-      ],
       }
     },
+    mounted () {
+    axios
+    .get(this.tunnel+'berita',{
+      headers:{
+      }
+    })
+      .then((response) => {
+        this.cardberita = response.data.data.berita
+      }) 
+  },
   }
 
   

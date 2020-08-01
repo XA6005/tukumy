@@ -21,8 +21,9 @@
             <v-card-title style="text-align:center" class="justify-center" v-text="item.judul"></v-card-title>
             <v-card-actions class="justify-center">
               <v-btn
+              class="white--text"
               color="#065139"
-              text >
+              :to="{ name: 'detail-berita', params: { slug: item.slug } }">
               Selengkapnya
               </v-btn>
             </v-card-actions>
@@ -51,8 +52,7 @@ export default {
     })
       .then((response) => {
         this.cardberita = response.data.data.berita
-      })
-      
+      }) 
   },
   }
 

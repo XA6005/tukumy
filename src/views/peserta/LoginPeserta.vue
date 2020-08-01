@@ -14,6 +14,7 @@
                         <v-text-field
                          label="E-mail"
                          value=""
+                         v-model="email"
                         ></v-text-field>
                         <v-text-field
                             :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -21,6 +22,7 @@
                             :type="show ? 'text' : 'password'"
                             name="input-10-2"
                             label="Password"
+                            v-model="password"
                             hint="At least 8 characters"
                             value=""
                             class="input-group--focused"
@@ -32,7 +34,7 @@
                             <v-btn
                             class="white--text"
                             color="#065139"
-                            href="/dasboard-peserta">
+                            @click="doLogin">
                              masuk
                             </v-btn>
                         </div>
@@ -55,18 +57,38 @@
         </v-main>
     </v-app>
 </template>
+
 <script>
+import axios from 'axios';
   export default {
     data () {
       return {
         show: false,
-        password: 'Password',
+        email:"",
+        password:"",
         rules: {
           required: value => !!value || 'Required.',
           min: v => v.length >= 8 || 'Min 8 characters',
           emailMatch: () => ('The email and password you entered don\'t match'),
         },
       }
+    },
+    methods: {
+        doLogin(){
+            axios
+            .post('https://ef0ec7d2686a.ngrok.io/peserta/login',{
+                email: this.email,
+                password: this.password
+            })
+            .then((response) => {
+            this.result= response.data;
+            if(this.result.token){
+                this.$store.state.isLogin=true;
+                this.$store.state.jwt_token=this.result.token;
+                this.$router.push({ path: '/dasboard-admin' });
+            }
+      }) 
+        }
     },
   }
 </script>

@@ -7,23 +7,28 @@
       class="justify-center"
       >
         <v-col
-          v-for="card in cards"
-          :key="card.title"
-          :cols="8"
+          v-for="card in cardSertifikasi"
+          :key="card.id"
+          :cols="7"
         >
-          <v-card height="650">
-            <v-img
-              :src="card.src"
-              gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-              height="500px">
-            </v-img>
-            <v-card-title class="justify-center" v-text="card.title"></v-card-title>
+          <v-card>
+            <v-card-title class="justify-center">Jadwal Sertifikasi {{card.skemasertifikasi_id}}</v-card-title>
+            <v-card-text style="text-align:center">
+              <p>
+              </p>
+              Tempat = {{card.tempat}}<br>
+              Tanggal= {{card.tanggal}}<br>
+              jam = {{card.jam}}<br>
+              biaya = {{card.biaya}}<br>
+              tujuan = {{card.tujuanasessmen}}<br>
+
+            </v-card-text>
             <v-card-actions class="justify-center">
               <v-btn
               color="#065139"
               text
-              href="/sertifikasi" >
-              Selengkapnya
+              href="/login-daftar" >
+              Daftar
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -35,19 +40,23 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
     data () {
       return {
-        cards: [
-        { title: 'Uji Kompetensi Periode Juli 2020 Skema Programmer', src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg' },
-        { title: 'Uji Kompetensi Periode Juli 2021 Skema Programmer', src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg' },
-        { title: 'Uji Kompetensi Periode Juli 2022 Skema Programmer', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg' },
-        { title: 'Uji Kompetensi Periode Juli 2023 Skema Programmer', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg' },
-        { title: 'Uji Kompetensi Periode Juli 2024 Skema Programmer', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg' },
-        { title: 'Uji Kompetensi Periode Juli 2025 Skema Programmer', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg' },
-      ],
+        cardSertifikasi:[],
       }
     },
+    mounted () {
+    axios
+    .get('https://ef0ec7d2686a.ngrok.io/jadwal',{
+      headers:{
+      }
+    })
+      .then((response) => {
+        this.cardSertifikasi = response.data.data.jadwal
+      }) 
+  },
   }
 
 </script>

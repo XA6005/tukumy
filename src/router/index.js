@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import Berita from '../views/Berita.vue'
+import Berita from '../views/berita/Berita.vue'
+import DetailBerita from '../views/berita/detailBerita.vue'
 import Skema from '../views/sertifikasi/Skema.vue' 
 import DaftarSertifikasi from '../views/sertifikasi/DaftarSertifikasi.vue'
 import SOP from '../views/profil/SOP.vue'
@@ -15,7 +16,6 @@ import DasboardAdmin from '../views/admin/DasboardAdmin.vue'
 import KelolaSertifikasi from '../views/admin/KelolaSertifikasi.vue'
 import KelolaBerita from '../views/admin/KelolaBerita.vue'
 import KelolaPembayaran from '../views/admin/KelolaPembayaran.vue'
-import Sertifikasi from '../views/sertifikasi/SatuSertifikasi.vue' 
 import loginDaftar from '../views/sertifikasi/LoginDaftar.vue'
 import FormDaftar from '../views/sertifikasi/FormDaftar.vue'
 import DaftarAkun from '../views/sertifikasi/DaftarAkun.vue'
@@ -34,6 +34,11 @@ Vue.use(VueRouter)
     component: Berita
   },
   {
+    path: '/detail-berita/:slug',
+    name: 'detail-berita',
+    component: DetailBerita
+  },
+  {
     path: '/skema',
     name: 'Skema',
     component: Skema
@@ -47,11 +52,6 @@ Vue.use(VueRouter)
     path: '/daftar-sertifikasi',
     name: 'Daftar Sertifikasi',
     component: DaftarSertifikasi
-  },
-  {
-    path: '/sertifikasi',
-    name: 'Sertifikasi',
-    component: Sertifikasi
   },
   {
     path: '/visi-misi',
@@ -75,7 +75,7 @@ Vue.use(VueRouter)
   },
   {
     path: '/dasboard-peserta',
-    name: 'dasboard Peserta',
+    name: 'dasboard-peserta',
     component: DasboardPeserta
   },
   {
@@ -85,7 +85,7 @@ Vue.use(VueRouter)
   },
   {
     path: '/dasboard-admin',
-    name: 'dasboard Admin',
+    name: 'dasboard-admin',
     component: DasboardAdmin
   },
   {
@@ -118,12 +118,13 @@ Vue.use(VueRouter)
     name: 'Daftar Peserta',
     component: DaftarAkun
   },
+
 ]
 
 const router = new VueRouter({
   mode:'history',
+  //tunnel:process.env.,
   base: process.env.BASE_URL,
   routes
 })
-
 export default router
