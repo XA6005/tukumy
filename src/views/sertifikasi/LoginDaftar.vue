@@ -14,8 +14,10 @@
                         <v-text-field
                          label="E-mail"
                          value=""
+                         v-model="email"
                         ></v-text-field>
                         <v-text-field
+                            v-model="password"
                             :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                             :rules="[rules.required, rules.min]"
                             :type="show ? 'text' : 'password'"
@@ -32,13 +34,13 @@
                             <v-btn
                             class="white--text"
                             color="#065139"
-                            href="/form-daftar">
+                            @click="doLogin">
                              masuk
                             </v-btn>
                         </div>
                         <div class="row align-center justify-center">
                             <a
-                            href="/daftar-akun">
+                            :to="{ name: 'daftar-akun', params: { id: this.skemaid } }">
                              daftar
                             </a>
                         </div>
@@ -50,11 +52,13 @@
     </v-app>
 </template>
 <script>
+import axios from 'axios';
   export default {
     data () {
       return {
         show: false,
-        password: 'Password',
+        email:"",
+        password:"",
         rules: {
           required: value => !!value || 'Required.',
           min: v => v.length >= 8 || 'Min 8 characters',
@@ -62,5 +66,25 @@
         },
       }
     },
+    methods: {
+        doLogin(){
+            axios
+            .post('https://ef0ec7d2686a.ngrok.io/peserta/login',{
+                email: this.email,
+                password: this.password
+            })
+            .then((response) => {
+            this.result= response.data;
+            if(this.result.token){
+                this.$store.state.isLogin=true;
+                this.$store.state.jwt_token=this.result.token;
+                this.$router.push({ path: '/form-daftar' });
+            }
+      }) 
+        }
+    },
+    created() {
+      this.skemaid = this.$route.params.id;
+      },
   }
 </script>

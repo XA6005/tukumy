@@ -33,8 +33,8 @@ import axios from 'axios';
         this.detailberita = response.data.data.berita
       }) 
   },
-    created() {
-        this.slug = this.$route.params.slug;
-      }
+  created() {
+      this.slug = this.$route.params.slug;
+      },
     }
 </script>

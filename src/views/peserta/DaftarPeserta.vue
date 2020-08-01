@@ -14,8 +14,10 @@
                         <v-text-field
                          label="E-mail"
                          value=""
+                         v-model="email"
                         ></v-text-field>
                         <v-text-field
+                            v-model="password"
                             :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                             :rules="[rules.required, rules.min]"
                             :type="show ? 'text' : 'password'"
@@ -32,7 +34,7 @@
                             <v-btn
                             class="white--text"
                             color="#065139"
-                            href="/dasboard-peserta">
+                            @click="doRegister">
                              daftar
                             </v-btn>
                         </div>
@@ -50,17 +52,36 @@
     </v-app>
 </template>
 <script>
+import axios from 'axios';
   export default {
     data () {
       return {
         show: false,
-        password: 'Password',
+        email:"",
+        password:"",
         rules: {
           required: value => !!value || 'Required.',
           min: v => v.length >= 8 || 'Min 8 characters',
           emailMatch: () => ('The email and password you entered don\'t match'),
         },
       }
+    },
+    methods: {
+        doRegister(){
+            axios
+            .post('https://ef0ec7d2686a.ngrok.io/peserta/register',{
+                email: this.email,
+                password: this.password
+            })
+            .then((response) => {
+            this.result= response.data;
+            if(this.result.token){
+                this.$store.state.isLogin=true;
+                this.$store.state.jwt_token=this.result.token;
+                this.$router.push({ path: '/dasboard-admin' });
+            }
+      }) 
+        }
     },
   }
 </script>

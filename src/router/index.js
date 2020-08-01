@@ -104,8 +104,8 @@ Vue.use(VueRouter)
     component: KelolaPembayaran
   },
   {
-    path: '/login-daftar',
-    name: 'Login Peserta',
+    path: '/login-daftar:id',
+    name: 'login-daftar',
     component: loginDaftar
   },
   {
@@ -114,8 +114,8 @@ Vue.use(VueRouter)
     component: FormDaftar
   },
   {
-    path: '/daftar-akun',
-    name: 'Daftar Peserta',
+    path: '/daftar-akun:id',
+    name: 'daftar-akun',
     component: DaftarAkun
   },
 

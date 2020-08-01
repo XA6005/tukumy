@@ -27,7 +27,7 @@
               <v-btn
               color="#065139"
               text
-              href="/login-daftar" >
+              :to="{ name: 'login-daftar', params: { id: card.skemasertifikasi_id } }" >
               Daftar
               </v-btn>
             </v-card-actions>
