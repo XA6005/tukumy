@@ -59,6 +59,7 @@ import axios from 'axios';
         show: false,
         email:"",
         password:"",
+        tunnel:"",
         rules: {
           required: value => !!value || 'Required.',
           min: v => v.length >= 8 || 'Min 8 characters',
@@ -66,10 +67,13 @@ import axios from 'axios';
         },
       }
     },
+    mounted(){
+    this.tunnel = this.$store.state.tunnel;
+    },
     methods: {
         doRegister(){
             axios
-            .post('https://ef0ec7d2686a.ngrok.io/peserta/register',{
+            .post(this.tunnel+'peserta/register',{
                 email: this.email,
                 password: this.password
             })
@@ -78,7 +82,7 @@ import axios from 'axios';
             if(this.result.token){
                 this.$store.state.isLogin=true;
                 this.$store.state.jwt_token=this.result.token;
-                this.$router.push({ path: '/dasboard-admin' });
+                this.$router.push({ path: '/dasboard-peserta' });
             }
       }) 
         }

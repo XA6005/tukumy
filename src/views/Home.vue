@@ -67,6 +67,7 @@ import axios from 'axios';
   export default {
     data () {
       return {
+        tunnel :'',
         cardberita: [],
         colors: [
           'indigo',
@@ -85,8 +86,9 @@ import axios from 'axios';
       }
     },
     mounted () {
+    this.tunnel = this.$store.state.tunnel;
     axios
-    .get(this.tunnel+'berita',{
+    .get(`${this.tunnel}berita`,{
       headers:{
       }
     })

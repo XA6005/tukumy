@@ -44,12 +44,14 @@ import axios from 'axios';
 export default {
     data () {
       return {
+        tunnel:"",
         cardSertifikasi:[],
       }
     },
     mounted () {
+    this.tunnel = this.$store.state.tunnel;
     axios
-    .get('https://ef0ec7d2686a.ngrok.io/jadwal',{
+    .get(this.tunnel+'jadwal',{
       headers:{
       }
     })

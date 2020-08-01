@@ -64,6 +64,7 @@ import axios from 'axios';
     data () {
       return {
         show: false,
+        tunnel:"",
         email:"",
         password:"",
         rules: {
@@ -73,10 +74,13 @@ import axios from 'axios';
         },
       }
     },
+    mounted(){
+    this.tunnel = this.$store.state.tunnel;
+    },
     methods: {
         doLogin(){
             axios
-            .post('https://ef0ec7d2686a.ngrok.io/peserta/login',{
+            .post(this.tunnel+'peserta/login',{
                 email: this.email,
                 password: this.password
             })
@@ -84,10 +88,14 @@ import axios from 'axios';
             this.result= response.data;
             if(this.result.token){
                 this.$store.state.isLogin=true;
-                this.$store.state.jwt_token=this.result.token;
-                this.$router.push({ path: '/dasboard-admin' });
-            }
-      }) 
+                this.$store.state.token=this.result.token;
+                this.$store.state.user=this.email;
+                this.$router.push({ path: '/dasboard-peserta' });
+            }    
+      })
+      .catch((error) => {
+            console.log(error)
+        }) 
         }
     },
   }

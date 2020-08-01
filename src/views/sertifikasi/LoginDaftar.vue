@@ -57,6 +57,7 @@ import axios from 'axios';
     data () {
       return {
         show: false,
+        tunnel:"",
         email:"",
         password:"",
         rules: {
@@ -66,10 +67,13 @@ import axios from 'axios';
         },
       }
     },
+    mounted(){
+    this.tunnel = this.$store.state.tunnel;
+    },
     methods: {
         doLogin(){
             axios
-            .post('https://ef0ec7d2686a.ngrok.io/peserta/login',{
+            .post(this.tunnel+'peserta/login',{
                 email: this.email,
                 password: this.password
             })

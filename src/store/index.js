@@ -5,6 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+        tunnel:this.tunnel+'',
         isLogin: false,
         token:null,
         user:null,

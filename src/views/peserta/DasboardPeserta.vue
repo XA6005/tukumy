@@ -8,7 +8,7 @@
         >
     <template v-slot:top>
       <v-toolbar flat color="white">
-          <v-toolbar-title>Hai, Peserta</v-toolbar-title>
+          <v-toolbar-title>Hai,{{user}} </v-toolbar-title>
         <v-dialog v-model="dialog" max-width="500px">
           <v-card>
             <v-card-title>
@@ -44,22 +44,20 @@
         UPLOAD
       </v-btn>
     </template>
-    <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize">Reset</v-btn>
-    </template>
   </v-data-table>
     </v-main>
     </v-app>
 </template>
 
 <script>
+import axios from 'axios';
   export default {
     data: () => ({
+      user:'',
+      tunnel:'',
       dialog: false,
       headers: [
-        {
-          text: 'Skema Sertifikasi', align: 'start', sortable: false, value: 'name',
-        },
+        { text: 'Skema Sertifikasi', align: 'start', sortable: false, value: 'name',},
         { text: 'Tempat Sertifikasi', value: 'tempat' },
         { text: 'Tanggal Sertifikasi', value: 'tanggal' },
         { text: 'Status', value: 'status' },
@@ -95,31 +93,22 @@
       },
     },
 
-    created () {
-      this.initialize()
+    mounted () {
+      this.loadSertifikasi();
+      this.user = this.$store.state.user;
+      this.tunnel = this.$store.state.tunnel;
     },
 
     methods: {
-      initialize () {
-        this.sertfikasi = [
-          {
-            nama:"peserta",
-            name: 'skema Programmer',
-            tempat: "Lab G",
-            tanggal: "01-01-2020",
-            waktu: "07.00-15.00",
-            status: "Lunas",
-          },
-          {
-            nama:"peserta",
-            name: 'skema Jaringan',
-            tempat: "Lab B",
-            tanggal: "01-01-2021",
-            waktu: "07.00-15.00",
-            status: "Belum Lunas",
-          },
-          
-        ]
+      loadSertifikasi () {
+        this.sertfikasi = []
+        axios.get(`${this.tunnel}jadwalpeserta`,
+            { headers: { Authorization: "Bearer " + this.$store.state.token }})
+        .then((response) => {
+            this.items = response.data.data.jadwal
+        }).catch((error) => {
+            console.log(error)
+        })
       },
 
       editItem (item) {
@@ -144,5 +133,6 @@
         this.close()
       },
     },
+    
   }
 </script>

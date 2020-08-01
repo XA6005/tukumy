@@ -59,6 +59,7 @@ import axios from 'axios';
         show: false,
         email:"",
         password:"",
+        tunnel:"",
         rules: {
           required: value => !!value || 'Required.',
           min: v => v.length >= 8 || 'Min 8 characters',
@@ -66,10 +67,13 @@ import axios from 'axios';
         },
       }
     },
+    mounted(){
+    this.tunnel = this.$store.state.tunnel;
+    },
     methods: {
         doRegister(){
             axios
-            .post('https://ef0ec7d2686a.ngrok.io/peserta/register',{
+            .post(this.tunnel+'peserta/register',{
                 email: this.email,
                 password: this.password
             })

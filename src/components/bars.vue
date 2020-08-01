@@ -43,7 +43,7 @@
               <v-list-item
                 v-for="(item,index) in profil"
                 :key="index"
-                :href="item.src"
+                @click="item.src"
               >
                 {{ item.title }}
               </v-list-item>

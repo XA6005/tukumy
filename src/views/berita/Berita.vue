@@ -41,12 +41,14 @@ import axios from 'axios';
 export default {
     data () {
       return {
+        tunnel:"",
         cardberita : [],
       }
     },
     mounted () {
+    this.tunnel = this.$store.state.tunnel;
     axios
-    .get('https://ef0ec7d2686a.ngrok.io/berita',{
+    .get(this.tunnel+'berita',{
       headers:{
       }
     })
