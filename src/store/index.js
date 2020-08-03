@@ -5,13 +5,14 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-        tunnel:this.tunnel+'',
+        tunnel:'https://d183b7562455.ngrok.io/',
         isLogin: false,
         token:null,
         user:null,
   },
   mutations: {
       resetState (state) {
+      state.tunnel='https://d183b7562455.ngrok.io/';
       state.isLogin=false;
       state.token=null;
       state.user=null;

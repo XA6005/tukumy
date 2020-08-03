@@ -53,6 +53,9 @@
                         </div>
                     </div>
                 </div>
+                <v-snackbar v-model="snackbar" >
+                {{error_message}}
+                </v-snackbar>
             </div>
         </v-main>
     </v-app>
@@ -64,6 +67,8 @@ import axios from 'axios';
     data () {
       return {
         show: false,
+        snackbar:false,
+        error_message:"",
         tunnel:"",
         email:"",
         password:"",
@@ -91,10 +96,14 @@ import axios from 'axios';
                 this.$store.state.token=this.result.token;
                 this.$store.state.user=this.email;
                 this.$router.push({ path: '/dasboard-peserta' });
-            }    
+            }else{
+            this.error_message="Password/email salah";
+            this.snackbar=true;
+            } 
       })
-      .catch((error) => {
-            console.log(error)
+      .catch(() => {
+            this.error_message="Password/email salah";
+            this.snackbar=true;
         }) 
         }
     },
