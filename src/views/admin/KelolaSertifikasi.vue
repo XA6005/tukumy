@@ -78,21 +78,25 @@
       <v-btn color="primary" @click="initialize">Reset</v-btn>
     </template>
   </v-data-table>
+      <v-snackbar v-model="snackbar" >
+      {{error_message}}
+      </v-snackbar>
     </v-main>
     </v-app>
 </template>
 
 <script>
+import axios from 'axios';
   export default {
-    data: () => ({
+    data(){
+      return{
+        token:'',
+      snackbar:'',
+      error_message:'',
+      tunnel:'',
       dialog: false,
       headers: [
-        {
-          text: 'Skema Sertifikasi',
-          align: 'start',
-          sortable: false,
-          value: 'skema',
-        },
+        { text: 'Skema Sertifikasi', align: 'start', value: 'skema'},
         { text: 'Tanggal Sertifikasi', value: 'tanggal' },
         { text: 'Waktu Sertifikasi', value: 'waktu' },
         { text: 'Tujuan Assesmen', value: 'tujuan' },
@@ -116,7 +120,8 @@
         tujuan: '',
         assesor: '',
       },
-    }),
+      }
+    },
 
     computed: {
       formTitle () {
@@ -127,34 +132,25 @@
     watch: {
       dialog (val) {
         val || this.close()
+        prop
       },
     },
 
-    created () {
-      this.initialize()
+    mounted () {
+      this.loadSertifikasi();
+      this.tunnel = this.$store.state.tunnel;
+      axios.get(`${this.tunnel}berita`)
+        .then((response) => {
+            this.berita = response.data.data.berita
+        }).catch((error) => {
+            this.error_message=error;
+            this.snackbar=true;
+        })
     },
 
     methods: {
-      initialize () {
-        this.sertifikasi = [
-          {
-            skema: 'skema programmer',
-            tempat:'Lab G',
-            tanggal: '01-01-2020',
-            waktu: '07.00-15.00',
-            tujuan: 'Sertifikasi',
-            assesor: 'xxxxxxxxx',
-          },
-          {
-            skema: 'skema programmer',
-            tempat:'Lab G',
-            tanggal: '01-01-2020',
-            waktu: '07.00-15.00',
-            tujuan: 'Sertifikasi',
-            assesor: 'xxxxxxxxx',
-          },
-          
-        ]
+      loadSertifikasi () {
+        this.sertifikasi = []
       },
 
       editItem (item) {

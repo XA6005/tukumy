@@ -28,20 +28,27 @@
       <v-btn color="primary" @click="initialize">Reset</v-btn>
     </template>
   </v-data-table>
+      <v-snackbar v-model="snackbar" >
+      {{error_message}}
+      </v-snackbar>
     </v-main>
     </v-app>
 </template>
 
 <script>
+import axios from 'axios';
   export default {
-    data: () => ({
+    data() {
+      return{
+      token:'',
+      snackbar:'',
+      error_message:'',
+      tunnel:'',
       dialog: false,
       headers: [
-        {
-          text: 'Skema Sertifikasi', align: 'start', sortable: false, value: 'name',
-        },
+        {text: 'Skema Sertifikasi',value: 'name', align: 'start'},
         { text: 'Status', value: 'status' },
-        { text: 'Action', value: 'actions', sortable: false },
+        { text: 'Action', value: 'actions' },
       ],
       sertfikasi: [],
       editedIndex: -1,
@@ -59,7 +66,8 @@
         tanggal: 0,
         waktu: 0,
       },
-    }),
+      }
+    },
 
     computed: {
       formTitle () {
@@ -73,31 +81,24 @@
       },
     },
 
-    created () {
-      this.initialize()
+    mounted () {
+      this.loadData();
+      this.user = this.$store.state.user;
+      this.tunnel = this.$store.state.tunnel;
+      axios.get(`${this.tunnel}jadwalpeserta/me`,
+            { headers: { Authorization: "Bearer " + this.$store.state.token }})
+        .then((response) => {
+            this.sertifikasi = response.data.jadwal
+        }).catch((error) => {
+            this.error_message=error;
+            this.snackbar=true;
+        })
     },
 
+
     methods: {
-      initialize () {
-        this.sertfikasi = [
-          {
-            nama:"peserta",
-            name: 'skema Programmer',
-            tempat: "Lab G",
-            tanggal: "01-01-2020",
-            waktu: "07.00-15.00",
-            status: "Lunas",
-          },
-          {
-            nama:"peserta",
-            name: 'skema Jaringan',
-            tempat: "Lab B",
-            tanggal: "01-01-2021",
-            waktu: "07.00-15.00",
-            status: "Belum Lunas",
-          },
-          
-        ]
+      loadData () {
+        this.sertfikasi = []
       },
 
       editItem (item) {

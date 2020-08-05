@@ -3,7 +3,7 @@
     <v-main>
         <v-data-table
             :headers="headers"
-            :items="sertfikasi"
+            :items="sertifikasi"
             class="elevation-1"
         >
     <template v-slot:top>
@@ -14,15 +14,14 @@
             <v-card-title>
               <span class="headline">{{ formTitle }}</span>
             </v-card-title>
-
             <v-card-text>
               <v-container>
-                <v-text-field disabled="true" v-model="editedItem.nama" label="Nama Peserta"></v-text-field>
-                    <v-text-field disabled="true" v-model="editedItem.name" label="Skema Sertifikasi"></v-text-field>
+                <v-text-field disabled="true" v-model="editedItem.email" label="Email Peserta"></v-text-field>
+                    <v-text-field disabled="true" v-model="editedItem.skemasertifikasi_id" label="Skema Sertifikasi"></v-text-field>
                     <v-text-field disabled="true" v-model="editedItem.tempat" label="Tempat Sertifikasi"></v-text-field>
                     <v-text-field disabled="true" v-model="editedItem.tanggal" label="Tanggal Sertifikasi"></v-text-field>
                     <v-text-field disabled="true" v-model="editedItem.waktu" label="Waktu"></v-text-field>
-                    <v-file-input color="#065139" chips label="Upload bukti pembayaran"></v-file-input>
+                    <v-file-input color="#065139" v-model="editedItem.image" chips label="Upload bukti pembayaran"></v-file-input>
               </v-container>
             </v-card-text>
             <v-card-actions>
@@ -40,11 +39,15 @@
         class="mr-2 white--text"
         color="#065139"
         @click="editItem(item)"
+        
       >
         UPLOAD
       </v-btn>
     </template>
   </v-data-table>
+      <v-snackbar v-model="snackbar" >
+      {{error_message}}
+      </v-snackbar>
     </v-main>
     </v-app>
 </template>
@@ -52,34 +55,42 @@
 <script>
 import axios from 'axios';
   export default {
-    data: () => ({
+    data(){
+      return{
       user:'',
+      token:'',
+      snackbar:'',
+      error_message:'',
       tunnel:'',
       dialog: false,
       headers: [
-        { text: 'Skema Sertifikasi', align: 'start', sortable: false, value: 'name',},
+        { text: 'Skema Sertifikasi', align: 'start', value: 'skemasertifikasi_id',},
         { text: 'Tempat Sertifikasi', value: 'tempat' },
         { text: 'Tanggal Sertifikasi', value: 'tanggal' },
-        { text: 'Status', value: 'status' },
-        { text: 'Bukti Pembayaran', value: 'actions', sortable: false },
+        { text: 'Bukti Pembayaran', value: 'actions' },
+        { text: 'Status', value: 'pivot.status' },
+        
       ],
-      sertfikasi: [],
+      sertifikasi: [],
       editedIndex: -1,
       editedItem: {
-        nama:'',
-        name: '',
+        email:this.user,
+        skemasertifikasi_id: '',
         tempat: 0,
         tanggal: 0,
         waktu: 0,
+        image:null,
       },
       defaultItem: {
-        nama:'',
-        name: '',
+        email:this.user,
+        skemasertifikasi_id: '',
         tempat: 0,
         tanggal: 0,
         waktu: 0,
+        image:null,
       },
-    }),
+      }
+    },
 
     computed: {
       formTitle () {
@@ -97,39 +108,45 @@ import axios from 'axios';
       this.loadSertifikasi();
       this.user = this.$store.state.user;
       this.tunnel = this.$store.state.tunnel;
+      axios.get(`${this.tunnel}jadwalpeserta/me`,
+            { headers: { Authorization: "Bearer " + this.$store.state.token }})
+        .then((response) => {
+            this.sertifikasi = response.data.jadwal
+        }).catch((error) => {
+            this.error_message=error;
+            this.snackbar=true;
+        })
     },
 
     methods: {
       loadSertifikasi () {
-        this.sertfikasi = []
-        axios.get(`${this.tunnel}jadwalpeserta`,
-            { headers: { Authorization: "Bearer " + this.$store.state.token }})
-        .then((response) => {
-            this.items = response.data.data.jadwal
-        }).catch((error) => {
-            console.log(error)
-        })
+        this.sertifikasi = []
       },
 
       editItem (item) {
-        this.editedIndex = this.sertfikasi.indexOf(item)
+        this.editedIndex = this.sertifikasi.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
       close () {
         this.dialog = false
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        })
       },
 
-      save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.sertfikasi[this.editedIndex], this.editedItem)
-        } else {
-          this.sertfikasi.push(this.editedItem)
-        }
+      save (item) {
+        this.editedItem = Object.assign({}, item)
+        const formdata = new FormData();
+        formdata.append('jadwal_id',this.editItem.jadwal_id);
+        formdata.append('image',this.editItem.image);
+        formdata.append('_method','PUT');
+        axios.post(`${this.tunnel}updateimage`,formdata,{ headers: { 
+              Authorization: "Bearer " + this.$store.state.token }
+              })
+        .then((response) => {
+            this.sertifikasi = response.data.jadwal
+        }).catch((error) => {
+            this.error_message=error;
+            this.snackbar=true;
+        })
         this.close()
       },
     },

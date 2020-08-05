@@ -3,7 +3,7 @@
     <v-main>
         <v-data-table
     :headers="headers"
-    :items="desserts"
+    :items="berita"
     class="elevation-1"
   >
     <template v-slot:top>
@@ -61,25 +61,27 @@
       <v-btn color="primary" @click="initialize">Reset</v-btn>
     </template>
   </v-data-table>
+      <v-snackbar v-model="snackbar" >
+      {{error_message}}
+      </v-snackbar>
     </v-main>
     </v-app>
 </template>
 
 <script>
+import axios from 'axios';
   export default {
     data: () => ({
+      tunnel:'',
+      snackbar:'',
+      error_message:'',
       dialog: false,
       headers: [
-        {
-          text: 'Judul Berita',
-          align: 'start',
-          sortable: false,
-          value: 'judul',
-        },
+        { text: 'Judul Berita',  value: 'judul', align: 'start',},
         { text: 'Tanggal Terbit', value: 'tanggal' },
-        { text: 'Actions', value: 'actions', sortable: false },
+        { text: 'Actions', value: 'actions' },
       ],
-      desserts: [],
+      berita: [],
       editedIndex: -1,
       editedItem: {
         judul: '',
@@ -106,37 +108,32 @@
       },
     },
 
-    created () {
-      this.initialize()
+    mounted () {
+      this.loadBerita();
+      this.tunnel = this.$store.state.tunnel;
+      axios.get(`${this.tunnel}berita`)
+        .then((response) => {
+            this.berita = response.data.data.berita
+        }).catch((error) => {
+            this.error_message=error;
+            this.snackbar=true;
+        })
     },
 
     methods: {
-      initialize () {
-        this.desserts = [
-          {
-            judul: 'Perpanjang pendaftaran',
-            isi: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus vulputate vehicula. Donec lobortis risus a elit. Etiam tempor. Ut ullamcorper, ligula eu tempor congue, eros est euismod turpis, id tincidunt sapien risus a quam. Maecenas fermentum consequat mi. Donec fermentum. Pellentesque malesuada nulla a mi. Duis sapien sem, aliquet nec, commodo eget, consequat quis, neque. Aliquam faucibus, elit ut dictum aliquet, felis nisl adipiscing sapien, sed malesuada diam lacus eget erat. Cras mollis scelerisque nunc. Nullam arcu. Aliquam consequat. Curabitur augue lorem, dapibus quis, laoreet et, pretium ac, nisi. Aenean magna nisl, mollis quis, molestie eu, feugiat in, orci. In hac habitasse platea dictumst.',
-            tanggal: '03-01-2020',
-            
-          },
-          {
-            judul: 'Penundaan Sertifikasi ',
-            isi: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus vulputate vehicula. Donec lobortis risus a elit. Etiam tempor. Ut ullamcorper, ligula eu tempor congue, eros est euismod turpis, id tincidunt sapien risus a quam. Maecenas fermentum consequat mi. Donec fermentum. Pellentesque malesuada nulla a mi. Duis sapien sem, aliquet nec, commodo eget, consequat quis, neque. Aliquam faucibus, elit ut dictum aliquet, felis nisl adipiscing sapien, sed malesuada diam lacus eget erat. Cras mollis scelerisque nunc. Nullam arcu. Aliquam consequat. Curabitur augue lorem, dapibus quis, laoreet et, pretium ac, nisi. Aenean magna nisl, mollis quis, molestie eu, feugiat in, orci. In hac habitasse platea dictumst.',
-            tanggal: '04-01-2020',
-          },
-          
-        ]
+      loadBerita () {
+        this.berita = []
       },
 
       editItem (item) {
-        this.editedIndex = this.desserts.indexOf(item)
+        this.editedIndex = this.berita.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
 
       deleteItem (item) {
-        const index = this.desserts.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
+        const index = this.berita.indexOf(item)
+        confirm('Are you sure you want to delete this item?') && this.berita.splice(index, 1)
       },
 
       close () {
@@ -149,9 +146,9 @@
 
       save () {
         if (this.editedIndex > -1) {
-          Object.assign(this.desserts[this.editedIndex], this.editedItem)
+          Object.assign(this.berita[this.editedIndex], this.editedItem)
         } else {
-          this.desserts.push(this.editedItem)
+          this.berita.push(this.editedItem)
         }
         this.close()
       },

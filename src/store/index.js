@@ -5,16 +5,16 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-        tunnel:'https://d183b7562455.ngrok.io/',
+        tunnel:'https://6a2dcd39aa8c.ngrok.io/',
         isLogin: false,
-        token:null,
+        token:'https://6a2dcd39aa8c.ngrok.io/',
         user:null,
   },
   mutations: {
       resetState (state) {
-      state.tunnel='https://d183b7562455.ngrok.io/';
+      state.tunnel='https://6a2dcd39aa8c.ngrok.io/';
       state.isLogin=false;
-      state.token=null;
+      state.token='https://6a2dcd39aa8c.ngrok.io/';
       state.user=null;
   }
   },
