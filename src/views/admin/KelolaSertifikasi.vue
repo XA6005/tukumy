@@ -8,7 +8,7 @@
   >
     <template v-slot:top>
       <v-toolbar flat color="white">
-        <v-toolbar-title>Kelola Sertifikasi</v-toolbar-title>
+        <v-toolbar-title>Kelola Jadwal Sertifikasi</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
@@ -18,7 +18,7 @@
               class="mb-2"
               v-bind="attrs"
               v-on="on"
-            >Tambah Sertifikasi</v-btn>
+            >Tambah Jadwal Sertifikasi</v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -29,7 +29,7 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.skema" label="Skema Sertifikasi"></v-text-field>
+                    <v-text-field v-model="editedItem.skemasertifikasi_id" label="Skema Sertifikasi"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field v-model="editedItem.tempat" label="Tempat Sertifikasi"></v-text-field>
@@ -38,13 +38,13 @@
                     <v-text-field v-model="editedItem.tanggal" label="Tanggal Sertifikasi"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.waktu" label="Waktu Sertifikasi"></v-text-field>
+                    <v-text-field v-model="editedItem.jam" label="Waktu Sertifikasi"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.tujuan" label="Tujuan"></v-text-field>
+                    <v-text-field v-model="editedItem.biaya" label="Biaya"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.assesor" label="Assesor"></v-text-field>
+                    <v-text-field v-model="editedItem.tujuanasessmen" label="Tujuan"></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -53,7 +53,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="save">Save</v-btn>
+              <v-btn color="blue darken-1" text @click="save(editedItem)">Save</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -96,52 +96,54 @@ import axios from 'axios';
       tunnel:'',
       dialog: false,
       headers: [
-        { text: 'Skema Sertifikasi', align: 'start', value: 'skema'},
+        { text: 'Skema Sertifikasi', value: 'skemasertifikasi_id', align: 'start',},
+        { text: 'Tempat Sertifikasi', value: 'tempat' },
         { text: 'Tanggal Sertifikasi', value: 'tanggal' },
-        { text: 'Waktu Sertifikasi', value: 'waktu' },
-        { text: 'Tujuan Assesmen', value: 'tujuan' },
-        { text: 'Assesor', value: 'assesor' },
-        { text: 'Actions', value: 'actions', sortable: false },
+        { text: 'Waktu Sertifikasi', value: 'jam' },
+        { text: 'Tujuan Assesmen', value: 'tujuanasessmen' },
+        { text: 'Actions', value: 'actions' },
       ],
       sertifikasi: [],
       editedIndex: -1,
       editedItem: {
-        skema: '',
+        id:'',
+        skemasertifikasi_id: '',
         tempat:'',
         tanggal: '',
-        waktu: '',
-        tujuan: '',
-        assesor: '',
+        jam: '',
+        biaya:'',
+        tujuanasessmen: '',
       },
       defaultItem: {
-        skema: '',
+        id:'',
+        skemasertifikasi_id: '',
+        tempat:'',
         tanggal: '',
-        waktu: '',
-        tujuan: '',
-        assesor: '',
+        jam: '',
+        biaya:'',
+        tujuanasessmen: '',
       },
       }
     },
 
     computed: {
       formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+        return this.editedIndex === -1 ? 'Tambah Jadwal' : 'Ubah Jadwal'
       },
     },
 
     watch: {
       dialog (val) {
         val || this.close()
-        prop
       },
     },
 
     mounted () {
       this.loadSertifikasi();
       this.tunnel = this.$store.state.tunnel;
-      axios.get(`${this.tunnel}berita`)
+      axios.get(`${this.tunnel}jadwal`)
         .then((response) => {
-            this.berita = response.data.data.berita
+            this.sertifikasi = response.data.data.jadwal
         }).catch((error) => {
             this.error_message=error;
             this.snackbar=true;
@@ -151,6 +153,14 @@ import axios from 'axios';
     methods: {
       loadSertifikasi () {
         this.sertifikasi = []
+        this.tunnel = this.$store.state.tunnel;
+        axios.get(`${this.tunnel}jadwal`)
+        .then((response) => {
+            this.sertifikasi = response.data.data.jadwal
+        }).catch((error) => {
+            this.error_message=error;
+            this.snackbar=true;
+        })
       },
 
       editItem (item) {
@@ -160,8 +170,18 @@ import axios from 'axios';
       },
 
       deleteItem (item) {
-        const index = this.sertifikasi.indexOf(item)
-        confirm('Kamu yakin mau menghapus sertifikasi ini?') && this.sertifikasi.splice(index, 1)
+        confirm('Kamu yakin mau menghapus sertifikasi ini?') && 
+            axios.delete(`${this.tunnel}jadwal/`+item.id,{ headers: { 
+                  Authorization: "Bearer " + this.$store.state.token }
+                  })
+            .then((response) => {
+                this.error_message=response.data.message;
+                this.snackbar=true;
+                this.loadSertifikasi();
+            }).catch((error) => {
+                this.error_message=error;
+                this.snackbar=true;
+            })
       },
 
       close () {
@@ -172,11 +192,47 @@ import axios from 'axios';
         })
       },
 
-      save () {
+      save (item) {
         if (this.editedIndex > -1) {
-          Object.assign(this.sertifikasi[this.editedIndex], this.editedItem)
+          const formdata = new FormData();
+            formdata.append('tempat',item.tempat);
+            formdata.append('tanggal',item.tanggal);
+            formdata.append('jam',item.jam);
+            formdata.append('biaya',item.biaya);
+            formdata.append('skemasertifikasi_id',item.skemasertifikasi_id);
+            formdata.append('tujuanasessmen',item.tujuanasessmen);
+            formdata.append('_method','PUT');
+            axios.post(`${this.tunnel}jadwal/`+item.id,formdata,{ headers: { 
+                  Authorization: "Bearer " + this.$store.state.token ,
+                  'Content-Type' : 'multipart/form-data'}
+                  })
+            .then((response) => {
+                this.error_message=response.data.message;
+                this.snackbar=true;
+                this.loadSertifikasi();
+            }).catch((error) => {
+                this.error_message=error;
+                this.snackbar=true;
+            })
         } else {
-          this.sertifikasi.push(this.editedItem)
+           const formdata = new FormData();
+            formdata.append('tempat',item.tempat);
+            formdata.append('tanggal',item.tanggal);
+            formdata.append('jam',item.jam);
+            formdata.append('biaya',item.biaya);
+            formdata.append('skemasertifikasi_id',item.skemasertifikasi_id);
+            formdata.append('tujuanasessmen',item.tujuanasessmen);
+            axios.post(`${this.tunnel}jadwal`,formdata,{ headers: { 
+                  Authorization: "Bearer " + this.$store.state.token }
+                  })
+            .then((response) => {
+                this.error_message=response.data.message;
+                this.snackbar=true;
+                this.loadSertifikasi();
+            }).catch((error) => {
+                this.error_message=error;
+                this.snackbar=true;
+            })
         }
         this.close()
       },

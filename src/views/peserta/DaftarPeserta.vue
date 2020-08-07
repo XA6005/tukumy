@@ -34,7 +34,7 @@
                             <v-btn
                             class="white--text"
                             color="#065139"
-                            @click="doRegister">
+                            @click="register">
                              daftar
                             </v-btn>
                         </div>
@@ -47,16 +47,20 @@
                         </div>
                     </div>
                 </div>
+                <v-snackbar v-model="snackbar" >
+                {{error_message}}
+                </v-snackbar>
             </div>
         </v-main>
     </v-app>
 </template>
 <script>
-import axios from 'axios';
   export default {
     data () {
       return {
         show: false,
+        snackbar:false,
+        error_message:"loading",
         email:"",
         password:"",
         tunnel:"",
@@ -67,24 +71,15 @@ import axios from 'axios';
         },
       }
     },
-    mounted(){
-    this.tunnel = this.$store.state.tunnel;
-    },
     methods: {
-        doRegister(){
-            axios
-            .post(this.tunnel+'peserta/register',{
-                email: this.email,
-                password: this.password
-            })
-            .then((response) => {
-            this.result= response.data;
-            if(this.result.token){
-                this.$store.state.isLogin=true;
-                this.$store.state.jwt_token=this.result.token;
-                this.$router.push({ path: '/dasboard-peserta' });
-            }
-      }) 
+        register:function(){
+            let email = this.email
+            let password = this.password
+            this.$store.dispatch('register',{email,password})
+            .then(()=>this.$router.push('login-peserta'))
+            .catch(err=>
+            this.error_message=err,
+            this.snackbar=true)
         }
     },
   }

@@ -19,6 +19,7 @@ import KelolaPembayaran from '../views/admin/KelolaPembayaran.vue'
 import loginDaftar from '../views/sertifikasi/LoginDaftar.vue'
 import FormDaftar from '../views/sertifikasi/FormDaftar.vue'
 import DaftarAkun from '../views/sertifikasi/DaftarAkun.vue'
+import Secure from '../views/Secure.vue'
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,14 @@ Vue.use(VueRouter)
     path: '/',
     name: 'Beranda',
     component: Home
+  },
+  {
+    path: '/secure',
+    name: 'secure',
+    component: Secure,
+    meta: { 
+      requiresAuth: true
+    }
   },
   {
     path: '/berita',
@@ -120,10 +129,22 @@ Vue.use(VueRouter)
   },
 
 ]
-
 const router = new VueRouter({
   mode:'history',
   base: process.env.BASE_URL,
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  if(to.matched.some(record => record.meta.requiresAuth)) {
+    if (this.$store.getters.isLoggedInPeserta) {
+      next()
+      return
+    }
+    next('/login-peserta') 
+  } else {
+    next() 
+  }
+})
+
 export default router

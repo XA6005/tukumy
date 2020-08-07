@@ -95,7 +95,6 @@
 </template>
 <script>
 export default {
-  name: 'barsAdmin',
   data: () => ({
       sertifikasi: [
        { title: 'Kelola Sertifikasi', src: '/kelola-sertifikasi' },

@@ -14,7 +14,7 @@
         >
           <v-card height="650">
             <v-img
-              :src="item.image"
+              :src="tunnel+'berita-image/'+item.image"
               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
               height="500px">
             </v-img>

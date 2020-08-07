@@ -25,7 +25,6 @@
             v-if="profil.length"
             bottom
             left
-
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -43,7 +42,7 @@
               <v-list-item
                 v-for="(item,index) in profil"
                 :key="index"
-                @click="item.src"
+                :href="item.src"
               >
                 {{ item.title }}
               </v-list-item>

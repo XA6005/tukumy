@@ -5,9 +5,9 @@
       >
         <h1 class="center"><br>{{detailberita.judul}}</h1>
         <v-img
-            :src="detailberita.image"
+            :src="this.tunnel+'berita-image/'+detailberita.image"
             gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-            height="500px">
+            >
             </v-img>
         <p>{{detailberita.isi}}</p>
       </div>

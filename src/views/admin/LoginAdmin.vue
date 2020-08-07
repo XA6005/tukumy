@@ -19,6 +19,7 @@
                         <v-text-field
                             :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                             :rules="[rules.required, rules.min]"
+                            :type="show ? 'text' : 'password'"
                             name="input-10-2"
                             label="Password"
                             hint="At least 8 characters"
@@ -33,7 +34,7 @@
                             <v-btn
                             class="white--text"
                             color="#065139"
-                            @click="doLogin"
+                            @click="login"
                             >
                              masuk
                             </v-btn>
@@ -48,6 +49,9 @@
                         </div>
                     </div>
                 </div>
+                <v-snackbar v-model="snackbar" >
+                {{error_message}}
+                </v-snackbar>
             </div>
         </v-main>
     </v-app>
@@ -55,12 +59,13 @@
 
 
 <script>
-import axios from 'axios';
   export default {
     data () {
       return {
         show: false,
-        tunnel:"",
+        snackbar:false,
+        admin:false,
+        error_message:"loading",
         email:"",
         password:"",
         result:null,
@@ -71,24 +76,15 @@ import axios from 'axios';
         },
       }
     },
-    mounted(){
-    this.tunnel = this.$store.state.tunnel;
-    },
     methods: {
-        doLogin(){
-            axios
-            .post(this.tunnel+'admin/login',{
-                email: this.email,
-                password: this.password
-            })
-            .then((response) => {
-            this.result= response.data;
-            if(this.result.token){
-                this.$store.state.isLogin=true;
-                this.$store.state.jwt_token=this.result.token;
-                this.$router.push({ path: '/dasboard-admin' });
-            }
-      }) 
+        login:function(){
+            let email = this.email
+            let password = this.password
+            this.$store.dispatch('loginAdmin',{email,password})
+            .then(()=>this.$router.push('/kelola-pembayaran'))
+            .catch(error=>
+            this.error_message=error,
+            this.snackbar=true)
         }
     },
   }

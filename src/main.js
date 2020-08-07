@@ -5,9 +5,24 @@ import router from './router'
 import store from './store'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
-import vuetify from './plugins/vuetify';
+import vuetify from './plugins/vuetify'
+import axios from 'axios'
 
 Vue.use(Vuetify)
+Vue.prototype.$http = axios;
+
+const token = localStorage.getItem('token')
+if (token) {
+  Vue.prototype.$http.defaults.headers.common['Authorization'] = token
+}
+const peserta = localStorage.getItem('peserta')
+if (peserta) {
+  Vue.prototype.$http.defaults.headers.common['Authorization'] = token
+}
+const admin = localStorage.getItem('admin')
+if (admin) {
+  Vue.prototype.$http.defaults.headers.common['Authorization'] = token
+}
 
 Vue.config.productionTip = false
 

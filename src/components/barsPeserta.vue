@@ -8,7 +8,7 @@
     >
     <v-toolbar-title >Tempat Uji Kompetensi Prodi Teknologi Informasi UMY</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn text href="/">
+      <v-btn text @click="logout">
         keluar
       </v-btn>
       <template v-slot:extension >
@@ -32,6 +32,14 @@
 <script>
 export default {
   name: 'barsPeserta',
+  methods:{
+    logout: function () {
+        this.$store.dispatch('logout')
+        .then(() => {
+          this.$router.push('/')
+        })
+      }
+  },
 }
 </script>
 

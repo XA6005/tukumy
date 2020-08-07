@@ -1,4 +1,4 @@
-<template>
+<template> 
     <v-app id="LoginPeserta">
         <v-main>
             <div class="container mt-5" >
@@ -11,14 +11,22 @@
                         <small style="font-size:11pt">Prodi Teknologi Informasi UMY</small>
                     </h2>
                     <div class="jumbotron mt-4">
-                        <v-text-field
+                        <form>
+                            <v-text-field
                          label="E-mail"
                          value=""
                          v-model="email"
+                         :error-messages="emailErrors"
+                         required
+                        @input="$v.email.$touch()"
+                        @blur="$v.email.$touch()"
                         ></v-text-field>
                         <v-text-field
+                            required
+                            :error-messages="passwordErrors"
+                            @input="$v.password.$touch()"
+                            @blur="$v.password.$touch()"
                             :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                            :rules="[rules.required, rules.min]"
                             :type="show ? 'text' : 'password'"
                             name="input-10-2"
                             label="Password"
@@ -29,12 +37,13 @@
                             @click:append="show = !show"
                             ></v-text-field>
                             <br>
+                        </form>
                         <div>
                             <div class="row align-center justify-center">
                             <v-btn
                             class="white--text"
                             color="#065139"
-                            @click="doLogin">
+                            @click="login">
                              masuk
                             </v-btn>
                         </div>
@@ -62,49 +71,54 @@
 </template>
 
 <script>
-import axios from 'axios';
+  import { validationMixin } from 'vuelidate'
+  import { required, minLength,email } from 'vuelidate/lib/validators'
   export default {
+    mixins: [validationMixin],
+    validations: {
+      password: { required, minLength: minLength(8) },
+      email: { required, email },
+    },
     data () {
       return {
         show: false,
         snackbar:false,
-        error_message:"",
-        tunnel:"",
+        error_message:"loading",
         email:"",
         password:"",
-        rules: {
-          required: value => !!value || 'Required.',
-          min: v => v.length >= 8 || 'Min 8 characters',
-          emailMatch: () => ('The email and password you entered don\'t match'),
-        },
       }
     },
-    mounted(){
-    this.tunnel = this.$store.state.tunnel;
+
+    computed: {
+      passwordErrors () {
+        const errors = []
+        if (!this.$v.password.$dirty) return errors
+        !this.$v.password.minLength && errors.push('Password minimal 8 karakter')
+        !this.$v.password.required && errors.push('Password diperlukan')
+        return errors
+      },
+      emailErrors () {
+        const errors = []
+        if (!this.$v.email.$dirty) return errors
+        !this.$v.email.email && errors.push('email harus valid')
+        !this.$v.email.required && errors.push('E-mail diperlukan')
+        return errors
+      },
     },
+
     methods: {
-        doLogin(){
-            axios
-            .post(this.tunnel+'peserta/login',{
-                email: this.email,
-                password: this.password
+        login:function(){
+            let email = this.email
+            let password = this.password
+            this.$store.dispatch('login',{email,password})
+            .then(()=>{
+                this.$router.push('/dasboard-peserta')
+                this.error_message="Selamat datang "+this.email
+                this.snackbar=true
             })
-            .then((response) => {
-            this.result= response.data;
-            if(this.result.token){
-                this.$store.state.isLogin=true;
-                this.$store.state.token=this.result.token;
-                this.$store.state.user=this.email;
-                this.$router.push({ path: '/dasboard-peserta' });
-            }else{
-            this.error_message="Password/email salah";
-            this.snackbar=true;
-            } 
-      })
-      .catch(() => {
-            this.error_message="Password/email salah";
-            this.snackbar=true;
-        }) 
+            .catch(err=>
+            this.error_message=err,
+            this.snackbar=true)
         }
     },
   }
