@@ -1,21 +1,7 @@
 <template>
   <v-app id="home">
     <v-main>
-      <!-- carousel start !-->
-      <v-carousel
-    cycle
-    height="600"
-    hide-delimiter-background
-    show-arrows-on-hover
-  >
-    <v-carousel-item
-      v-for="(slide, i) in slides"
-      :key="i"
-      :src="slide.src"
-    >
-    </v-carousel-item>
-  </v-carousel>
-  <!-- carousel end !-->
+      <karousel />
   <br><br><br><br>
       <!-- card berita start !-->
     <v-container>
@@ -28,7 +14,6 @@
           <v-card height="450">
             <v-img
               :src="tunnel+'berita-image/'+item.image"
-              gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
               height="300px">
             </v-img>
             <v-card-title class="justify-center" v-text="item.judul"></v-card-title>
@@ -53,7 +38,11 @@
 
 <script>
 import axios from 'axios';
+import karousel from '@/components/karousel.vue';
   export default {
+    components:{
+      karousel
+    },
     data () {
       return {
         tunnel :'',

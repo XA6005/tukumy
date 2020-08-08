@@ -98,7 +98,7 @@ export default {
         ],
       sertifikasi: [
        { title: 'Skema', src: '/skema' },
-       { title: 'Daftar Sertifikasi', src: '/daftar-sertifikasi' },
+       { title: 'Jadwal Sertifikasi', src: '/daftar-sertifikasi' },
         ],
     }),
 }

@@ -6,7 +6,8 @@
         <h1 class="center"><br>{{detailberita.judul}}</h1>
         <v-img
             :src="this.tunnel+'berita-image/'+detailberita.image"
-            gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+            contain
+            height="600px"
             >
             </v-img>
         <p>{{detailberita.isi}}</p>

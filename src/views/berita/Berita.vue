@@ -15,7 +15,6 @@
           <v-card height="650">
             <v-img
               :src="tunnel+'berita-image/'+item.image"
-              gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
               height="500px">
             </v-img>
             <v-card-title style="text-align:center" class="justify-center" v-text="item.judul"></v-card-title>

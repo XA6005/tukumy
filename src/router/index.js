@@ -3,14 +3,14 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Berita from '../views/berita/Berita.vue'
 import DetailBerita from '../views/berita/detailBerita.vue'
-import Skema from '../views/sertifikasi/Skema.vue' 
+import Skema from '../views/sertifikasi/Skema.vue'
 import DaftarSertifikasi from '../views/sertifikasi/DaftarSertifikasi.vue'
 import SOP from '../views/profil/SOP.vue'
 import StrukturOrganisasi from '../views/profil/StrukturOrganisasi.vue'
 import VisiMisi from '../views/profil/VisiMisi.vue'
-import LoginPeserta from '../views/peserta/LoginPeserta.vue' 
-import DaftarPeserta from '../views/peserta/DaftarPeserta.vue' 
-import LoginAdmin from '../views/admin/LoginAdmin.vue' 
+import LoginPeserta from '../views/peserta/LoginPeserta.vue'
+import DaftarPeserta from '../views/peserta/DaftarPeserta.vue'
+import LoginAdmin from '../views/admin/LoginAdmin.vue'
 import DasboardPeserta from '../views/peserta/DasboardPeserta.vue'
 import DasboardAdmin from '../views/admin/DasboardAdmin.vue'
 import KelolaSertifikasi from '../views/admin/KelolaSertifikasi.vue'
@@ -23,8 +23,7 @@ import notFound from '../views/NotFound.vue'
 
 Vue.use(VueRouter)
 
-  const routes = [
-  {
+const routes = [{
     path: '/',
     name: 'Beranda',
     component: Home
@@ -83,9 +82,6 @@ Vue.use(VueRouter)
     path: '/dasboard-peserta',
     name: 'dasboard-peserta',
     component: DasboardPeserta,
-    meta:{
-      auth : true
-    }
   },
   {
     path: '/login-admin',
@@ -132,22 +128,22 @@ Vue.use(VueRouter)
 
 
 const router = new VueRouter({
-  mode:'history',
+  mode: 'history',
   base: process.env.BASE_URL,
   routes
 });
-router.beforeEach((to, from, next) => {
-  if(to.matched.some(record => record.meta.auth)) {
-    if (this.$store.getters.isLoggedInPeserta) {
-      next();
-    }else{
-      next({
-        path:('/'),
-      })
-    } 
+
+
+/* router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.auth)) {
+    if (store.getters.isLoggedIn) {
+      next()
+      return
+    }
+    next('/login-peserta')
   } else {
-    next() 
+    next()
   }
-})
+}) */
 
 export default router

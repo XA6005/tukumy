@@ -76,7 +76,7 @@ import axios from 'axios';
       dialog: false,
       headers: [
         { text: 'Judul Berita',  value: 'judul', align: 'start',},
-        { text: 'Tanggal Terbit', value: 'tanggal' },
+        { text: 'Tanggal Terbit', value: 'updated_at' },
         { text: 'Actions', value: 'actions' },
       ],
       berita: [],

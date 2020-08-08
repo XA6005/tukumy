@@ -1,111 +1,15 @@
 <template> 
-    <v-app id="LoginPeserta">
-        <v-main>
-            <div class="container mt-5" >
-                <div class="grey lighten-3 rounded-xl col-md-5 mx-auto my-auto">
-                    <h1 class="text-center">
-                        Masuk
-                    </h1>
-                    <h2 class="text-center">
-                        Portal PESERTA Tempat Uji Kompetensi(TUK)<br>
-                        <small style="font-size:11pt">Prodi Teknologi Informasi UMY</small>
-                    </h2>
-                    <div class="jumbotron mt-4">
-                        <form>
-                            <v-text-field
-                         label="E-mail"
-                         value=""
-                         v-model="email"
-                         :error-messages="emailErrors"
-                         required
-                        @input="$v.email.$touch()"
-                        @blur="$v.email.$touch()"
-                        ></v-text-field>
-                        <v-text-field
-                            required
-                            :error-messages="passwordErrors"
-                            @input="$v.password.$touch()"
-                            @blur="$v.password.$touch()"
-                            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                            :type="show ? 'text' : 'password'"
-                            name="input-10-2"
-                            label="Password"
-                            v-model="password"
-                            hint="At least 8 characters"
-                            value=""
-                            class="input-group--focused"
-                            @click:append="show = !show"
-                            ></v-text-field>
-                            <br>
-                        </form>
-                        <div>
-                            <div class="row align-center justify-center">
-                            <v-btn
-                            class="white--text"
-                            color="#065139"
-                            @click="login">
-                             masuk
-                            </v-btn>
-                        </div>
-                        <div class="row align-center justify-center">
-                            <a
-                            href="/daftar-peserta">
-                             daftar
-                            </a>
-                        </div>
-                        <div align="right">
-                            <a
-                            href="/login-admin">
-                             masuk sebagai admin
-                            </a>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <v-snackbar v-model="snackbar" >
-                {{error_message}}
-                </v-snackbar>
-            </div>
-        </v-main>
-    </v-app>
+      <v-app id="LoginPeserta">
+         <login />
+      </v-app>
 </template>
 
 <script>
-  import { validationMixin } from 'vuelidate'
-  import { required, minLength,email } from 'vuelidate/lib/validators'
+import login from '@/components/login.vue';
   export default {
-    mixins: [validationMixin],
-    validations: {
-      password: { required, minLength: minLength(8) },
-      email: { required, email },
+    components:{
+      login
     },
-    data () {
-      return {
-        show: false,
-        snackbar:false,
-        error_message:"loading",
-        email:"",
-        password:"",
-      }
-    },
-
-    computed: {
-      passwordErrors () {
-        const errors = []
-        if (!this.$v.password.$dirty) return errors
-        !this.$v.password.minLength && errors.push('Password minimal 8 karakter')
-        !this.$v.password.required && errors.push('Password diperlukan')
-        return errors
-      },
-      emailErrors () {
-        const errors = []
-        if (!this.$v.email.$dirty) return errors
-        !this.$v.email.email && errors.push('email harus valid')
-        !this.$v.email.required && errors.push('E-mail diperlukan')
-        return errors
-      },
-    },
-
     methods: {
         login:function(){
             let email = this.email

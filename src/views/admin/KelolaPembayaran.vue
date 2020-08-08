@@ -2,7 +2,6 @@
     <v-app id="Kelola Pembayaran">
     <v-main>
         <div class="container mt-5">
-          <p>aa{{this.jadwal}}</p>
           <v-data-table
             :headers="headers"
             :items="jadwal"
@@ -11,18 +10,21 @@
     <template v-slot:top>
       <v-toolbar flat color="white">
           <v-toolbar-title>Kelola Pembayaran </v-toolbar-title>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="600px">
           <v-card>
             <v-card-title>
               <span class="headline">Bukti Pembayaran</span>
             </v-card-title>
             <v-card-text>
               <v-container>
-                <v-img
-                  src="this.tunnel+'jadwalpeserta-image/'+editedItem.image"
-                  gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-                  height="500px">
-                  </v-img>
+                <v-img v-if="editedItem.image!=null" height="500px" :src="tunnel+'bukti-pembayaran/'+editedItem.image"></v-img>
+                <v-sheet v-else color="grey" height="500px" >
+                  <v-row class="fill-height" align="center" justify="center" >
+                  <div>
+                    <h1>Tidak Ada Gambar</h1>
+                  </div>
+                  </v-row>
+                </v-sheet>
               </v-container>
             </v-card-text>
             <v-card-actions>
@@ -62,6 +64,7 @@
 
 <script>
 import axios from 'axios';
+import qs from 'qs';
   export default {
     data() {
       return{
@@ -69,20 +72,20 @@ import axios from 'axios';
       snackbar:'',
       error_message:'',
       tunnel:'',
+      tunnelgambar:this.tunnel+'bukti-pembayaran/',
       dialog: false,
       headers: [
-        {text: 'Skema Sertifikasi',value: 'skemasertifikasi_id', align: 'start'},
+        {text: 'Id Jdwal',value: 'jadwal_id', align: 'start'},
         {text: 'Email Peserta',value: 'email', align: 'start'},
         { text: 'Status', value: 'status' },
         { text: 'Action', value: 'actions' },
       ],
       jadwal: [],
-      jadSementara:[],
       editedItem: {
         skemasertifikasi_id:'',
-        idJadwal:'',
+        jadwal_id:'',
         email: '',
-        peserta:'',
+        peserta_id:'',
         status:'',
         image:'',
       },
@@ -104,21 +107,15 @@ import axios from 'axios';
           const list = response.data.data.jadwal.map((det)=>{
               return det.peserta
             })
-            
-            list.forEach(element => {
-              this.jadSementara.push(element)
-            });
-            
-              this.jadwal = this.jadSementara.map((item)=>{
+               this.jadwal = [].concat.apply([],list).map((item)=>{
               return{
-                skemasertifikasi_id:item.id,
-                idJadwal:item.pivot.jadwal_id,
+                jadwal_id:item.pivot.jadwal_id,
                 email: item.email,
+                peserta_id:item.pivot.peserta_id,
+                status:item.pivot.status,
+                image:item.pivot.image,
               }
-            })  
-            
-            
-            
+            })    
         }).catch((error) => {
             this.error_message=error;
             this.snackbar=true;
@@ -129,31 +126,51 @@ import axios from 'axios';
     methods: {
       loadData () {
         this.jadwal = []
+        axios.get(`${this.tunnel}jadwalpeserta`,
+            { headers: { Authorization: "Bearer " + this.$store.state.token }})
+        .then((response) => {
+          const list = response.data.data.jadwal.map((det)=>{
+              return det.peserta
+            })
+               this.jadwal = [].concat.apply([],list).map((item)=>{
+              return{
+                jadwal_id:item.pivot.jadwal_id,
+                email: item.email,
+                peserta_id:item.pivot.peserta_id,
+                status:item.pivot.status,
+                image:item.pivot.image,
+              }
+            })    
+        }).catch((error) => {
+            this.error_message=error;
+            this.snackbar=true;
+        })
       },
 
       lihatItem (item) {
-        this.editedIndex = this.sertfikasi.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
       editItem (item) {
-        if(item.status=='lunas'){
-          item.status =='belum lunas'
+        var status = ""
+        if(item.status == "belum lunas"){
+          status = "lunas"
         }else{
-          item.status=='lunas'
+          status ="belum lunas"
         }
-        const formdata = new FormData();
-        formdata.append('judul',item.jadwal_id);
-        formdata.append('isi',item.peserta_id);
-        formdata.append('image',item.status); 
+        const data = qs.stringify({
+          'jadwal_id': item.jadwal_id,
+          'peserta_id': item.peserta_id,
+          'status': status,
+        });
         confirm('Kamu yakin akan mengubah status pembayaran peserta ini?') && 
-        axios.put(`${this.tunnel}updatestatus`,formdata,{ headers: { 
+        axios.put(`${this.tunnel}updatestatus`,data,{ headers: { 
                   Authorization: "Bearer " + this.$store.state.token }
                   })
             .then((response) => {
                 this.error_message=response.data.message;
                 this.snackbar=true;
-                this.loadBerita();
+                this.loadData();
             }).catch((error) => {
                 this.error_message=error;
                 this.snackbar=true;
