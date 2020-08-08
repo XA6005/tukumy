@@ -76,10 +76,12 @@
             let email = this.email
             let password = this.password
             this.$store.dispatch('register',{email,password})
-            .then(()=>this.$router.push('login-peserta'))
-            .catch(err=>
+            .then(()=>this.$router.push('login-peserta')
+            )
+            .catch((err) => 
             this.error_message=err,
-            this.snackbar=true)
+            this.snackbar=true
+            )
         }
     },
   }

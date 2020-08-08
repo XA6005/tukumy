@@ -59,12 +59,8 @@ import axios from 'axios';
         tunnel :'',
         cardberita: [],
         slides: [
-          {
-            src:'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
-          },
-          {
-            src:'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
-          },
+          { src: require('@/assets/banner-tuk-1.png'),},
+          { src: require('@/assets/banner-tuk-2.png'),},
         ],
       }
     },

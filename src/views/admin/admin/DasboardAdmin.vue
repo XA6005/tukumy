@@ -1,5 +1,5 @@
 <template>
-    <div id="barsAdmin">
+    <v-app id="Dasboard Admin">
       <v-app-bar
       app
       src="@/assets/appbar-banner.png"
@@ -8,7 +8,7 @@
     >
     <v-toolbar-title >Tempat Uji Kompetensi Prodi Teknologi Informasi UMY</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn text @click="logout">
+      <v-btn text href="/">
         keluar
       </v-btn>
       <template v-slot:extension >
@@ -51,39 +51,55 @@
           <v-btn text href="/kelola-berita">
             Kelola Berita
           </v-btn>
-
         </v-tabs>
       </template>
-
     </v-app-bar>
-    </div>
+    <v-main>
+        <div>
+        <h1 class="center"><br>Dasboard Admin</h1>
+        <v-row>
+            <v-col>
+                <v-card
+                class="mx-auto"
+                outlined
+                tile
+                width="200px"
+                >
+            <v-card-title>
+                Jumlah Peserta
+            </v-card-title>
+            <v-card-text>
+                2
+            </v-card-text>
+          </v-card>
+            </v-col>
+            <v-col>
+               <v-card
+                class="mx-auto justify-center"
+                outlined
+                tile
+                width="200px"
+                >
+            <v-card-title>
+                Jumlah Lunas
+            </v-card-title>
+            <v-card-text class="justify-center">
+                1
+            </v-card-text>
+          </v-card>
+            </v-col>
+        </v-row>
+      </div>
+    </v-main>
+    </v-app>
 </template>
-
-
 <script>
 export default {
-  name: 'barsAdmin',
-  data() {
-      return{
+  data: () => ({
       sertifikasi: [
        { title: 'Kelola Sertifikasi', src: '/kelola-sertifikasi' },
        { title: 'Kelola Pembayaran', src: '/kelola-pembayaran' },
         ],
-      }
-    },
-  methods:{
-    logout: function () {
-        this.$store.dispatch('logout')
-        .then(() => {
-          this.$router.push('/')
-        })
-      }
-  },
+    }),
 }
 </script>
-
-<style>
-#barsAdmin{
-  font-family: Roboto, sans-serif;
-}
-</style>

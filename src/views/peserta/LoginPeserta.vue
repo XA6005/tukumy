@@ -116,7 +116,7 @@
                 this.error_message="Selamat datang "+this.email
                 this.snackbar=true
             })
-            .catch(err=>
+            .catch((err)=>
             this.error_message=err,
             this.snackbar=true)
         }

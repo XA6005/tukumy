@@ -1,6 +1,7 @@
 <template>
     <v-app id="Dasboard Peserta">
     <v-main>
+      <div class="container mt-5">
         <v-data-table
             :headers="headers"
             :items="sertifikasi"
@@ -47,6 +48,7 @@
       <v-snackbar v-model="snackbar" >
       {{error_message}}
       </v-snackbar>
+      </div>
     </v-main>
     </v-app>
 </template>

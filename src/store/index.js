@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-        tunnel:'https://2e566c72e6cd.ngrok.io/',
+        tunnel:'https://6896534d4f31.ngrok.io/',
         status: '',
         admin : localStorage.getItem('admin') || '',
         peserta : localStorage.getItem('peserta') || '',
@@ -46,7 +46,7 @@ export default new Vuex.Store({
     login({commit}, user){
         return new Promise((resolve, reject) => {
             commit('auth_request')
-            axios({url: this.state.tunnel+'/peserta/login', data: user, method: 'POST' })
+            axios({url: this.state.tunnel+'peserta/login', data: user, method: 'POST' })
             .then(response => {
                 const token = response.data.token
                 localStorage.setItem('token', token)
@@ -59,7 +59,6 @@ export default new Vuex.Store({
             .catch(err => {
                 commit('auth_error')
                 localStorage.removeItem('token')
-                localStorage.removeItem('peserta')
                 reject(err)
             })
         })
@@ -88,7 +87,7 @@ export default new Vuex.Store({
     register({commit}, user){
       return new Promise((resolve, reject) => {
             commit('auth_request')
-            axios({url: this.state.tunnel+'/peserta/register', data: user, method: 'POST' })
+            axios({url: this.state.tunnel+'peserta/register', data: user, method: 'POST' })
             .then(resp => {
                 const token = resp.data.token
                 const user = resp.data.user
