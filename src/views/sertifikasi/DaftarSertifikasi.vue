@@ -27,7 +27,7 @@
               <v-btn
               color="#065139"
               text
-              :to="{ name: 'login-daftar', params: { id: card.skemasertifikasi_id } }" >
+              :to="{ name: 'login-daftar', params: { id: card.id } }" >
               Daftar
               </v-btn>
             </v-card-actions>
@@ -49,6 +49,7 @@ export default {
       }
     },
     mounted () {
+    this.$store.dispatch('logout')
     this.tunnel = this.$store.state.tunnel;
     axios
     .get(this.tunnel+'jadwal',{

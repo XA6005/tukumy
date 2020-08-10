@@ -21,6 +21,9 @@
           <v-btn text href="/dasboard-peserta">
             Beranda
           </v-btn>
+          <v-btn text href="/form-daftar">
+            Biodata
+          </v-btn>
         </v-tabs>
       </template>
 

@@ -14,6 +14,7 @@ import LoginAdmin from '../views/admin/LoginAdmin.vue'
 import DasboardPeserta from '../views/peserta/DasboardPeserta.vue'
 import DasboardAdmin from '../views/admin/DasboardAdmin.vue'
 import KelolaSertifikasi from '../views/admin/KelolaSertifikasi.vue'
+import KelolaSkema from '../views/admin/KelolaSkema.vue'
 import KelolaBerita from '../views/admin/KelolaBerita.vue'
 import KelolaPembayaran from '../views/admin/KelolaPembayaran.vue'
 import loginDaftar from '../views/sertifikasi/LoginDaftar.vue'
@@ -82,6 +83,7 @@ const routes = [{
     path: '/dasboard-peserta',
     name: 'dasboard-peserta',
     component: DasboardPeserta,
+    
   },
   {
     path: '/login-admin',
@@ -99,6 +101,11 @@ const routes = [{
     component: KelolaSertifikasi
   },
   {
+    path: '/kelola-skema',
+    name: 'kelola skema',
+    component: KelolaSkema
+  },
+  {
     path: '/kelola-berita',
     name: 'kelola berita',
     component: KelolaBerita
@@ -109,17 +116,17 @@ const routes = [{
     component: KelolaPembayaran
   },
   {
-    path: '/login-daftar:id',
+    path: '/login-daftar/:id',
     name: 'login-daftar',
     component: loginDaftar
   },
   {
     path: '/form-daftar',
-    name: 'Form Daftar',
+    name: 'form-daftar',
     component: FormDaftar
   },
   {
-    path: '/daftar-akun:id',
+    path: '/daftar-akun/:id',
     name: 'daftar-akun',
     component: DaftarAkun
   },

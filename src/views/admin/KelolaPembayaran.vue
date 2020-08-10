@@ -75,7 +75,7 @@ import qs from 'qs';
       tunnelgambar:this.tunnel+'bukti-pembayaran/',
       dialog: false,
       headers: [
-        {text: 'Id Jdwal',value: 'jadwal_id', align: 'start'},
+        {text: 'Id Jadwal',value: 'jadwal_id', align: 'start'},
         {text: 'Email Peserta',value: 'email', align: 'start'},
         { text: 'Status', value: 'status' },
         { text: 'Action', value: 'actions' },
@@ -98,6 +98,7 @@ import qs from 'qs';
     },
 
     mounted () {
+      if (this.$store.getters.isLoggedInAdmin) {
       this.loadData();
       this.user = this.$store.state.user;
       this.tunnel = this.$store.state.tunnel;
@@ -120,6 +121,9 @@ import qs from 'qs';
             this.error_message=error;
             this.snackbar=true;
         })
+        }else{
+        this.$router.push("login-admin")
+      }
     },
 
 

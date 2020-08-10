@@ -13,7 +13,7 @@
         <v-dialog v-model="dialog" fullscreen >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              color="primary"
+              color="#065139"
               dark
               class="mb-2"
               v-bind="attrs"
@@ -21,9 +21,18 @@
             >Tambah Berita</v-btn>
           </template>
           <v-card>
-            <v-card-title>
+            <v-toolbar color="#fbc800">
+              <v-btn text @click="close">
+                <v-icon>mdi-close</v-icon>
+                </v-btn>
+            <v-toolbar-title>
               <span class="headline">{{ formTitle }}</span>
-            </v-card-title>
+            </v-toolbar-title>
+            <v-spacer></v-spacer>       
+              <v-toolbar-items>
+                <v-btn text @click="save(editedItem)">Save</v-btn>
+              </v-toolbar-items>
+            </v-toolbar>
             <v-card-text>
               <v-container>
                     <v-text-field v-model="editedItem.judul" label="Judul Berita"></v-text-field>
@@ -31,11 +40,8 @@
                     <v-file-input color="#065139" v-model="editedItem.image" chips label="Upload Banner Berita"></v-file-input>
               </v-container>
             </v-card-text>
-
             <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="save(editedItem)">Save</v-btn>
+              
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -76,7 +82,6 @@ import axios from 'axios';
       dialog: false,
       headers: [
         { text: 'Judul Berita',  value: 'judul', align: 'start',},
-        { text: 'Tanggal Terbit', value: 'updated_at' },
         { text: 'Actions', value: 'actions' },
       ],
       berita: [],
@@ -110,6 +115,7 @@ import axios from 'axios';
     },
 
     mounted () {
+      if (this.$store.getters.isLoggedInAdmin) {
       this.loadBerita();
       this.tunnel = this.$store.state.tunnel;
       axios.get(`${this.tunnel}berita`)
@@ -119,6 +125,9 @@ import axios from 'axios';
             this.error_message=error;
             this.snackbar=true;
         })
+        }else{
+        this.$router.push("login-admin")
+      }
     },
 
     methods: {

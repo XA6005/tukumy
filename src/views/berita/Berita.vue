@@ -45,6 +45,7 @@ export default {
       }
     },
     mounted () {
+    this.$store.dispatch('logout')
     this.tunnel = this.$store.state.tunnel;
     axios
     .get(this.tunnel+'berita',{

@@ -1,11 +1,11 @@
 <template>
-  <v-app id="Kelola Sertifikasi">
+  <v-app id="Kelola Skema">
     <v-main>
       <div class="container mt-5">
         <v-data-table :headers="headers" :items="sertifikasi" class="elevation-1">
           <template v-slot:top>
             <v-toolbar flat color="white">
-              <v-toolbar-title>Kelola Jadwal Sertifikasi</v-toolbar-title>
+              <v-toolbar-title>Kelola Skema</v-toolbar-title>
               <v-spacer></v-spacer>
               <v-dialog v-model="dialog" max-width="500px">
                 <template v-slot:activator="{ on, attrs }">
@@ -15,72 +15,22 @@
                     class="mb-2"
                     v-bind="attrs"
                     v-on="on"
-                  >Tambah Jadwal Sertifikasi</v-btn>
+                  >Tambah Skema Sertifikasi</v-btn>
                 </template>
                 <v-card>
                   <v-card-title>
                     <span class="headline">{{ formTitle }}</span>
                   </v-card-title>
-
                   <v-card-text>
                     <v-container>
-                      <v-text-field
-                        v-model="editedItem.skemasertifikasi_id"
-                        label="Skema Sertifikasi"
-                      ></v-text-field>
-                      <v-text-field v-model="editedItem.tempat" label="Tempat Sertifikasi"></v-text-field>
-                      <v-menu
-                        v-model="menu2"
-                        :close-on-content-click="false"
-                        :nudge-right="40"
-                        transition="scale-transition"
-                        offset-y
-                        min-width="290px"
-                      >
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-text-field
-                            v-model="editedItem.tanggal"
-                            label="Tanggal Sertifikasi"
-                            aprepend-icon="event"
-                            readonly
-                            v-bind="attrs"
-                            v-on="on"
-                          ></v-text-field>
-                        </template>
-                        <v-date-picker v-model="editedItem.tanggal" @input="menu2 = false"></v-date-picker>
-                      </v-menu>
-                      <v-menu
-                        ref="menu"
-                        v-model="menu1"
-                        :close-on-content-click="false"
-                        :nudge-right="40"
-                        :return-value.sync="time"
-                        transition="scale-transition"
-                        offset-y
-                        max-width="290px"
-                        min-width="290px"
-                      >
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-text-field
-                            readonly
-                            v-bind="attrs"
-                            v-on="on"
-                            v-model="editedItem.jam"
-                            label="Waktu Sertifikasi"
-                          ></v-text-field>
-                        </template>
-                        <v-time-picker
-                          v-if="menu1"
-                          v-model="editedItem.jam"
-                          full-width
-                          @click:minute="$refs.menu.save(editedItem.jam)"
-                        ></v-time-picker>
-                      </v-menu>
-                      <v-text-field v-model="editedItem.biaya" label="Biaya"></v-text-field>
-                      <v-select :items="tujuan" v-model="editedItem.tujuanasessmen" label="Tujuan"></v-select>
+                          <v-text-field v-model="editedItem.nama" label="Nama Skema"></v-text-field>
+                          <v-select
+                            :items="tujuan"
+                            v-model="editedItem.tujuanasessmen"
+                            label="Tujuan"
+                          ></v-select>
                     </v-container>
                   </v-card-text>
-
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
@@ -124,34 +74,20 @@ export default {
       menu2: false,
       dialog: false,
       headers: [
-        { text: "Id Skema Sertifikasi", value: "skemasertifikasi_id", align: "start" },
-        { text: "Skema Sertifikasi", value: "skemaa" },
-        { text: "Tempat Sertifikasi", value: "tempat" },
-        { text: "Tanggal Sertifikasi", value: "tanggal" },
-        { text: "Waktu Sertifikasi", value: "jam" },
-        { text: "Tujuan Assesmen", value: "tujuanasessmen" },
+        { text: "Nama Sertifikasi", value: "nama" },
+        { text: "Tujuan Assesmen", value: "tujuan" },
         { text: "Actions", value: "actions" },
       ],
       sertifikasi: [],
-      skema:[],
       editedIndex: -1,
       editedItem: {
         id: "",
-        skemasertifikasi_id: "",
-        skemaa : "",
-        tempat: "",
-        tanggal: new Date().toISOString().substr(0, 10),
-        jam: null,
-        biaya: "",
+        nama: "",
         tujuanasessmen: "",
       },
       defaultItem: {
         id: "",
-        skemasertifikasi_id: "",
-        tempat: "",
-        tanggal: new Date().toISOString().substr(0, 10),
-        jam: null,
-        biaya: "",
+        nama: "",
         tujuanasessmen: "",
       },
     };
@@ -159,7 +95,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Tambah Jadwal" : "Ubah Jadwal";
+      return this.editedIndex === -1 ? "Tambah Skema" : "Ubah Skema";
     },
   },
 
@@ -174,18 +110,9 @@ export default {
       this.loadSertifikasi();
       this.tunnel = this.$store.state.tunnel;
       axios
-        .get(`${this.tunnel}jadwal`)
-        .then((response) => {
-          this.sertifikasi = response.data.data.jadwal
-        })
-        .catch((error) => {
-          this.error_message = error;
-          this.snackbar = true;
-        });
-        axios
         .get(`${this.tunnel}skema`)
         .then((response) => {
-          this.skema = response.data.data.SkemaSertifikasi
+          this.sertifikasi = response.data.data.SkemaSertifikasi;
         })
         .catch((error) => {
           this.error_message = error;
@@ -201,18 +128,9 @@ export default {
       this.sertifikasi = [];
       this.tunnel = this.$store.state.tunnel;
       axios
-        .get(`${this.tunnel}jadwal`)
-        .then((response) => {
-          this.sertifikasi = response.data.data.jadwal;
-        })
-        .catch((error) => {
-          this.error_message = error;
-          this.snackbar = true;
-        });
-      axios
         .get(`${this.tunnel}skema`)
         .then((response) => {
-          this.skema = response.data.data.SkemaSertifikasi;
+          this.sertifikasi = response.data.data.SkemaSertifikasi;
         })
         .catch((error) => {
           this.error_message = error;
@@ -229,7 +147,7 @@ export default {
     deleteItem(item) {
       confirm("Kamu yakin mau menghapus sertifikasi ini?") &&
         axios
-          .delete(`${this.tunnel}jadwal/` + item.id, {
+          .delete(`${this.tunnel}skema/` + item.id, {
             headers: {
               Authorization: "Bearer " + this.$store.state.token,
             },
@@ -256,15 +174,11 @@ export default {
     save(item) {
       if (this.editedIndex > -1) {
         const formdata = new FormData();
-        formdata.append("tempat", item.tempat);
-        formdata.append("tanggal", item.tanggal);
-        formdata.append("jam", item.jam);
-        formdata.append("biaya", item.biaya);
-        formdata.append("skemasertifikasi_id", item.skemasertifikasi_id);
-        formdata.append("tujuanasessmen", item.tujuanasessmen);
+        formdata.append("nama", item.nama);
+        formdata.append("tujuan", item.tujuanasessmen);
         formdata.append("_method", "PUT");
         axios
-          .post(`${this.tunnel}jadwal/` + item.id, formdata, {
+          .post(`${this.tunnel}/skema/`+item.id, formdata, {
             headers: {
               Authorization: "Bearer " + this.$store.state.token,
               "Content-Type": "multipart/form-data",
@@ -281,14 +195,10 @@ export default {
           });
       } else {
         const formdata = new FormData();
-        formdata.append("tempat", item.tempat);
-        formdata.append("tanggal", item.tanggal);
-        formdata.append("jam", item.jam);
-        formdata.append("biaya", item.biaya);
-        formdata.append("skemasertifikasi_id", item.skemasertifikasi_id);
-        formdata.append("tujuanasessmen", item.tujuanasessmen);
+        formdata.append("nama", item.nama);
+        formdata.append("tujuan", item.tujuanasessmen);
         axios
-          .post(`${this.tunnel}jadwal`, formdata, {
+          .post(`${this.tunnel}skema`, formdata, {
             headers: {
               Authorization: "Bearer " + this.$store.state.token,
             },

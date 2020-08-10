@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-        tunnel:'https://6896534d4f31.ngrok.io/',
+        tunnel:'https://2ef6cb57de28.ngrok.io/',
         status: '',
         admin : localStorage.getItem('admin') || '',
         peserta : localStorage.getItem('peserta') || '',
@@ -90,15 +90,15 @@ export default new Vuex.Store({
             axios({url: this.state.tunnel+'peserta/register', data: user, method: 'POST' })
             .then(resp => {
                 const token = resp.data.token
-                const user = resp.data.user
                 localStorage.setItem('token', token)
+                localStorage.setItem('peserta', token)
                 // Add the following line:
                 axios.defaults.headers.common['Authorization'] = token
                 commit('auth_success_peserta', token, user)
                 resolve(resp)
             })
             .catch(err => {
-                commit('auth_error', err)
+                commit('auth_error')
                 localStorage.removeItem('token')
                 reject(err)
             })

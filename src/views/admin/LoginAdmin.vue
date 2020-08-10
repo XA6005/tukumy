@@ -1,91 +1,116 @@
 <template>
-    <v-app id="LoginAdmin">
-        <v-main>
-            <div class="container mt-5" >
-                <div class="grey lighten-3 rounded-xl col-md-5 mx-auto my-auto">
-                    <h1 class="text-center">
-                        Masuk
-                    </h1>
-                    <h2 class="text-center">
-                        Portal ADMIN Tempat Uji Kompetensi(TUK)<br>
-                        <small style="font-size:11pt">Prodi Teknologi Informasi UMY</small>
-                    </h2>
-                    <div class="jumbotron mt-4">
-                        <v-text-field
-                         label="E-mail"
-                         value=""
-                         v-model="email"
-                        ></v-text-field>
-                        <v-text-field
-                            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                            :rules="[rules.required, rules.min]"
-                            :type="show ? 'text' : 'password'"
-                            name="input-10-2"
-                            label="Password"
-                            hint="At least 8 characters"
-                            value=""
-                            v-model="password"
-                            class="input-group--focused"
-                            @click:append="show = !show"
-                            ></v-text-field>
-                            <br>
-                        <div>
-                            <div class="row align-center justify-center">
-                            <v-btn
-                            class="white--text"
-                            color="#065139"
-                            @click="login"
-                            >
-                             masuk
-                            </v-btn>
-                        </div>
-                        <br>
-                        <div align="right">
-                            <a
-                            href="/login-peserta">
-                             masuk sebagai peserta
-                            </a>
-                        </div>
-                        </div>
-                    </div>
+  <v-app id="LoginAdmin">
+    <v-main>
+      <div class="container mt-5">
+        <v-form v-model="valid" lazy-validation>
+          <div class="grey lighten-3 rounded-xl col-md-5 mx-auto my-auto">
+            <h1 class="text-center">Masuk</h1>
+            <h2 class="text-center">
+              Portal ADMIN Tempat Uji Kompetensi(TUK)
+              <br />
+              <small style="font-size:11pt">Prodi Teknologi Informasi UMY</small>
+            </h2>
+            <div class="jumbotron mt-4">
+              <v-text-field
+                label="E-mail"
+                value
+                v-model="email"
+                :error-messages="emailErrors"
+                required
+                @input="$v.email.$touch()"
+                @blur="$v.email.$touch()"
+              ></v-text-field>
+              <v-text-field
+                required
+                :error-messages="passwordErrors"
+                @input="$v.password.$touch()"
+                @blur="$v.password.$touch()"
+                :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="show ? 'text' : 'password'"
+                name="input-10-2"
+                label="Password"
+                hint="At least 8 characters"
+                value
+                v-model="password"
+                class="input-group--focused"
+                @click:append="show = !show"
+              ></v-text-field>
+              <br />
+              <div>
+                <div class="row align-center justify-center">
+                  <v-btn :disabled="!valid" class="white--text" color="#065139" @click="login">masuk</v-btn>
                 </div>
-                <v-snackbar v-model="snackbar" >
-                {{error_message}}
-                </v-snackbar>
+                <br />
+                <div align="right">
+                  <v-btn text color="#065139" href="/login-peserta">masuk sebagai peserta</v-btn>
+                </div>
+              </div>
             </div>
-        </v-main>
-    </v-app>
+          </div>
+          <v-snackbar v-model="snackbar">{{error_message}}</v-snackbar>
+        </v-form>
+      </div>
+    </v-main>
+  </v-app>
 </template>
 
 
 <script>
-  export default {
-    data () {
-      return {
-        show: false,
-        snackbar:false,
-        admin:false,
-        error_message:"loading",
-        email:"",
-        password:"",
-        result:null,
-        rules: {
-          required: value => !!value || 'Required.',
-          min: v => v.length >= 8 || 'Min 8 characters',
-          emailMatch: () => ('The email and password you entered don\'t match'),
-        },
+import { validationMixin } from "vuelidate";
+import { required, minLength, email } from "vuelidate/lib/validators";
+export default {
+  mixins: [validationMixin],
+  validations: {
+    password: { required, minLength: minLength(8) },
+    email: { required, email },
+  },
+  data() {
+    return {
+      valid: true,
+      show: false,
+      snackbar: false,
+      error_message: "loading",
+      email: "",
+      password: "",
+    };
+  },
+
+  computed: {
+    passwordErrors() {
+      const errors = [];
+      if (!this.$v.password.$dirty) return errors;
+      !this.$v.password.minLength && errors.push("Password minimal 8 karakter");
+      !this.$v.password.required && errors.push("Password diperlukan");
+      return errors;
+    },
+    emailErrors() {
+      const errors = [];
+      if (!this.$v.email.$dirty) return errors;
+      !this.$v.email.email && errors.push("email harus valid");
+      !this.$v.email.required && errors.push("E-mail diperlukan");
+      return errors;
+    },
+  },
+
+  methods: {
+    login: function () {
+      this.error_message = "";
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        this.error_message = "Isikan email dan password anda" + this.email;
+        this.snackbar = true;
+      } else {
+        let email = this.email;
+        let password = this.password;
+        this.$store
+          .dispatch("loginAdmin", { email, password })
+          .then(() => this.$router.push("/kelola-pembayaran"))
+          .catch((err) => (this.error_message = err), (this.snackbar = true));
       }
     },
-    methods: {
-        login:function(){
-            let email = this.email
-            let password = this.password
-            this.$store.dispatch('loginAdmin',{email,password})
-            .then(()=>this.$router.push('/kelola-pembayaran'))
-            .catch(err=>
-            this.error_message=err,
-            this.snackbar=true)
-        }
-    },
-  }
+  },
+  mounted() {
+    this.$store.dispatch("logout");
+  },
+};
 </script>

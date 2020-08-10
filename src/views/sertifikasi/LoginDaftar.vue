@@ -1,94 +1,146 @@
 <template>
-    <v-app id="LoginPeserta">
-        <v-main>
-            <div class="container mt-5" >
-                <div class="grey lighten-3 rounded-xl col-md-5 mx-auto my-auto">
-                    <h1 class="text-center">
-                        Masuk
-                    </h1>
-                    <h2 class="text-center">
-                        Portal PESERTA Tempat Uji Kompetensi(TUK)<br>
-                        <small style="font-size:11pt">Prodi Teknologi Informasi UMY</small>
-                    </h2>
-                    <div class="jumbotron mt-4">
-                        <v-text-field
-                         label="E-mail"
-                         value=""
-                         v-model="email"
-                        ></v-text-field>
-                        <v-text-field
-                            v-model="password"
-                            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                            :rules="[rules.required, rules.min]"
-                            :type="show ? 'text' : 'password'"
-                            name="input-10-2"
-                            label="Password"
-                            hint="At least 8 characters"
-                            value=""
-                            class="input-group--focused"
-                            @click:append="show = !show"
-                            ></v-text-field>
-                            <br>
-                        <div>
-                            <div class="row align-center justify-center">
-                            <v-btn
-                            class="white--text"
-                            color="#065139"
-                            @click="doLogin">
-                             masuk
-                            </v-btn>
-                        </div>
-                        <div class="row align-center justify-center">
-                            <a
-                            :to="{ name: 'daftar-akun', params: { id: this.skemaid } }">
-                             daftar
-                            </a>
-                        </div>
-                        </div>
-                    </div>
+  <v-app id="LoginPeserta">
+    <v-main>
+      <div class="container mt-5">
+        <v-form v-model="valid" lazy-validation>
+          <div class="grey lighten-3 rounded-xl col-md-5 mx-auto my-auto">
+            <h1 class="text-center">Login</h1>
+            <h2 class="text-center">
+              PESERTA Tempat Uji Kompetensi(TUK)
+              <br />
+              <small style="font-size:11pt">Prodi Teknologi Informasi UMY</small>
+            </h2>
+            <div class="jumbotron mt-4">
+              <v-text-field
+                label="E-mail"
+                value
+                v-model="email"
+                :error-messages="emailErrors"
+                required
+                @input="$v.email.$touch()"
+                @blur="$v.email.$touch()"
+              ></v-text-field>
+              <v-text-field
+                required
+                :error-messages="passwordErrors"
+                @input="$v.password.$touch()"
+                @blur="$v.password.$touch()"
+                :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="show ? 'text' : 'password'"
+                name="input-10-2"
+                label="Password"
+                v-model="password"
+                hint="At least 8 characters"
+                value
+                class="input-group--focused"
+                @click:append="show = !show"
+              ></v-text-field>
+              <br />
+              <div>
+                <div class="row align-center justify-center">
+                  <v-btn :disabled="!valid" class="white--text" color="#065139" @click="login">login</v-btn>
                 </div>
+                <div class="row align-center justify-center">
+                  <v-btn text color="#065139" @click="daftar">daftar</v-btn>
+                </div>
+              </div>
             </div>
-        </v-main>
-    </v-app>
+          </div>
+          <v-snackbar v-model="snackbar">{{error_message}}</v-snackbar>
+        </v-form>
+      </div>
+    </v-main>
+  </v-app>
 </template>
+
 <script>
-import axios from 'axios';
-  export default {
-    data () {
-      return {
-        show: false,
-        tunnel:"",
-        email:"",
-        password:"",
-        rules: {
-          required: value => !!value || 'Required.',
-          min: v => v.length >= 8 || 'Min 8 characters',
-          emailMatch: () => ('The email and password you entered don\'t match'),
-        },
+import axios from "axios";
+import { validationMixin } from "vuelidate";
+import { required, minLength, email } from "vuelidate/lib/validators";
+export default {
+  mixins: [validationMixin],
+  validations: {
+    password: { required, minLength: minLength(8) },
+    email: { required, email },
+  },
+  data() {
+    return {
+      valid: true,
+      show: false,
+      snackbar: false,
+      error_message: "loading",
+      tunnel:"",
+      id: "",
+      email: "",
+      password: "",
+    };
+  },
+
+  computed: {
+    passwordErrors() {
+      const errors = [];
+      if (!this.$v.password.$dirty) return errors;
+      !this.$v.password.minLength && errors.push("Password minimal 8 karakter");
+      !this.$v.password.required && errors.push("Password diperlukan");
+      return errors;
+    },
+    emailErrors() {
+      const errors = [];
+      if (!this.$v.email.$dirty) return errors;
+      !this.$v.email.email && errors.push("email harus valid");
+      !this.$v.email.required && errors.push("E-mail diperlukan");
+      return errors;
+    },
+  },
+
+  methods: {
+    login: function () {
+      this.error_message = "";
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        this.error_message = "Isikan email dan password anda" + this.email;
+        this.snackbar = true;
+      } else {
+        let email = this.email;
+        let password = this.password;
+        this.$store
+          .dispatch("login", { email, password })
+          .then((response) => {
+            this.error_message = response.status;
+            this.snackbar = true;
+            const formdata = new FormData();
+            formdata.append("jadwal_id", this.id);
+            axios
+              .post(`${this.tunnel}jadwalpeserta`, formdata, {
+                headers: {
+                  Authorization: "Bearer " + this.$store.state.token,
+                },
+              })
+              .then((response) => {
+                this.error_message = response.data.message;
+                this.snackbar = true;
+                this.$router.push({
+                  name: "form-daftar",
+
+                });
+              })
+              .catch((error) => {
+                this.error_message = error;
+                this.snackbar = true;
+              });
+          })
+          .catch((err) => (this.error_message = err), (this.snackbar = true));
       }
     },
-    mounted(){
+    daftar: function () {
+      (this.id = this.$route.params.id),
+        this.$router.push({ name: "daftar-akun", params: { id: this.id } });
+    },
+  },
+  mounted() {
+    this.$store.dispatch("logout");
+    this.id = this.$route.params.id;
     this.tunnel = this.$store.state.tunnel;
-    },
-    methods: {
-        doLogin(){
-            axios
-            .post(this.tunnel+'peserta/login',{
-                email: this.email,
-                password: this.password
-            })
-            .then((response) => {
-            this.result= response.data;
-            if(this.result.token){
-                this.$store.state.isLogin=true;
-                this.$store.state.jwt_token=this.result.token;
-                this.$router.push({ path: '/form-daftar' });
-            }
-      }) 
-        }
-    },
-    created() {
-      this.skemaid = this.$route.params.id;
-      },
-  }
+  },
+};
 </script>

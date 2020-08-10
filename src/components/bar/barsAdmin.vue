@@ -48,6 +48,9 @@
               </v-list-item>
             </v-list>
           </v-menu>
+          <v-btn text href="/kelola-pembayaran">
+            Kelola Pembayaran
+          </v-btn>
           <v-btn text href="/kelola-berita">
             Kelola Berita
           </v-btn>
@@ -66,8 +69,8 @@ export default {
   data() {
       return{
       sertifikasi: [
-       { title: 'Kelola Sertifikasi', src: '/kelola-sertifikasi' },
-       { title: 'Kelola Pembayaran', src: '/kelola-pembayaran' },
+       { title: 'Kelola Jadwal', src: '/kelola-sertifikasi' },
+       { title: 'Kelola Skema', src: '/kelola-skema' },
         ],
       }
     },
