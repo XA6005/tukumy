@@ -1,38 +1,19 @@
 <template>
-    <div id="barsAdmin">
-      <v-app-bar
-      app
-      src="@/assets/appbar-banner.png"
-      shrink-on-scroll
-      height="30" 
-    >
-    <v-toolbar-title >Tempat Uji Kompetensi Prodi Teknologi Informasi UMY</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn text @click="logout">
-        keluar
-      </v-btn>
-      <template v-slot:extension >
-          <v-tabs
-          dark
-          v-model="currentItem"
-          fixed-tabs
-          slider-color="white"
-        >
-          <!-- <v-btn text href="/dasboard-admin">
-            Beranda
-          </v-btn> -->
-          <v-menu
-            v-if="sertifikasi.length"
-            bottom
-            left
-          >
+  <div id="barsAdmin">
+    <v-app-bar dark app src="@/assets/appbar-banner.png" height="60">
+      <div id="divimg">
+        <v-img max-width="120px" max-height="120px" src="@/assets/logo.png"></v-img>
+      </div>
+      <div id="divbar">
+        <v-toolbar-title>Tempat Uji Kompetensi Prodi Teknologi Informasi UMY</v-toolbar-title>
+      </div>
+
+      <template v-slot:extension>
+        <v-tabs dark v-model="currentItem" fixed-tabs slider-color="white">
+          <v-btn text width="140px" disabled></v-btn>
+          <v-menu v-if="sertifikasi.length" bottom left>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                text
-                class="align-self-center mr-4"
-                v-bind="attrs"
-                v-on="on"
-              >
+              <v-btn text class="align-self-center mr-4" v-bind="attrs" v-on="on">
                 Sertifikasi
                 <v-icon right>mdi-menu-down</v-icon>
               </v-btn>
@@ -43,50 +24,51 @@
                 v-for="(item,index) in sertifikasi"
                 :key="index"
                 :href="item.src"
-              >
-                {{ item.title }}
-              </v-list-item>
+              >{{ item.title }}</v-list-item>
             </v-list>
           </v-menu>
-          <v-btn text href="/kelola-pembayaran">
-            Kelola Pembayaran
-          </v-btn>
-          <v-btn text href="/kelola-berita">
-            Kelola Berita
-          </v-btn>
-
+          <v-btn text href="/kelola-pembayaran">Kelola Pembayaran</v-btn>
+          <v-btn text href="/kelola-berita">Kelola Berita</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn text @click="logout">keluar</v-btn>
         </v-tabs>
       </template>
-
     </v-app-bar>
-    </div>
+  </div>
 </template>
 
 
 <script>
 export default {
-  name: 'barsAdmin',
+  name: "barsAdmin",
   data() {
-      return{
+    return {
       sertifikasi: [
-       { title: 'Kelola Jadwal', src: '/kelola-sertifikasi' },
-       { title: 'Kelola Skema', src: '/kelola-skema' },
-        ],
-      }
-    },
-  methods:{
-    logout: function () {
-        this.$store.dispatch('logout')
-        .then(() => {
-          this.$router.push('/')
-        })
-      }
+        { title: "Kelola Jadwal", src: "/kelola-sertifikasi" },
+        { title: "Kelola Skema", src: "/kelola-skema" },
+      ],
+    };
   },
-}
+  methods: {
+    logout: function () {
+      this.$store.dispatch("logout").then(() => {
+        this.$router.push("/");
+      });
+    },
+  },
+};
 </script>
 
 <style>
 #barsAdmin{
   font-family: Roboto, sans-serif;
+}
+#divbar {
+  position: absolute;
+  left: 140px;
+}
+#divimg {
+  position: absolute;
+  height: 60px;
 }
 </style>

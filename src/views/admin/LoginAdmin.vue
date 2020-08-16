@@ -29,7 +29,7 @@
                 :type="show ? 'text' : 'password'"
                 name="input-10-2"
                 label="Password"
-                hint="At least 8 characters"
+                hint="Minimal 8-20 Karakter"
                 value
                 v-model="password"
                 class="input-group--focused"
@@ -57,11 +57,11 @@
 
 <script>
 import { validationMixin } from "vuelidate";
-import { required, minLength, email } from "vuelidate/lib/validators";
+import { required, minLength, maxLength, email } from "vuelidate/lib/validators";
 export default {
   mixins: [validationMixin],
   validations: {
-    password: { required, minLength: minLength(8) },
+    password: { required, minLength: minLength(8) ,maxLength: maxLength(20)},
     email: { required, email },
   },
   data() {
@@ -80,6 +80,7 @@ export default {
       const errors = [];
       if (!this.$v.password.$dirty) return errors;
       !this.$v.password.minLength && errors.push("Password minimal 8 karakter");
+      !this.$v.password.maxLength && errors.push("Password maximal 20 karakter");
       !this.$v.password.required && errors.push("Password diperlukan");
       return errors;
     },

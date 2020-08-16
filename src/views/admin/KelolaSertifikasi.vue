@@ -47,7 +47,7 @@
                             v-on="on"
                           ></v-text-field>
                         </template>
-                        <v-date-picker v-model="editedItem.tanggal" @input="menu2 = false"></v-date-picker>
+                        <v-date-picker v-model="editedItem.tanggal" :min="editedItem.tanggal" @input="menu2 = false"></v-date-picker>
                       </v-menu>
                       <v-menu
                         ref="menu"
@@ -140,7 +140,7 @@ export default {
         skemasertifikasi_id: "",
         skemaa : "",
         tempat: "",
-        tanggal: new Date().toISOString().substr(0, 10),
+        tanggal: new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toISOString().substr(0, 10),
         jam: null,
         biaya: "",
         tujuanasessmen: "",
@@ -149,7 +149,7 @@ export default {
         id: "",
         skemasertifikasi_id: "",
         tempat: "",
-        tanggal: new Date().toISOString().substr(0, 10),
+        tanggal: new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toISOString().substr(0, 10),
         jam: null,
         biaya: "",
         tujuanasessmen: "",

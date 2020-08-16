@@ -25,7 +25,6 @@
           <v-menu
             v-model="menu2"
             :close-on-content-click="false"
-            :nudge-right="40"
             transition="scale-transition"
             offset-y
             min-width="290px"
@@ -44,7 +43,12 @@
                 @blur="$v.tanggal.$touch()"
               ></v-text-field>
             </template>
-            <v-date-picker v-model="tanggal" @input="menu2 = false"></v-date-picker>
+            <v-date-picker
+            ref="picker" 
+            v-model="tanggal" 
+            @input="menu2 = false"
+            max="2004-01-01"
+            min="1950-01-01"></v-date-picker>
           </v-menu>
           <v-select
             v-model="jenisKelamin"
@@ -183,27 +187,27 @@
 <script>
 import axios from "axios";
 import { validationMixin } from "vuelidate";
-import { required, email } from "vuelidate/lib/validators";
+import { required, email, alpha, numeric, maxLength } from "vuelidate/lib/validators";
 export default {
   mixins: [validationMixin],
 
   validations: {
-    nama: { required },
-    tempat: { required },
+    nama: { required ,alpha},
+    tempat: { required,alpha },
     tanggal: { required },
     jenisKelamin: { required },
-    kebangsaan: { required },
+    kebangsaan: { required ,alpha},
     alamat: { required },
-    kodepos: { required },
-    notelpRumah: { required },
-    notelpHp: { required },
-    notelpKantor: { required },
+    kodepos: { required ,numeric, maxLength: maxLength(5)},
+    notelpRumah: { required ,numeric},
+    notelpHp: { required ,numeric},
+    notelpKantor: { required ,numeric},
     pendidikan: { required },
     perusahaan: { required },
     jabatan: { required },
     alamatKantor: { required },
-    kodeposKantor: { required },
-    fax: { required },
+    kodeposKantor: { required ,numeric, maxLength: maxLength(5) },
+    fax: { required ,numeric },
     emailKantor: { required, email },
     checkbox: {
       checked(val) {
@@ -220,7 +224,7 @@ export default {
     error_message: "",
     nama: "",
     tempat: "",
-    tanggal: new Date().toISOString().substr(0, 10),
+    tanggal: null,
     jenisKelamin: null,
     kebangsaan: "",
     alamat: "",
@@ -235,7 +239,7 @@ export default {
     kodeposKantor: "",
     fax: "",
     emailKantor: "",
-    jk: ["Laki-laki", "Perempuan"],
+    jk: ["Laki - laki", "Perempuan"],
     pendidikanItem: ["SMA/SMK", "S1", "S2"],
     checkbox: false,
   }),
@@ -251,13 +255,15 @@ export default {
     namaErrors() {
       const errors = [];
       if (!this.$v.nama.$dirty) return errors;
+      !this.$v.nama.alpha && errors.push("Data harus alfabet diperlukan");
       !this.$v.nama.required && errors.push("Data diperlukan");
       return errors;
     },
     tempatErrors() {
       const errors = [];
-      if (!this.$v.tanggal.$dirty) return errors;
-      !this.$v.tanggal.required && errors.push("Data diperlukan");
+      if (!this.$v.tempat.$dirty) return errors;
+      !this.$v.tempat.alpha && errors.push("Data harus alfabet diperlukan");
+      !this.$v.tempat.required && errors.push("Data diperlukan");
       return errors;
     },
     tanggalErrors() {
@@ -275,6 +281,7 @@ export default {
     kebangsaanErrors() {
       const errors = [];
       if (!this.$v.kebangsaan.$dirty) return errors;
+      !this.$v.kebangsaan.alpha && errors.push("Data harus alfabet diperlukan");
       !this.$v.kebangsaan.required && errors.push("Data diperlukan");
       return errors;
     },
@@ -293,36 +300,44 @@ export default {
     kodeposErrors() {
       const errors = [];
       if (!this.$v.kodepos.$dirty) return errors;
+      !this.$v.kodepos.numeric && errors.push("Data harus angka diperlukan");
+      !this.$v.kodepos.maxLength && errors.push("Kodepos maximal 5 karakter ");
       !this.$v.kodepos.required && errors.push("Data diperlukan");
       return errors;
     },
     kodeposKantorErrors() {
       const errors = [];
       if (!this.$v.kodeposKantor.$dirty) return errors;
+      !this.$v.kodeposKantor.numeric && errors.push("Kodepos harus angka");
+      !this.$v.kodeposKantor.maxLength && errors.push("Kodepos maximal 5 karakter ");
       !this.$v.kodeposKantor.required && errors.push("Data diperlukan");
       return errors;
     },
     notelpRumahErrors() {
       const errors = [];
       if (!this.$v.notelpRumah.$dirty) return errors;
+      !this.$v.notelpRumah.numeric && errors.push("Data harus angka diperlukan");
       !this.$v.notelpRumah.required && errors.push("Data diperlukan");
       return errors;
     },
     notelpHpErrors() {
       const errors = [];
       if (!this.$v.notelpHp.$dirty) return errors;
+      !this.$v.notelpHp.numeric && errors.push("Data harus angka diperlukan");
       !this.$v.notelpHp.required && errors.push("Data diperlukan");
       return errors;
     },
     notelpKantorErrors() {
       const errors = [];
       if (!this.$v.notelpKantor.$dirty) return errors;
+      !this.$v.notelpKantor.numeric && errors.push("Data harus angka diperlukan");
       !this.$v.notelpKantor.required && errors.push("Data diperlukan");
       return errors;
     },
     faxErrors() {
       const errors = [];
       if (!this.$v.fax.$dirty) return errors;
+      !this.$v.fax.numeric && errors.push("Data harus angka diperlukan");
       !this.$v.fax.required && errors.push("Data diperlukan");
       return errors;
     },
@@ -398,7 +413,7 @@ export default {
       this.$v.$reset();
       this.nama = "";
       this.tempat = "";
-      this.tanggal = new Date().toISOString().substr(0, 10),
+      this.tanggal = null,
       this.jenisKelamin = null;
       this.kebangsaan = "";
       this.alamat = "";
@@ -417,8 +432,14 @@ export default {
     },
   },
 
+  watch: {
+      menu2 (val) {
+        val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
+      },
+    },
+
   mounted() {
-    if (this.$store.getters.isLoggedInPeserta) {
+    //if (this.$store.getters.isLoggedInPeserta) {
       this.token = this.$store.state.token;
       this.tunnel = this.$store.state.tunnel;
       axios
@@ -448,9 +469,9 @@ export default {
           this.error_message = error;
           this.snackbar = true;
         });
-    } else {
-      this.$router.push("login-daftar");
-    }
+    // } else {
+    //   this.$router.push("login-daftar");
+    // }
   },
 };
 </script>

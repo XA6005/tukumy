@@ -12,7 +12,6 @@ import LoginPeserta from '../views/peserta/LoginPeserta.vue'
 import DaftarPeserta from '../views/peserta/DaftarPeserta.vue'
 import LoginAdmin from '../views/admin/LoginAdmin.vue'
 import DasboardPeserta from '../views/peserta/DasboardPeserta.vue'
-import DasboardAdmin from '../views/admin/DasboardAdmin.vue'
 import KelolaSertifikasi from '../views/admin/KelolaSertifikasi.vue'
 import KelolaSkema from '../views/admin/KelolaSkema.vue'
 import KelolaBerita from '../views/admin/KelolaBerita.vue'
@@ -89,11 +88,6 @@ const routes = [{
     path: '/login-admin',
     name: 'Login Admin',
     component: LoginAdmin
-  },
-  {
-    path: '/dasboard-admin',
-    name: 'dasboard-admin',
-    component: DasboardAdmin
   },
   {
     path: '/kelola-sertifikasi',

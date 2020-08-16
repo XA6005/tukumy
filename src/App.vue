@@ -32,7 +32,7 @@ export default {
 
         // continue to next interceptor
         next(function(response) {
-            if(response.status !=200){
+            if(response.status ==401){
                 this.$store.dispatch('logout') // UNCOMMENT
                 this.showPopupMessage('Access', 'Not authorized !', 'warn')
                 this.$router.push('/')

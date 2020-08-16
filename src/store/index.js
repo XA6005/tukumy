@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-        tunnel:'https://2ef6cb57de28.ngrok.io/',
+        tunnel:'http://10.69.7.171:8000/',
         status: '',
         admin : localStorage.getItem('admin') || '',
         peserta : localStorage.getItem('peserta') || '',
