@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Berita from '../views/berita/Berita.vue'
-import DetailBerita from '../views/berita/detailBerita.vue'
+import DetailBerita from '@/components/detailBerita.vue'
 import Skema from '../views/sertifikasi/Skema.vue'
 import DaftarSertifikasi from '../views/sertifikasi/DaftarSertifikasi.vue'
 import SOP from '../views/profil/SOP.vue'
@@ -14,8 +14,9 @@ import LoginAdmin from '../views/admin/LoginAdmin.vue'
 import DasboardPeserta from '../views/peserta/DasboardPeserta.vue'
 import KelolaSertifikasi from '../views/admin/KelolaSertifikasi.vue'
 import KelolaSkema from '../views/admin/KelolaSkema.vue'
+import KelolaAsesor from '../views/admin/KelolaAsesor.vue'
 import KelolaBerita from '../views/admin/KelolaBerita.vue'
-import KelolaPembayaran from '../views/admin/KelolaPembayaran.vue'
+import KelolaPeserta from '../views/admin/KelolaPeserta.vue'
 import loginDaftar from '../views/sertifikasi/LoginDaftar.vue'
 import FormDaftar from '../views/sertifikasi/FormDaftar.vue'
 import DaftarAkun from '../views/sertifikasi/DaftarAkun.vue'
@@ -100,14 +101,19 @@ const routes = [{
     component: KelolaSkema
   },
   {
+    path: '/kelola-asesor',
+    name: 'kelola asesor',
+    component: KelolaAsesor
+  },
+  {
     path: '/kelola-berita',
     name: 'kelola berita',
     component: KelolaBerita
   },
   {
-    path: '/kelola-pembayaran',
-    name: 'kelola pembayaran',
-    component: KelolaPembayaran
+    path: '/kelola-peserta',
+    name: 'kelola peserta',
+    component: KelolaPeserta
   },
   {
     path: '/login-daftar/:id',

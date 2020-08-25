@@ -1,18 +1,95 @@
 <template>
   <v-app id="skema">
     <v-main>
-      <div>
-        <h1 class="center"><br>Skema</h1>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus vulputate vehicula. Donec lobortis risus a elit. Etiam tempor. Ut ullamcorper, ligula eu tempor congue, eros est euismod turpis, id tincidunt sapien risus a quam. Maecenas fermentum consequat mi. Donec fermentum. Pellentesque malesuada nulla a mi. Duis sapien sem, aliquet nec, commodo eget, consequat quis, neque. Aliquam faucibus, elit ut dictum aliquet, felis nisl adipiscing sapien, sed malesuada diam lacus eget erat. Cras mollis scelerisque nunc. Nullam arcu. Aliquam consequat. Curabitur augue lorem, dapibus quis, laoreet et, pretium ac, nisi. Aenean magna nisl, mollis quis, molestie eu, feugiat in, orci. In hac habitasse platea dictumst.</p>
+      <div class="container mt-5">
+        <h1 class="center">
+          <br />Daftar Skema
+          <br />
+        </h1>
+        <p>
+          Berikut daftar skema sertifikasi yang bisa diambil di Tempat Uji Kompetensi prodi Teknologi Informasi UMY.
+          <br />
+          <br />
+        </p>
+        <v-row justify="center">
+          <v-expansion-panels popout>
+            <v-expansion-panel v-for="card in skema" :key="card.id">
+              <v-expansion-panel-header><h4>{{card.nama}}</h4></v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <v-row >
+                <v-col lg="2">
+                  Tujuan Skema
+                </v-col>
+                <v-col md="auto">
+                  :
+                </v-col>
+                <v-col>
+                  {{card.tujuan}}
+                </v-col>
+              </v-row>
+              <v-row >
+                <v-col lg="2">
+                  Deskripsi Skema
+                </v-col>
+                <v-col md="auto">
+                  :
+                </v-col>
+                <v-col>
+                  {{card.deskripsi}}
+                </v-col>
+              </v-row>
+              <v-row >
+                <v-col lg="2">
+                  File Panduan 
+                </v-col>
+                <v-col md="auto">
+                  :
+                </v-col>
+                <v-col>
+                  <v-btn class="mr-2 white--text" color="#065139" :href="tunnel+'detail-skema/'+card.detail">
+                    Unduh
+                  </v-btn>
+                </v-col>
+              </v-row>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-row>
       </div>
-    </v-main> 
+    </v-main>
   </v-app>
 </template>
 
 <script>
+import axios from "axios";
 export default {
-  mounted(){
-    this.$store.dispatch('logout')
-  }
-}
+  data() {
+    return {
+      tunnel: "",
+      skema: [],
+    };
+  },
+  mounted() {
+    this.$store.dispatch("logout");
+    this.tunnel = this.$store.state.tunnel;
+    axios
+      .get(`${this.tunnel}skema`)
+      .then((response) => {
+        this.skema = response.data.data.SkemaSertifikasi.map((item) => {
+          return {
+            id: item.id,
+            nama: item.nama,
+            deskripsi: item.deskripsi,
+            tujuan: item.tujuan,
+            detail:item.detail_skema,
+            asesor:item.asesors.namaLengkap,
+          };
+        });
+      })
+      .catch((error) => {
+        this.error_message = error;
+        this.snackbar = true;
+      });
+  },
+};
 </script>

@@ -11,7 +11,6 @@
         <v-tabs dark v-model="currentItem" fixed-tabs slider-color="white">
           <v-btn text width="140px" disabled></v-btn>
           <v-btn text href="/dasboard-peserta">Beranda</v-btn>
-          <v-btn text href="/form-daftar">Biodata</v-btn>
           <v-spacer></v-spacer>
           <v-btn text @click="logout">keluar</v-btn>
         </v-tabs>

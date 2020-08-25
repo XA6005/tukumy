@@ -4,12 +4,17 @@
       <div class="container mt-5">
         <v-form v-model="valid" lazy-validation>
           <h1>
-            <br />a. Data Pribadi
+            Rincian Data Pemohon Sertifikasi
           </h1>
+          <p>Pada bagian ini,  cantumkan data pribadi, data pendidikan formal serta data pekerjaan anda pada saat ini.</p>
+          <h2>
+            a. Data Pribadi
+          </h2>
+          <p>* wajib diisi</p>
           <v-text-field
             v-model="nama"
             :error-messages="namaErrors"
-            label="Nama Lengkap"
+            label="Nama Lengkap *"
             required
             @input="$v.nama.$touch()"
             @blur="$v.nama.$touch()"
@@ -17,7 +22,7 @@
           <v-text-field
             v-model="tempat"
             :error-messages="tempatErrors"
-            label="Tempat Lahir"
+            label="Tempat Lahir *"
             required
             @input="$v.tempat.$touch()"
             @blur="$v.tempat.$touch()"
@@ -33,8 +38,8 @@
               <v-text-field
                 v-model="tanggal"
                 :error-messages="tanggalErrors"
-                label="Tanggal Lahir"
-                aprepend-icon="event"
+                label="Tanggal Lahir *"
+                :prepend-icon-cb="event"
                 readonly
                 required
                 v-bind="attrs"
@@ -44,33 +49,35 @@
               ></v-text-field>
             </template>
             <v-date-picker
-            ref="picker" 
-            v-model="tanggal" 
-            @input="menu2 = false"
-            max="2004-01-01"
-            min="1950-01-01"></v-date-picker>
+              ref="picker"
+              v-model="tanggal"
+              @input="menu2 = false"
+              max="2004-12-31"
+              min="1950-01-01"
+            ></v-date-picker>
           </v-menu>
           <v-select
             v-model="jenisKelamin"
             :items="jk"
             :error-messages="jkErrors"
-            label="Jenis Kelamin"
+            label="Jenis Kelamin *"
             required
             @change="$v.jenisKelamin.$touch()"
             @blur="$v.jenisKelamin.$touch()"
           ></v-select>
-          <v-text-field
+          <v-select
             v-model="kebangsaan"
             :error-messages="kebangsaanErrors"
-            label="Kebangsaan"
+            :items="bangsa"
+            label="Kebangsaan *"
             required
             @input="$v.kebangsaan.$touch()"
             @blur="$v.kebangsaan.$touch()"
-          ></v-text-field>
+          ></v-select>
           <v-textarea
             v-model="alamat"
             :error-messages="alamatErrors"
-            label="Alamat"
+            label="Alamat Rumah *"
             required
             @input="$v.alamat.$touch()"
             @blur="$v.alamat.$touch()"
@@ -78,7 +85,7 @@
           <v-text-field
             v-model="kodepos"
             :error-messages="kodeposErrors"
-            label="Kodepos"
+            label="Kodepos Rumah *"
             required
             @input="$v.kodepos.$touch()"
             @blur="$v.kodepos.$touch()"
@@ -94,7 +101,7 @@
           <v-text-field
             v-model="notelpHp"
             :error-messages="notelpHpErrors"
-            label="No. Telepon HP"
+            label="No. HP *"
             required
             @input="$v.notelpHp.$touch()"
             @blur="$v.notelpHp.$touch()"
@@ -103,7 +110,7 @@
             v-model="pendidikan"
             :items="pendidikanItem"
             :error-messages="pendidikanErrors"
-            label="pendidikan Terakhir"
+            label="pendidikan Terakhir *"
             required
             @change="$v.pendidikan.$touch()"
             @blur="$v.pendidikan.$touch()"
@@ -111,6 +118,14 @@
           <h1>
             <br />b. Data Pekerjaan Sekarang
           </h1>
+          <v-text-field
+            v-model="pekerjaan"
+            :error-messages="pekerjaanErrors"
+            label="Pekerjaan *"
+            required
+            @input="$v.pekerjaan.$touch()"
+            @blur="$v.pekerjaan.$touch()"
+          ></v-text-field>
           <v-text-field
             v-model="perusahaan"
             :error-messages="perusahaanErrors"
@@ -138,7 +153,7 @@
           <v-text-field
             v-model="kodeposKantor"
             :error-messages="kodeposKantorErrors"
-            label="Kodepos"
+            label="Kodepos Kantor"
             required
             @input="$v.kodeposKantor.$touch()"
             @blur="$v.kodeposKantor.$touch()"
@@ -154,7 +169,7 @@
           <v-text-field
             v-model="fax"
             :error-messages="faxErrors"
-            label="Fax"
+            label="Fax Kantor"
             required
             @input="$v.fax.$touch()"
             @blur="$v.fax.$touch()"
@@ -162,11 +177,28 @@
           <v-text-field
             v-model="emailKantor"
             :error-messages="emailKantorErrors"
-            label="E-mail"
+            label="E-mail Kantor"
             required
             @input="$v.emailKantor.$touch()"
             @blur="$v.emailKantor.$touch()"
           ></v-text-field>
+          <h1>
+            <br />c. Upload Data Pendukung
+            <br />
+            <br />
+          </h1>
+          <div v-if="jenis==''">
+          <v-file-input show-size accept="image/*" :rules="ijazahRules" v-model="ijazah" :error-messages="ijazahErrors" color="#065139" label="Upload Ijazah *" required></v-file-input>
+          <v-file-input show-size accept="image/*" :rules="photoRules" v-model="photo" :error-messages="photoErrors" color="#065139" label="Upload Pas Photo *" required></v-file-input>
+          <v-file-input show-size accept="image/*" :rules="identitasRules" v-model="identitas" :error-messages="identitasErrors" color="#065139" label="Upload File Kartu Identitas *" required></v-file-input>
+          <br />
+          </div>
+          <div v-else>
+          <v-file-input show-size  accept="image/*" v-model="ijazahUpdate"  color="#065139" label="Upload Ijazah *" ></v-file-input>
+          <v-file-input show-size accept="image/*" v-model="photoUpdate"  color="#065139" label="Upload Pas Photo *" ></v-file-input>
+          <v-file-input show-size accept="image/*" v-model="identitasUpdate" color="#065139" label="Upload File Kartu Identitas *" ></v-file-input>
+          <br />
+          </div>
           <v-checkbox
             v-model="checkbox"
             :error-messages="checkboxErrors"
@@ -175,8 +207,12 @@
             @change="$v.checkbox.$touch()"
             @blur="$v.checkbox.$touch()"
           ></v-checkbox>
-          <v-btn :disabled="!valid" class="white--text" color="#065139" @click="submit">submit</v-btn>
+          <v-btn v-if="jenis==''" :disabled="!valid" class="white--text" color="#065139" @click="submit">submit</v-btn>
+          <v-btn v-else :disabled="!valid" class="white--text" color="#065139" @click="update">update</v-btn>
           <v-btn text color="#065139" @click="clear">clear</v-btn>
+          <br />
+          <br />
+          <br />
           <v-snackbar v-model="snackbar">{{error_message}}</v-snackbar>
         </v-form>
       </div>
@@ -187,28 +223,36 @@
 <script>
 import axios from "axios";
 import { validationMixin } from "vuelidate";
-import { required, email, alpha, numeric, maxLength } from "vuelidate/lib/validators";
+import {
+  required,
+  email,
+  alpha,
+  numeric,
+  maxLength,
+} from "vuelidate/lib/validators";
+import { helpers } from "vuelidate/lib/validators";
+const alphaSpace = helpers.regex("alpha", /^[a-zA-Z\s]*$/);
 export default {
   mixins: [validationMixin],
-
   validations: {
-    nama: { required ,alpha},
-    tempat: { required,alpha },
+    nama: { required, alphaSpace },
+    tempat: { required, alpha },
     tanggal: { required },
     jenisKelamin: { required },
-    kebangsaan: { required ,alpha},
+    kebangsaan: { required },
     alamat: { required },
-    kodepos: { required ,numeric, maxLength: maxLength(5)},
-    notelpRumah: { required ,numeric},
-    notelpHp: { required ,numeric},
-    notelpKantor: { required ,numeric},
+    kodepos: { required, numeric, maxLength: maxLength(5) },
+    notelpHp: { required, numeric },
     pendidikan: { required },
-    perusahaan: { required },
-    jabatan: { required },
-    alamatKantor: { required },
-    kodeposKantor: { required ,numeric, maxLength: maxLength(5) },
-    fax: { required ,numeric },
-    emailKantor: { required, email },
+    pekerjaan: { required },
+    notelpRumah: { numeric },
+    perusahaan: { },
+    jabatan: { },
+    alamatKantor: {  },
+    kodeposKantor: { numeric, maxLength: maxLength(5) },
+    fax: {  numeric },
+    emailKantor: { email },
+    notelpKantor: { numeric },
     checkbox: {
       checked(val) {
         return val;
@@ -217,10 +261,20 @@ export default {
   },
 
   data: () => ({
+    ijazahRules: [
+      v => !!v || 'File diperlukan',
+      v => (v && v.size < 1000000) || "Gambar harus kurang dari 1000 KB!"],
+      identitasRules: [
+      v => !!v || 'File diperlukan',
+      v => (v && v.size < 1000000) || "Gambar harus kurang dari 1000 KB!"],
+      photoRules: [
+      v => !!v || 'File diperlukan',
+      v => (v && v.size < 1000000) || "Gambar harus kurang dari 1000 KB!"],   
     id: "",
+    jenis:"",
     valid: true,
     snackbar: false,
-    menu2:false,
+    menu2: false,
     error_message: "",
     nama: "",
     tempat: "",
@@ -233,14 +287,22 @@ export default {
     notelpHp: "",
     notelpKantor: "",
     pendidikan: null,
+    pekerjaan: "",
     perusahaan: "",
     jabatan: "",
     alamatKantor: "",
     kodeposKantor: "",
     fax: "",
     emailKantor: "",
+    ijazah:null,
+    photo:null,
+    identitas:null,
+    ijazahUpdate:null,
+    photoUpdate:null,
+    identitasUpdate:null,
     jk: ["Laki - laki", "Perempuan"],
-    pendidikanItem: ["SMA/SMK", "S1", "S2"],
+    bangsa:["WNI","WNA"],
+    pendidikanItem: ["SMA/SMK", "S1", "S2","S3"],
     checkbox: false,
   }),
 
@@ -249,13 +311,12 @@ export default {
       const errors = [];
       if (!this.$v.emailKantor.$dirty) return errors;
       !this.$v.emailKantor.email && errors.push("E-mail harus benar");
-      !this.$v.emailKantor.required && errors.push("E-mail wajib diisikan");
       return errors;
     },
     namaErrors() {
       const errors = [];
       if (!this.$v.nama.$dirty) return errors;
-      !this.$v.nama.alpha && errors.push("Data harus alfabet diperlukan");
+      !this.$v.nama.alphaSpace && errors.push("Data harus alfabet diperlukan");
       !this.$v.nama.required && errors.push("Data diperlukan");
       return errors;
     },
@@ -281,7 +342,6 @@ export default {
     kebangsaanErrors() {
       const errors = [];
       if (!this.$v.kebangsaan.$dirty) return errors;
-      !this.$v.kebangsaan.alpha && errors.push("Data harus alfabet diperlukan");
       !this.$v.kebangsaan.required && errors.push("Data diperlukan");
       return errors;
     },
@@ -291,12 +351,12 @@ export default {
       !this.$v.alamat.required && errors.push("Data diperlukan");
       return errors;
     },
-    alamatKantorErrors() {
+    /* alamatKantorErrors() {
       const errors = [];
       if (!this.$v.alamatKantor.$dirty) return errors;
       !this.$v.alamatKantor.required && errors.push("Data diperlukan");
       return errors;
-    },
+    }, */
     kodeposErrors() {
       const errors = [];
       if (!this.$v.kodepos.$dirty) return errors;
@@ -310,14 +370,14 @@ export default {
       if (!this.$v.kodeposKantor.$dirty) return errors;
       !this.$v.kodeposKantor.numeric && errors.push("Kodepos harus angka");
       !this.$v.kodeposKantor.maxLength && errors.push("Kodepos maximal 5 karakter ");
-      !this.$v.kodeposKantor.required && errors.push("Data diperlukan");
+      //!this.$v.kodeposKantor.required && errors.push("Data diperlukan");
       return errors;
     },
     notelpRumahErrors() {
       const errors = [];
       if (!this.$v.notelpRumah.$dirty) return errors;
       !this.$v.notelpRumah.numeric && errors.push("Data harus angka diperlukan");
-      !this.$v.notelpRumah.required && errors.push("Data diperlukan");
+      //!this.$v.notelpRumah.required && errors.push("Data diperlukan");
       return errors;
     },
     notelpHpErrors() {
@@ -331,14 +391,13 @@ export default {
       const errors = [];
       if (!this.$v.notelpKantor.$dirty) return errors;
       !this.$v.notelpKantor.numeric && errors.push("Data harus angka diperlukan");
-      !this.$v.notelpKantor.required && errors.push("Data diperlukan");
+      //!this.$v.notelpKantor.required && errors.push("Data diperlukan");
       return errors;
     },
     faxErrors() {
       const errors = [];
       if (!this.$v.fax.$dirty) return errors;
-      !this.$v.fax.numeric && errors.push("Data harus angka diperlukan");
-      !this.$v.fax.required && errors.push("Data diperlukan");
+      !this.$v.fax.numeric && errors.push("Data harus angka");
       return errors;
     },
     pendidikanErrors() {
@@ -347,18 +406,24 @@ export default {
       !this.$v.pendidikan.required && errors.push("Wajib memilih");
       return errors;
     },
-    perusahaanErrors() {
+    pekerjaanErrors() {
+      const errors = [];
+      if (!this.$v.pekerjaan.$dirty) return errors;
+      !this.$v.pekerjaan.required && errors.push("Wajib memilih");
+      return errors;
+    },
+    /* perusahaanErrors() {
       const errors = [];
       if (!this.$v.perusahaan.$dirty) return errors;
       !this.$v.perusahaan.required && errors.push("Data memilih");
       return errors;
-    },
-    jabatanErrors() {
+    }, */
+    /* jabatanErrors() {
       const errors = [];
       if (!this.$v.jabatan.$dirty) return errors;
       !this.$v.jabatan.required && errors.push("Data diperlukan");
       return errors;
-    },
+    }, */
     checkboxErrors() {
       const errors = [];
       if (!this.$v.checkbox.$dirty) return errors;
@@ -368,6 +433,58 @@ export default {
   },
 
   methods: {
+    update() {
+      this.error_message = "";
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        this.error_message = "Periksa kembali form diatas";
+        this.snackbar = true;
+      } else {
+        const data = new FormData();
+        data.append("namaLengkap", this.nama);
+        data.append("tempatLahir", this.tempat);
+        data.append("tanggalLahir", this.tanggal);
+        data.append("jenisKelamin", this.jenisKelamin);
+        data.append("kebangsaan", this.kebangsaan);
+        data.append("noTelepon", this.notelpHp);
+        data.append("alamatRumah", this.alamat);
+        data.append("kodeposRumah", this.kodepos);
+        data.append("noTeleponRumah", this.notelpRumah);
+        data.append("namaPerusahaan", this.perusahaan);
+        data.append("jabatandiPerusahaan", this.jabatan);
+        data.append("alamatPerusahaan", this.alamatKantor);
+        data.append("kodeposPerusahaan", this.kodeposKantor);
+        data.append("noTeleponPerusahaan", this.notelpKantor);
+        data.append("faxPerusahaan", this.fax);
+        data.append("emailPerusahaan", this.emailKantor);
+        data.append("pendidikanTerakhir", this.pendidikan);
+        data.append("pekerjaan", this.pekerjaan);
+        if(this.ijazahUpdate!=null){
+          data.append("ijazah", this.ijazahUpdate);
+        }
+        if(this.photoUpdate!=null){
+          data.append("photo", this.photoUpdate);
+        }
+        if(this.identitas!=null){
+          data.append("kartu_identitas", this.identitasUpdate);
+        }
+        data.append("_method", "PUT");
+        axios
+          .post(`${this.tunnel}peserta/biodata`, data, {
+            headers: {
+              Authorization: "Bearer " + this.$store.state.token,
+            },
+          })
+          .then((response) => {
+            this.error_message = response.data.message;
+            this.snackbar = true;
+          })
+          .catch((error) => {
+            this.error_message = error;
+            this.snackbar = true;
+          });
+      }
+    },
     submit() {
       this.error_message = "";
       this.$v.$touch();
@@ -393,6 +510,10 @@ export default {
         data.append("faxPerusahaan", this.fax);
         data.append("emailPerusahaan", this.emailKantor);
         data.append("pendidikanTerakhir", this.pendidikan);
+        data.append("pekerjaan", this.pekerjaan);
+        data.append("ijazah", this.ijazah);
+        data.append("photo", this.photo);
+        data.append("kartu_identitas", this.identitas);
         axios
           .post(`${this.tunnel}peserta/biodata`, data, {
             headers: {
@@ -402,6 +523,7 @@ export default {
           .then((response) => {
             this.error_message = response.data.message;
             this.snackbar = true;
+            this.$router.push("/dasboard-peserta");
           })
           .catch((error) => {
             this.error_message = error;
@@ -413,8 +535,7 @@ export default {
       this.$v.$reset();
       this.nama = "";
       this.tempat = "";
-      this.tanggal = null,
-      this.jenisKelamin = null;
+      (this.tanggal = null), (this.jenisKelamin = null);
       this.kebangsaan = "";
       this.alamat = "";
       this.kodepos = "";
@@ -433,13 +554,13 @@ export default {
   },
 
   watch: {
-      menu2 (val) {
-        val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
-      },
+    menu2(val) {
+      val && setTimeout(() => (this.$refs.picker.activePicker = "YEAR"));
     },
+  },
 
   mounted() {
-    //if (this.$store.getters.isLoggedInPeserta) {
+    if (this.$store.getters.isLoggedInPeserta) {
       this.token = this.$store.state.token;
       this.tunnel = this.$store.state.tunnel;
       axios
@@ -447,6 +568,7 @@ export default {
           headers: { Authorization: "bearer " + this.$store.state.token },
         })
         .then((response) => {
+          this.jenis = response.data.user.biodata.namaLengkap;
           this.nama = response.data.user.biodata.namaLengkap;
           this.tempat = response.data.user.biodata.tempatLahir;
           this.tanggal = response.data.user.biodata.tanggalLahir;
@@ -458,6 +580,7 @@ export default {
           this.notelpHp = response.data.user.biodata.noTelepon;
           this.notelpKantor = response.data.user.biodata.noTeleponPerusahaan;
           this.pendidikan = response.data.user.biodata.pendidikanTerakhir;
+          this.pekerjaan = response.data.user.biodata.pekerjaan;
           this.perusahaan = response.data.user.biodata.namaPerusahaan;
           this.jabatan = response.data.user.biodata.jabatandiPerusahaan;
           this.alamatKantor = response.data.user.biodata.alamatPerusahaan;
@@ -469,9 +592,9 @@ export default {
           this.error_message = error;
           this.snackbar = true;
         });
-    // } else {
-    //   this.$router.push("login-daftar");
-    // }
+    } else {
+      this.$router.push("login-daftar");
+    }
   },
 };
 </script>

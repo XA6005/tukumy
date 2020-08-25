@@ -3,14 +3,19 @@
     <v-main>
       <div class="container mt-5"
       >
-        <h1 class="center"><br>{{detailberita.judul}}</h1>
+        <h1 style="text-align:center" class="center"><br>{{detailberita.judul}}</h1>
+        <br><br>
         <v-img
             :src="this.tunnel+'berita-image/'+detailberita.image"
             contain
             height="600px"
             >
             </v-img>
-        <p>{{detailberita.isi}}</p>
+            <div style="text-align: justify">
+              <br><br><br><br>
+          <span v-html="detailberita.isi"></span>
+          <br>
+          </div>
       </div>
     </v-main> 
   </v-app>

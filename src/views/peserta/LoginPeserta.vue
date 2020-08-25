@@ -4,14 +4,17 @@
       <div class="container mt-5">
         <v-form v-model="valid" lazy-validation>
           <div class="grey lighten-3 rounded-xl col-md-5 mx-auto my-auto">
-            <h1 class="text-center">Masuk</h1>
+            <div >
+            <h1 class="text-center">MASUK</h1>
             <h2 class="text-center">
-              Portal PESERTA Tempat Uji Kompetensi(TUK)
+              <br/>
+              PORTAL PESERTA TEMPAT UJI KOMPENTENSI(TUK)
               <br />
-              <small style="font-size:11pt">Prodi Teknologi Informasi UMY</small>
+              PRODI TEKNOLOGI INFORMASI UMY
             </h2>
             <div class="jumbotron mt-4">
               <v-text-field
+                full-width="50"
                 label="E-mail"
                 value
                 v-model="email"
@@ -47,6 +50,7 @@
                   <v-btn text color="#065139" href="/login-admin">masuk sebagai admin</v-btn>
                 </div>
               </div>
+            </div>
             </div>
           </div>
           <v-snackbar v-model="snackbar">{{error_message}}</v-snackbar>

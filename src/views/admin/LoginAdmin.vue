@@ -105,7 +105,7 @@ export default {
         let password = this.password;
         this.$store
           .dispatch("loginAdmin", { email, password })
-          .then(() => this.$router.push("/kelola-pembayaran"))
+          .then(() => this.$router.push("/kelola-sertifikasi"))
           .catch((err) => (this.error_message = err), (this.snackbar = true));
       }
     },

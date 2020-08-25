@@ -27,7 +27,7 @@
               >{{ item.title }}</v-list-item>
             </v-list>
           </v-menu>
-          <v-btn text href="/kelola-pembayaran">Kelola Pembayaran</v-btn>
+          <v-btn text href="/kelola-peserta">Kelola Peserta</v-btn>
           <v-btn text href="/kelola-berita">Kelola Berita</v-btn>
           <v-spacer></v-spacer>
           <v-btn text @click="logout">keluar</v-btn>
@@ -46,6 +46,7 @@ export default {
       sertifikasi: [
         { title: "Kelola Jadwal", src: "/kelola-sertifikasi" },
         { title: "Kelola Skema", src: "/kelola-skema" },
+        { title: "Kelola Asesor", src: "/kelola-asesor" },
       ],
     };
   },

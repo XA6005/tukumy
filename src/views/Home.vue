@@ -11,12 +11,12 @@
           :key="index"
           :cols="4"
         >
-          <v-card height="450">
+          <v-card height="450" class="justify-center">
             <v-img
               :src="tunnel+'berita-image/'+item.image"
               height="300px">
             </v-img>
-            <v-card-title class="justify-center" v-text="item.judul"></v-card-title>
+            <v-card-title class="justify-center">{{item.judul}}</v-card-title>
             <v-card-actions class="justify-center">
               <v-btn
               class="white--text"
