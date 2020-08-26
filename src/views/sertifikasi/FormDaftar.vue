@@ -87,6 +87,7 @@
             :error-messages="kodeposErrors"
             label="Kodepos Rumah *"
             required
+            :counter="5"
             @input="$v.kodepos.$touch()"
             @blur="$v.kodepos.$touch()"
           ></v-text-field>
@@ -95,6 +96,7 @@
             :error-messages="notelpRumahErrors"
             label="No. Telepon Rumah"
             required
+            :counter="10"
             @input="$v.notelpRumah.$touch()"
             @blur="$v.notelpRumah.$touch()"
           ></v-text-field>
@@ -103,6 +105,7 @@
             :error-messages="notelpHpErrors"
             label="No. HP *"
             required
+            :counter="13"
             @input="$v.notelpHp.$touch()"
             @blur="$v.notelpHp.$touch()"
           ></v-text-field>
@@ -155,6 +158,7 @@
             :error-messages="kodeposKantorErrors"
             label="Kodepos Kantor"
             required
+            :counter="5"
             @input="$v.kodeposKantor.$touch()"
             @blur="$v.kodeposKantor.$touch()"
           ></v-text-field>
@@ -163,11 +167,13 @@
             :error-messages="notelpKantorErrors"
             label="No. Telepon Kantor"
             required
+            :counter="10"
             @input="$v.notelpKantor.$touch()"
             @blur="$v.notelpKantor.$touch()"
           ></v-text-field>
           <v-text-field
             v-model="fax"
+            :counter="10"
             :error-messages="faxErrors"
             label="Fax Kantor"
             required
@@ -242,17 +248,17 @@ export default {
     kebangsaan: { required },
     alamat: { required },
     kodepos: { required, numeric, maxLength: maxLength(5) },
-    notelpHp: { required, numeric },
+    notelpHp: { required, numeric,maxLength: maxLength(13) },
     pendidikan: { required },
     pekerjaan: { required },
-    notelpRumah: { numeric },
+    notelpRumah: { numeric,maxLength: maxLength(10) },
     perusahaan: { },
     jabatan: { },
     alamatKantor: {  },
     kodeposKantor: { numeric, maxLength: maxLength(5) },
-    fax: {  numeric },
+    fax: {  numeric,maxLength: maxLength(10) },
     emailKantor: { email },
-    notelpKantor: { numeric },
+    notelpKantor: { numeric,maxLength: maxLength(10) },
     checkbox: {
       checked(val) {
         return val;
@@ -302,7 +308,7 @@ export default {
     identitasUpdate:null,
     jk: ["Laki - laki", "Perempuan"],
     bangsa:["WNI","WNA"],
-    pendidikanItem: ["SMA/SMK", "S1", "S2","S3"],
+    pendidikanItem: ["SMA/SMK","D3","D4", "S1", "S2","S3"],
     checkbox: false,
   }),
 
@@ -377,6 +383,7 @@ export default {
       const errors = [];
       if (!this.$v.notelpRumah.$dirty) return errors;
       !this.$v.notelpRumah.numeric && errors.push("Data harus angka diperlukan");
+      !this.$v.notelpRumah.maxLength && errors.push("Kodepos maximal 10 karakter ");
       //!this.$v.notelpRumah.required && errors.push("Data diperlukan");
       return errors;
     },
@@ -384,6 +391,7 @@ export default {
       const errors = [];
       if (!this.$v.notelpHp.$dirty) return errors;
       !this.$v.notelpHp.numeric && errors.push("Data harus angka diperlukan");
+      !this.$v.notelpHp.maxLength && errors.push("Kodepos maximal 13 karakter ");
       !this.$v.notelpHp.required && errors.push("Data diperlukan");
       return errors;
     },
@@ -391,6 +399,7 @@ export default {
       const errors = [];
       if (!this.$v.notelpKantor.$dirty) return errors;
       !this.$v.notelpKantor.numeric && errors.push("Data harus angka diperlukan");
+      !this.$v.notelpKantor.maxLength && errors.push("Kodepos maximal 10 karakter ");
       //!this.$v.notelpKantor.required && errors.push("Data diperlukan");
       return errors;
     },
@@ -398,6 +407,7 @@ export default {
       const errors = [];
       if (!this.$v.fax.$dirty) return errors;
       !this.$v.fax.numeric && errors.push("Data harus angka");
+      !this.$v.fax.maxLength && errors.push("Kodepos maximal 10 karakter ");
       return errors;
     },
     pendidikanErrors() {
@@ -444,9 +454,13 @@ export default {
         data.append("namaLengkap", this.nama);
         data.append("tempatLahir", this.tempat);
         data.append("tanggalLahir", this.tanggal);
-        data.append("jenisKelamin", this.jenisKelamin);
+        if(this.jenisKelamin=="Perempuan"){
+          data.append("jenisKelamin", "P");
+        }else{
+          data.append("jenisKelamin", "L");
+        }
         data.append("kebangsaan", this.kebangsaan);
-        data.append("noTelepon", this.notelpHp);
+        data.append("noHP", this.notelpHp);
         data.append("alamatRumah", this.alamat);
         data.append("kodeposRumah", this.kodepos);
         data.append("noTeleponRumah", this.notelpRumah);
@@ -478,6 +492,7 @@ export default {
           .then((response) => {
             this.error_message = response.data.message;
             this.snackbar = true;
+            this.$router.push("/dasboard-peserta");
           })
           .catch((error) => {
             this.error_message = error;
@@ -496,9 +511,13 @@ export default {
         data.append("namaLengkap", this.nama);
         data.append("tempatLahir", this.tempat);
         data.append("tanggalLahir", this.tanggal);
-        data.append("jenisKelamin", this.jenisKelamin);
+        if(this.jenisKelamin=="Perempuan"){
+          data.append("jenisKelamin", "P");
+        }else{
+          data.append("jenisKelamin", "L");
+        }
         data.append("kebangsaan", this.kebangsaan);
-        data.append("noTelepon", this.notelpHp);
+        data.append("noHP", this.notelpHp);
         data.append("alamatRumah", this.alamat);
         data.append("kodeposRumah", this.kodepos);
         data.append("noTeleponRumah", this.notelpRumah);
@@ -577,7 +596,7 @@ export default {
           this.alamat = response.data.user.biodata.alamatRumah;
           this.kodepos = response.data.user.biodata.kodeposRumah;
           this.notelpRumah = response.data.user.biodata.noTeleponRumah;
-          this.notelpHp = response.data.user.biodata.noTelepon;
+          this.notelpHp = response.data.user.biodata.noHP;
           this.notelpKantor = response.data.user.biodata.noTeleponPerusahaan;
           this.pendidikan = response.data.user.biodata.pendidikanTerakhir;
           this.pekerjaan = response.data.user.biodata.pekerjaan;

@@ -118,7 +118,6 @@ export default {
     if (this.$store.getters.isLoggedInAdmin) {
       this.loadSertifikasi();
       this.tunnel = this.$store.state.tunnel;
-      var sknama = this.skemaid.find( ({ id }) => id === item.id );
       axios
         .get(`${this.tunnel}asesor`)
         .then((response) => {

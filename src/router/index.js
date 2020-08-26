@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Berita from '../views/berita/Berita.vue'
 import DetailBerita from '@/components/detailBerita.vue'
 import Skema from '../views/sertifikasi/Skema.vue'
+import Asesor from '../views/sertifikasi/Asesor.vue'
 import DaftarSertifikasi from '../views/sertifikasi/DaftarSertifikasi.vue'
 import SOP from '../views/profil/SOP.vue'
 import StrukturOrganisasi from '../views/profil/StrukturOrganisasi.vue'
@@ -48,6 +49,11 @@ const routes = [{
     path: '/skema',
     name: 'Skema',
     component: Skema
+  },
+  {
+    path: '/asesor',
+    name: 'Asesor',
+    component: Asesor
   },
   {
     path: '/sop',

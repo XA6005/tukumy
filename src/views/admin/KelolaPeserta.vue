@@ -2,11 +2,12 @@
   <v-app id="Kelola Peserta">
     <v-main>
       <div class="container mt-5">
+        {{jadwal}}
         <v-data-table :headers="headers" :items="jadwal" class="elevation-1">
           <template v-slot:top>
             <v-toolbar flat color="white">
               <v-toolbar-title>Kelola Peserta</v-toolbar-title>
-              <v-dialog v-model="dialog" max-width="600px">
+              <v-dialog v-model="dialog" max-width="700px">
                 <v-card>
                   <v-card-title>
                     <span class="headline">Bukti Pembayaran</span>
@@ -15,10 +16,11 @@
                     <v-container>
                       <v-img
                         v-if="editedItem.image!=null"
-                        height="500px"
+                        height="600px"
+                        contain
                         :src="tunnel+'bukti-pembayaran/'+editedItem.image"
                       ></v-img>
-                      <v-sheet v-else color="grey" height="500px">
+                      <v-sheet v-else color="grey" height="600px">
                         <v-row class="fill-height" align="center" justify="center">
                           <div>
                             <h1>Tidak Ada Gambar</h1>
@@ -35,9 +37,14 @@
               </v-dialog>
               <v-dialog v-model="dialogAPL01" fullscreen>
                 <v-card>
-                  <v-card-title>
-                    <span class="headline">Data APL01</span>
-                  </v-card-title>
+                  <v-toolbar color="#fbc800">
+                    <v-btn text @click="closedialogAPL01">
+                      <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                    <v-toolbar-title>
+                      <span class="headline">Data APL 01</span>
+                    </v-toolbar-title>
+                  </v-toolbar>
                   <v-card-text>
                     <v-container>
                       <h2>a. Data Pribadi</h2>
@@ -49,12 +56,12 @@
                         label="Tanggal Lahir"
                         disabled="true"
                       ></v-text-field>
-                      <v-select
+                      <v-text-field
                         v-model="APL01Item.jenisKelamin"
                         label="Jenis Kelamin "
                         disabled="true"
-                      ></v-select>
-                      <v-select v-model="APL01Item.kebangsaan" label="Kebangsaan" disabled="true"></v-select>
+                      ></v-text-field>
+                      <v-text-field v-model="APL01Item.kebangsaan" label="Kebangsaan" disabled="true"></v-text-field>
                       <v-textarea v-model="APL01Item.alamat" label="Alamat Rumah" disabled="true"></v-textarea>
                       <v-text-field
                         v-model="APL01Item.kodepos"
@@ -67,11 +74,11 @@
                         disabled="true"
                       ></v-text-field>
                       <v-text-field v-model="APL01Item.notelpHp" label="No. HP" disabled="true"></v-text-field>
-                      <v-select
+                      <v-text-field
                         v-model="APL01Item.pendidikan"
                         label="pendidikan Terakhir"
                         disabled="true"
-                      ></v-select>
+                      ></v-text-field>
                       <h2>
                         <br />b. Data Pekerjaan Sekarang
                       </h2>
@@ -128,12 +135,9 @@
                         color="#065139"
                         :href="tunnel+'kartu-identitas/'+APL01Item.identitas"
                       >Lihat Identitas</v-btn>
+                      <br><br>
                     </v-container>
                   </v-card-text>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="closedialogAPL01">Close</v-btn>
-                  </v-card-actions>
                 </v-card>
               </v-dialog>
             </v-toolbar>
@@ -202,11 +206,13 @@ export default {
       headers: [
         { text: "Id Jadwal", value: "jadwal_id", align: "start" },
         { text: "nama Skema", value: "namaSkema" },
+        { text: "tipe Ujian", value: "tipe" },
         { text: "Email Peserta", value: "email" },
         { text: "Status", value: "status" },
         { text: "Action", value: "actions" },
       ],
       jadwal: [],
+      detailJadwal:[],
       editedItem: {
         skemasertifikasi_id: "",
         jadwal_id: "",
@@ -220,15 +226,15 @@ export default {
         email: "",
         nama: "",
         tempat: "",
-        tanggal: null,
-        jenisKelamin: null,
+        tanggal: "",
+        jenisKelamin: "",
         kebangsaan: "",
         alamat: "",
         kodepos: "",
         notelpRumah: "",
         notelpHp: "",
         notelpKantor: "",
-        pendidikan: null,
+        pendidikan: "",
         perusahaan: "",
         jabatan: "",
         alamatKantor: "",
@@ -261,10 +267,18 @@ export default {
           const list = response.data.data.jadwal.map((det) => {
             return det.peserta;
           });
-          this.jadwal = [].concat.apply([], list).map((item) => {
+          const detailJadwal = response.data.data.jadwal.map((it) => {
+            return {
+              id:it.id,
+              tipe:it.tipe,
+              namaSkema:it.skema_sertifikasi.nama,
+            }
+          });
+          const jadwalSem = [].concat.apply([], list).map((item) => {
             return {
               jadwal_id: item.pivot.jadwal_id,
               email: item.email,
+              namaSkema : detailJadwal.find( ({ id }) => id === item.pivot.jadwal_id ),
               peserta_id: item.pivot.peserta_id,
               status: item.pivot.status,
               image: item.pivot.bukti_pembayaran,
@@ -278,12 +292,12 @@ export default {
               kebangsaan: item.biodata.kebangsaan,
               alamat: item.biodata.alamatRumah,
               kodepos: item.biodata.kodeposRumah,
-              notelpRumah: item.biodata.notelpRumah,
-              notelpHp: item.biodata.noTelepon,
+              notelpRumah: item.biodata.noTeleponRumah,
+              notelpHp: item.biodata.noHP,
               notelpKantor: item.biodata.noTeleponPerusahaan,
               pendidikan: item.biodata.pendidikanTerakhir,
               perusahaan: item.biodata.namaPerusahaan,
-              jabatan: item.biodata.JabatandiPerusahaan,
+              jabatan: item.biodata.jabatandiPerusahaan,
               alamatKantor: item.biodata.alamatPerusahaan,
               kodeposKantor: item.biodata.kodeposPerusahaan,
               fax: item.biodata.faxPerusahaan,
@@ -292,6 +306,41 @@ export default {
               ijazah: item.biodata.ijazah,
               photo: item.biodata.photo,
               identitas: item.biodata.kartu_identitas,
+            };
+          });
+          this.jadwal = jadwalSem.map((item) => {
+            return {
+              jadwal_id: item.jadwal_id,
+              email: item.email,
+              namaSkema : item.namaSkema.namaSkema,
+              tipe:item.namaSkema.tipe,
+              peserta_id: item.peserta_id,
+              status: item.status,
+              image: item.image,
+              berkas_apl02: item.berkas_apl02,
+              berkas_verifikasi: item.berkas_verifikasi,
+              sertifikat: item.sertifikat,
+              nama: item.nama,
+              tempat: item.tempat,
+              tanggal: item.tanggal,
+              jenisKelamin: item.jenisKelamin,
+              kebangsaan: item.kebangsaan,
+              alamat: item.alamat,
+              kodepos: item.kodepos,
+              notelpRumah: item.notelpRumah,
+              notelpHp: item.notelpHp,
+              notelpKantor: item.notelpKantor,
+              pendidikan: item.pendidikan,
+              perusahaan: item.perusahaan,
+              jabatan: item.jabatan,
+              alamatKantor: item.alamatKantor,
+              kodeposKantor: item.kodeposKantor,
+              fax: item.fax,
+              emailKantor: item.emailKantor,
+              pekerjaan:item.pekerjaan,
+              ijazah: item.ijazah,
+              photo: item.photo,
+              identitas: item.identitas,
             };
           });
         })
@@ -315,13 +364,80 @@ export default {
           const list = response.data.data.jadwal.map((det) => {
             return det.peserta;
           });
-          this.jadwal = [].concat.apply([], list).map((item) => {
+          const detailJadwal = response.data.data.jadwal.map((it) => {
+            return {
+              id:it.id,
+              tipe:it.tipe,
+              namaSkema:it.skema_sertifikasi.nama,
+            }
+          });
+          const jadwalSem = [].concat.apply([], list).map((item) => {
             return {
               jadwal_id: item.pivot.jadwal_id,
               email: item.email,
+              namaSkema : detailJadwal.find( ({ id }) => id === item.pivot.jadwal_id ),
               peserta_id: item.pivot.peserta_id,
               status: item.pivot.status,
-              image: item.pivot.image,
+              image: item.pivot.bukti_pembayaran,
+              berkas_apl02: item.pivot.berkas_apl02,
+              berkas_verifikasi: item.pivot.berkas_verifikasi,
+              sertifikat: item.pivot.sertifikat,
+              nama: item.biodata.namaLengkap,
+              tempat: item.biodata.tempatLahir,
+              tanggal: item.biodata.tanggalLahir,
+              jenisKelamin: item.biodata.jenisKelamin,
+              kebangsaan: item.biodata.kebangsaan,
+              alamat: item.biodata.alamatRumah,
+              kodepos: item.biodata.kodeposRumah,
+              notelpRumah: item.biodata.noTeleponRumah,
+              notelpHp: item.biodata.noHP,
+              notelpKantor: item.biodata.noTeleponPerusahaan,
+              pendidikan: item.biodata.pendidikanTerakhir,
+              perusahaan: item.biodata.namaPerusahaan,
+              jabatan: item.biodata.jabatandiPerusahaan,
+              alamatKantor: item.biodata.alamatPerusahaan,
+              kodeposKantor: item.biodata.kodeposPerusahaan,
+              fax: item.biodata.faxPerusahaan,
+              emailKantor: item.biodata.emailPerusahaan,
+              pekerjaan:item.biodata.pekerjaan,
+              ijazah: item.biodata.ijazah,
+              photo: item.biodata.photo,
+              identitas: item.biodata.kartu_identitas,
+            };
+          });
+          this.jadwal = jadwalSem.map((item) => {
+            return {
+              jadwal_id: item.jadwal_id,
+              email: item.email,
+              namaSkema : item.namaSkema.namaSkema,
+              tipe:item.namaSkema.tipe,
+              peserta_id: item.peserta_id,
+              status: item.status,
+              image: item.image,
+              berkas_apl02: item.berkas_apl02,
+              berkas_verifikasi: item.berkas_verifikasi,
+              sertifikat: item.sertifikat,
+              nama: item.nama,
+              tempat: item.tempat,
+              tanggal: item.tanggal,
+              jenisKelamin: item.jenisKelamin,
+              kebangsaan: item.kebangsaan,
+              alamat: item.alamat,
+              kodepos: item.kodepos,
+              notelpRumah: item.notelpRumah,
+              notelpHp: item.notelpHp,
+              notelpKantor: item.notelpKantor,
+              pendidikan: item.pendidikan,
+              perusahaan: item.perusahaan,
+              jabatan: item.jabatan,
+              alamatKantor: item.alamatKantor,
+              kodeposKantor: item.kodeposKantor,
+              fax: item.fax,
+              emailKantor: item.emailKantor,
+              pekerjaan:item.pekerjaan,
+              ijazah: item.ijazah,
+              photo: item.photo,
+              identitas: item.identitas,
             };
           });
         })

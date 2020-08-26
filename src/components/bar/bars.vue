@@ -62,8 +62,9 @@ export default {
       { title: "SOP", src: "/sop" },
     ],
     sertifikasi: [
-      { title: "Skema", src: "/skema" },
       { title: "Jadwal Sertifikasi", src: "/daftar-sertifikasi" },
+      { title: "Skema", src: "/skema" },
+      { title: "Asesor", src: "/asesor" },
     ],
   }),
 };
