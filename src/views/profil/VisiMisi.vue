@@ -16,7 +16,8 @@ export default {
     }]
   }),
   mounted(){
-    this.$store.dispatch('logout')
+    this.$store.dispatch('logoutAdmin')
+    this.$store.dispatch('logoutPeserta')
   },
 }
 </script>

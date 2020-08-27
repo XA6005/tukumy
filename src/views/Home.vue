@@ -54,7 +54,8 @@ import karousel from '@/components/karousel.vue';
       }
     },
     mounted () {
-    this.$store.dispatch('logout')
+    this.$store.dispatch('logoutAdmin')
+    this.$store.dispatch('logoutPeserta')
     this.tunnel = this.$store.state.tunnel;
     axios
     .get(`${this.tunnel}berita`,{

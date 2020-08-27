@@ -66,7 +66,7 @@
                   :
                 </v-col>
                 <v-col lg="2">
-                  {{card.biaya}}
+                  {{parseInt(card.biaya)}}
                 </v-col>
               </v-row>
               <v-row justify="center">

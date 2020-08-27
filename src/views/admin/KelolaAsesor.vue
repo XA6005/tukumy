@@ -15,7 +15,7 @@
                     class="mb-2"
                     v-bind="attrs"
                     v-on="on"
-                  >Tambah Skema Sertifikasi</v-btn>
+                  >Tambah Asesor</v-btn>
                 </template>
                 <v-card>
                   <v-form ref="form" v-model="valid" lazy-validation>
@@ -38,6 +38,24 @@
                           v-model="editedItem.namaSkema"
                           label="Skema Sertifikasi"
                         ></v-select>
+                        <v-file-input
+                          required
+                          v-if="formTitle=='Tambah Asesor'"
+                          accept="image/*"
+                          :rules="imageRules"
+                          show-size
+                          color="#065139"
+                          v-model="editedItem.image"
+                          label="Upload Photo Asesor"
+                        ></v-file-input>
+                        <v-file-input
+                          v-else
+                          accept="image/*"
+                          show-size
+                          color="#065139"
+                          v-model="editedItem.image"
+                          label="Upload Photo Asesor"
+                        ></v-file-input>
                       </v-form>
                     </v-container>
                   </v-card-text>
@@ -75,6 +93,9 @@ export default {
       valid: true,
       namaLengkapRules: [(v) => !!v || "Nama Skema Harus Diisi"],
       skemaRules: [(v) => !!v || "Skema harus dipilih"],
+      imageRules: [
+      v => !!v || 'File diperlukan',
+      v => (v && v.size < 500000) || "Gambar harus kurang dari 500 KB!"],
       token: "",
       snackbar: "",
       error_message: "",
@@ -93,23 +114,25 @@ export default {
         id: "",
         namaLengkap: "",
         namaSkema: "",
+        image:null,
       },
       defaultItem: {
         id: "",
         namaLengkap: "",
         namaSkema: "",
+        image:null,
       },
     };
   },
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Tambah Skema" : "Ubah Skema";
+      return this.editedIndex === -1 ? "Tambah Asesor" : "Ubah Asesor";
     },
   },
 
   watch: {
-    dialog(val) {
+    dialog(val) { 
       val || this.close();
     },
   },
@@ -233,6 +256,9 @@ export default {
         const formdata = new FormData();
           formdata.append("namaLengkap", item.namaLengkap);
           formdata.append("skemasertifikasi_id", skid.id);
+          if (item.image != "") {
+          formdata.append("photo", item.image);
+        }
           formdata.append("_method", "PUT");
           this.error_message = "Mohon tunggu! sedang dalam proses update";
           this.snackbar = true;
@@ -256,6 +282,7 @@ export default {
         this.$refs.form.validate(item);
           if (this.valid==true) {
           const formdata = new FormData();
+          formdata.append("photo", item.image);
           formdata.append("namaLengkap", item.namaLengkap);
           formdata.append("skemasertifikasi_id", skid.id);
           this.error_message = "Mohon tunggu! sedang dalam proses tambah asesor";

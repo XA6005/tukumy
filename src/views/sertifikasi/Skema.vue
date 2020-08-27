@@ -12,7 +12,7 @@
           <br />
         </p>
         <v-row justify="center">
-          <v-expansion-panels popout>
+          <v-expansion-panels v-model="panel" popout>
             <v-expansion-panel v-for="card in skema" :key="card.id">
               <v-expansion-panel-header><h4>{{card.nama}}</h4></v-expansion-panel-header>
               <v-expansion-panel-content>
@@ -67,6 +67,7 @@ export default {
     return {
       tunnel: "",
       skema: [],
+      panel:[0],
     };
   },
   mounted() {

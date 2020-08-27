@@ -2,7 +2,6 @@
   <v-app id="Kelola Peserta">
     <v-main>
       <div class="container mt-5">
-        {{jadwal}}
         <v-data-table :headers="headers" :items="jadwal" class="elevation-1">
           <template v-slot:top>
             <v-toolbar flat color="white">
@@ -32,6 +31,37 @@
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" text @click="close">Close</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <v-dialog v-model="dialogStatus" max-width="700px">
+                <v-card>
+                  <v-card-title>
+                    <span class="headline">Ubah Status</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-container>
+                      <v-select
+                          required
+                          :items="stat"
+                          v-model="statusItem.status"
+                          label="Status"
+                        ></v-select>
+                        <v-text-field
+                          required
+                          v-model="statusItem.komentar"
+                          label="Keterangan"
+                        ></v-text-field>
+                    </v-container>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="red darken-1" text @click="closeStatus">Cancel</v-btn>
+                    <v-btn
+                      color="green darken-1"
+                      text
+                      @click="saveStatus(statusItem)"
+                    >Save</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -147,7 +177,7 @@
               small
               class="mr-2 white--text"
               color="#065139"
-              @click="editItem(item)"
+              @click="statusDialog(item)"
             >Ubah Status</v-btn>
             <v-btn
               small
@@ -202,15 +232,17 @@ export default {
       tunnel: "",
       tunnelgambar: this.tunnel + "bukti-pembayaran/",
       dialog: false,
+      dialogStatus:false,
       dialogAPL01:false,
       headers: [
-        { text: "Id Jadwal", value: "jadwal_id", align: "start" },
+        { text: "Tanggal Jadwal", value: "tanggalJadwal", align: "start" },
         { text: "nama Skema", value: "namaSkema" },
         { text: "tipe Ujian", value: "tipe" },
         { text: "Email Peserta", value: "email" },
         { text: "Status", value: "status" },
         { text: "Action", value: "actions" },
       ],
+      stat:['sedang proses','lengkap'],
       jadwal: [],
       detailJadwal:[],
       editedItem: {
@@ -221,6 +253,12 @@ export default {
         status: "",
         image: "",
         sertifikat: "",
+      },
+      statusItem: {
+        skemasertifikasi_id: "",
+        peserta_id: "",
+        status: "",
+        komentar:"",
       },
       APL01Item: {
         email: "",
@@ -271,6 +309,7 @@ export default {
             return {
               id:it.id,
               tipe:it.tipe,
+              tanggal:it.tanggal,
               namaSkema:it.skema_sertifikasi.nama,
             }
           });
@@ -281,6 +320,7 @@ export default {
               namaSkema : detailJadwal.find( ({ id }) => id === item.pivot.jadwal_id ),
               peserta_id: item.pivot.peserta_id,
               status: item.pivot.status,
+              komentar: item.pivot.komentar,
               image: item.pivot.bukti_pembayaran,
               berkas_apl02: item.pivot.berkas_apl02,
               berkas_verifikasi: item.pivot.berkas_verifikasi,
@@ -314,8 +354,10 @@ export default {
               email: item.email,
               namaSkema : item.namaSkema.namaSkema,
               tipe:item.namaSkema.tipe,
+              tanggalJadwal:item.namaSkema.tanggal,
               peserta_id: item.peserta_id,
               status: item.status,
+              komentar:item.komentar,
               image: item.image,
               berkas_apl02: item.berkas_apl02,
               berkas_verifikasi: item.berkas_verifikasi,
@@ -368,7 +410,9 @@ export default {
             return {
               id:it.id,
               tipe:it.tipe,
+              tanggal:it.tanggal,
               namaSkema:it.skema_sertifikasi.nama,
+              
             }
           });
           const jadwalSem = [].concat.apply([], list).map((item) => {
@@ -378,6 +422,7 @@ export default {
               namaSkema : detailJadwal.find( ({ id }) => id === item.pivot.jadwal_id ),
               peserta_id: item.pivot.peserta_id,
               status: item.pivot.status,
+              komentar:item.pivot.komentar,
               image: item.pivot.bukti_pembayaran,
               berkas_apl02: item.pivot.berkas_apl02,
               berkas_verifikasi: item.pivot.berkas_verifikasi,
@@ -411,8 +456,10 @@ export default {
               email: item.email,
               namaSkema : item.namaSkema.namaSkema,
               tipe:item.namaSkema.tipe,
+              tanggalJadwal:item.namaSkema.tanggal,
               peserta_id: item.peserta_id,
               status: item.status,
+              komentar:item.komentar,
               image: item.image,
               berkas_apl02: item.berkas_apl02,
               berkas_verifikasi: item.berkas_verifikasi,
@@ -455,19 +502,21 @@ export default {
       this.APL01Item = Object.assign({}, item);
       this.dialogAPL01 = true;
     },
-    editItem(item) {
-      var status = "";
-      if (item.status == "belum lunas") {
-        status = "lunas";
-      } else {
-        status = "belum lunas";
+    statusDialog(item){
+      this.statusItem = Object.assign({}, item);
+      this.dialogStatus = true;
+    },
+    saveStatus(item) {
+      var kom="-";
+      if(item.komentar!=""){
+        kom=item.komentar
       }
       const data = qs.stringify({
         jadwal_id: item.jadwal_id,
         peserta_id: item.peserta_id,
-        status: status,
-      });
-      confirm("Kamu yakin akan mengubah status pembayaran peserta ini?") &&
+        status: item.status,
+        komentar:kom,
+      })
         axios
           .put(`${this.tunnel}updatestatus`, data, {
             headers: {
@@ -478,6 +527,7 @@ export default {
             this.error_message = response.data.message;
             this.snackbar = true;
             this.loadData();
+            this.closeStatus();
           })
           .catch((error) => {
             this.error_message = error;
@@ -486,6 +536,9 @@ export default {
     },
     close() {
       this.dialog = false;
+    },
+    closeStatus() {
+      this.dialogStatus = false;
     },
     closedialogAPL01() {
       this.dialogAPL01 = false;

@@ -7,10 +7,8 @@
       <div id="divbar">
         <v-toolbar-title>Tempat Uji Kompetensi Prodi Teknologi Informasi UMY</v-toolbar-title>
       </div>
-
       <template v-slot:extension>
-        <v-tabs dark v-model="currentItem" fixed-tabs slider-color="white">
-          <v-btn text width="140px" disabled></v-btn>
+        <v-tabs dark v-model="currentItem" fixed-tabs slider-color="white" style="padding-left:130px">
           <v-menu v-if="sertifikasi.length" bottom left>
             <template v-slot:activator="{ on, attrs }">
               <v-btn text class="align-self-center mr-4" v-bind="attrs" v-on="on">
@@ -52,7 +50,7 @@ export default {
   },
   methods: {
     logout: function () {
-      this.$store.dispatch("logout").then(() => {
+      this.$store.dispatch("logoutAdmin").then(() => {
         this.$router.push("/");
       });
     },

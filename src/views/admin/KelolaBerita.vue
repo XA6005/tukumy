@@ -184,7 +184,7 @@ export default {
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
-
+ 
     deleteItem(item) {
       confirm("Kamu yakin akan menghapus berita ini?") &&
         axios

@@ -66,6 +66,7 @@
                     <v-container>
                       <div v-if="upItem.tipe=='Online'">
                         <v-btn
+                          v-if="upItem.berkas_verifikasi_lihat==null"
                           class="mr-2 white--text"
                           color="#065139"
                           :href="tunnel+'berkas-skema/'+upItem.download_online"
@@ -84,6 +85,7 @@
                         <br />
                       </div>
                       <v-btn
+                        v-if="upItem.berkas_apl02_lihat==null"
                         class="mr-2 white--text"
                         color="#065139"
                         :href="tunnel+'berkas-apl02/'+upItem.download_APL02"
@@ -181,6 +183,7 @@ export default {
         { text: "Tanggal Sertifikasi", value: "tanggal" },
         { text: "Upload", value: "actions" },
         { text: "Status", value: "status" },
+        { text: "Keterangan", value: "komentar" },
       ],
       sertifikasi: [],
       biodata: [],
@@ -238,6 +241,7 @@ export default {
               namaSkema: item.skema_sertifikasi.nama,
               image_lihat: item.pivot.bukti_pembayaran,
               status: item.pivot.status,
+              komentar:item.pivot.komentar,
               jadwal_id: item.pivot.jadwal_id,
               berkas_apl02_lihat: item.pivot.berkas_apl02,
               sertifikat_lihat: item.pivot.sertifikat,
@@ -290,6 +294,7 @@ export default {
               namaSkema: item.skema_sertifikasi.nama,
               image_lihat: item.pivot.bukti_pembayaran,
               status: item.pivot.status,
+              komentar:item.pivot.komentar,
               jadwal_id: item.pivot.jadwal_id,
               berkas_apl02_lihat: item.pivot.berkas_apl02,
               sertifikat_lihat: item.pivot.sertifikat,

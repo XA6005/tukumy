@@ -87,6 +87,7 @@
                           ></v-time-picker>
                         </v-menu>
                         <v-text-field
+                          type="number" 
                           required
                           :rules="biayaRules"
                           v-model="editedItem.biaya"
@@ -223,7 +224,7 @@ export default {
               tanggal:item.tanggal,
               jam : item.jam,
               tipe: item.tipe,
-              biaya: item.biaya,
+              biaya: parseInt(item.biaya),
               tujuan : item.tujuanasessmen,
               skemasertifikasi_id: item.skemasertifikasi_id,
               namaSkema:item.skema_sertifikasi.nama
@@ -335,19 +336,18 @@ export default {
 
     validate(item) {
       var skid = this.skemaid.find( ({ nama }) => nama === item.namaSkema );
-      var tempat =null;
-      if(item.tipe=="Online"){
-        tempat==null;
-      }else{
+      var tempat ="-";
+      if(item.tipe=="Offline"){
         tempat==item.tempat;
       }
+      var a =parseInt(item.biaya);
       if (this.editedIndex > -1) {
         const formdata = new FormData();
         formdata.append("tempat", tempat);
         formdata.append("tanggal", item.tanggal);
         formdata.append("jam", item.jam);
         formdata.append("tipe", item.tipe);
-        formdata.append("biaya", item.biaya);
+        formdata.append("biaya", a);
         formdata.append("skemasertifikasi_id", skid.id);
         formdata.append("tujuanasessmen", item.tujuan);
         formdata.append("_method", "PUT");

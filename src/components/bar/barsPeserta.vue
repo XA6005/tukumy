@@ -8,8 +8,7 @@
         <v-toolbar-title>Tempat Uji Kompetensi Prodi Teknologi Informasi UMY</v-toolbar-title>
       </div>
       <template v-slot:extension>
-        <v-tabs dark v-model="currentItem" fixed-tabs slider-color="white">
-          <v-btn text width="140px" disabled></v-btn>
+       <v-tabs dark v-model="currentItem" fixed-tabs slider-color="white" style="padding-left:130px">
           <v-btn text href="/dasboard-peserta">Beranda</v-btn>
           <v-spacer></v-spacer>
           <v-btn text @click="logout">keluar</v-btn>
@@ -25,7 +24,7 @@ export default {
   name: "barsPeserta",
   methods: {
     logout: function () {
-      this.$store.dispatch("logout").then(() => {
+      this.$store.dispatch("logoutPeserta").then(() => {
         this.$router.push("/");
       });
     },
