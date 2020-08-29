@@ -7,7 +7,7 @@
         </h1>
         <v-container>
           <v-row class="justify-center">
-            <v-col v-for="(item, index) in asesor" :key="index" :cols="5">
+            <v-col v-for="(item, index) in asesor" :key="index" :cols="3">
               <v-card height="650">
                 <v-img :src="tunnel+'photo-asesor/'+item.image" height="500px"></v-img>
                 <v-card-title style="text-align:center" class="justify-center" v-text="item.namaLengkap"></v-card-title>

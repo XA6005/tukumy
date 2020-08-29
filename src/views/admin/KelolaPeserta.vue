@@ -2,10 +2,18 @@
   <v-app id="Kelola Peserta">
     <v-main>
       <div class="container mt-5">
-        <v-data-table :headers="headers" :items="jadwal" class="elevation-1">
+        <v-data-table :headers="headers" :items="jadwal" :search="search" class="elevation-1">
           <template v-slot:top>
             <v-toolbar flat color="white">
               <v-toolbar-title>Kelola Peserta</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Cari"
+                single-line
+                hide-details
+              ></v-text-field>
               <v-dialog v-model="dialog" max-width="700px">
                 <v-card>
                   <v-card-title>
@@ -30,7 +38,7 @@
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="close">Close</v-btn>
+                    <v-btn color="red darken-1" text @click="close">Close</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -41,27 +49,14 @@
                   </v-card-title>
                   <v-card-text>
                     <v-container>
-                      <v-select
-                          required
-                          :items="stat"
-                          v-model="statusItem.status"
-                          label="Status"
-                        ></v-select>
-                        <v-text-field
-                          required
-                          v-model="statusItem.komentar"
-                          label="Keterangan"
-                        ></v-text-field>
+                      <v-select required :items="stat" v-model="statusItem.status" label="Status"></v-select>
+                      <v-text-field required v-model="statusItem.komentar" label="Keterangan"></v-text-field>
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="red darken-1" text @click="closeStatus">Cancel</v-btn>
-                    <v-btn
-                      color="green darken-1"
-                      text
-                      @click="saveStatus(statusItem)"
-                    >Save</v-btn>
+                    <v-btn color="green darken-1" text @click="saveStatus(statusItem)">Save</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -91,7 +86,11 @@
                         label="Jenis Kelamin "
                         disabled="true"
                       ></v-text-field>
-                      <v-text-field v-model="APL01Item.kebangsaan" label="Kebangsaan" disabled="true"></v-text-field>
+                      <v-text-field
+                        v-model="APL01Item.kebangsaan"
+                        label="Kebangsaan"
+                        disabled="true"
+                      ></v-text-field>
                       <v-textarea v-model="APL01Item.alamat" label="Alamat Rumah" disabled="true"></v-textarea>
                       <v-text-field
                         v-model="APL01Item.kodepos"
@@ -112,11 +111,7 @@
                       <h2>
                         <br />b. Data Pekerjaan Sekarang
                       </h2>
-                      <v-text-field
-                        v-model="APL01Item.pekerjaan"
-                        label="Pekerjaan"
-                        disabled="true"
-                      ></v-text-field>
+                      <v-text-field v-model="APL01Item.pekerjaan" label="Pekerjaan" disabled="true"></v-text-field>
                       <v-text-field
                         v-model="APL01Item.perusahaan"
                         label="Nama Lembaga / Perusahaan"
@@ -165,7 +160,8 @@
                         color="#065139"
                         :href="tunnel+'kartu-identitas/'+APL01Item.identitas"
                       >Lihat Identitas</v-btn>
-                      <br><br>
+                      <br />
+                      <br />
                     </v-container>
                   </v-card-text>
                 </v-card>
@@ -173,7 +169,7 @@
             </v-toolbar>
           </template>
           <template v-slot:item.actions="{ item }">
-            <v-btn 
+            <v-btn
               small
               class="mr-2 white--text"
               color="#065139"
@@ -182,34 +178,34 @@
             <v-btn
               small
               class="mr-2 white--text"
-              color="#dab224"
+              color="#065139"
               @click="lihatItem(item)"
             >Lihat Bukti</v-btn>
             <v-btn
               small
               class="mr-2 white--text"
-              color="#dab224"
+              color="#065139"
               @click="lihatAPL01(item)"
             >Lihat APL01</v-btn>
             <v-btn
               v-if="item.berkas_apl02!=null"
               small
               class="mr-2 white--text"
-              color="#dab224"
+              color="#065139"
               :href="tunnel+'berkas-apl02-verifikasi/'+item.berkas_apl02"
             >Lihat APL02</v-btn>
             <v-btn
               v-if="item.berkas_verifikasi!=null"
               small
               class="mr-2 white--text"
-              color="#dab224"
+              color="#065139"
               :href="tunnel+'berkas-verifikasi/'+item.berkas_verifikasi"
             >Lihat verifikasi online</v-btn>
             <v-btn
               v-if="item.sertifikat!=null"
               small
               class="mr-2 white--text"
-              color="#dab224"
+              color="#065139"
               :href="tunnel+'sertifikat/'+item.sertifikat"
             >Lihat sertifikat</v-btn>
           </template>
@@ -230,10 +226,11 @@ export default {
       snackbar: "",
       error_message: "",
       tunnel: "",
+      search: "",
       tunnelgambar: this.tunnel + "bukti-pembayaran/",
       dialog: false,
-      dialogStatus:false,
-      dialogAPL01:false,
+      dialogStatus: false,
+      dialogAPL01: false,
       headers: [
         { text: "Tanggal Jadwal", value: "tanggalJadwal", align: "start" },
         { text: "nama Skema", value: "namaSkema" },
@@ -241,11 +238,11 @@ export default {
         { text: "Email Peserta", value: "email" },
         { text: "Status", value: "status" },
         { text: "Keterangan", value: "komentar" },
-        { text: "Action", value: "actions" },       
+        { text: "Action", value: "actions" },
       ],
-      stat:['sedang proses','lengkap'],
+      stat: ["belum lengkap", "lengkap"],
       jadwal: [],
-      detailJadwal:[],
+      detailJadwal: [],
       editedItem: {
         skemasertifikasi_id: "",
         jadwal_id: "",
@@ -259,7 +256,7 @@ export default {
         skemasertifikasi_id: "",
         peserta_id: "",
         status: "",
-        komentar:"",
+        komentar: "",
       },
       APL01Item: {
         email: "",
@@ -280,7 +277,7 @@ export default {
         kodeposKantor: "",
         fax: "",
         emailKantor: "",
-        pekerjaan:"",
+        pekerjaan: "",
         ijazah: null,
         photo: null,
         identitas: null,
@@ -308,17 +305,19 @@ export default {
           });
           const detailJadwal = response.data.data.jadwal.map((it) => {
             return {
-              id:it.id,
-              tipe:it.tipe,
-              tanggal:it.tanggal,
-              namaSkema:it.skema_sertifikasi.nama,
-            }
+              id: it.id,
+              tipe: it.tipe,
+              tanggal: it.tanggal,
+              namaSkema: it.skema_sertifikasi.nama,
+            };
           });
           const jadwalSem = [].concat.apply([], list).map((item) => {
             return {
               jadwal_id: item.pivot.jadwal_id,
               email: item.email,
-              namaSkema : detailJadwal.find( ({ id }) => id === item.pivot.jadwal_id ),
+              namaSkema: detailJadwal.find(
+                ({ id }) => id === item.pivot.jadwal_id
+              ),
               peserta_id: item.pivot.peserta_id,
               status: item.pivot.status,
               komentar: item.pivot.komentar,
@@ -343,7 +342,7 @@ export default {
               kodeposKantor: item.biodata.kodeposPerusahaan,
               fax: item.biodata.faxPerusahaan,
               emailKantor: item.biodata.emailPerusahaan,
-              pekerjaan:item.biodata.pekerjaan,
+              pekerjaan: item.biodata.pekerjaan,
               ijazah: item.biodata.ijazah,
               photo: item.biodata.photo,
               identitas: item.biodata.kartu_identitas,
@@ -353,12 +352,12 @@ export default {
             return {
               jadwal_id: item.jadwal_id,
               email: item.email,
-              namaSkema : item.namaSkema.namaSkema,
-              tipe:item.namaSkema.tipe,
-              tanggalJadwal:item.namaSkema.tanggal,
+              namaSkema: item.namaSkema.namaSkema,
+              tipe: item.namaSkema.tipe,
+              tanggalJadwal: item.namaSkema.tanggal,
               peserta_id: item.peserta_id,
               status: item.status,
-              komentar:item.komentar,
+              komentar: item.komentar,
               image: item.image,
               berkas_apl02: item.berkas_apl02,
               berkas_verifikasi: item.berkas_verifikasi,
@@ -380,7 +379,7 @@ export default {
               kodeposKantor: item.kodeposKantor,
               fax: item.fax,
               emailKantor: item.emailKantor,
-              pekerjaan:item.pekerjaan,
+              pekerjaan: item.pekerjaan,
               ijazah: item.ijazah,
               photo: item.photo,
               identitas: item.identitas,
@@ -409,21 +408,22 @@ export default {
           });
           const detailJadwal = response.data.data.jadwal.map((it) => {
             return {
-              id:it.id,
-              tipe:it.tipe,
-              tanggal:it.tanggal,
-              namaSkema:it.skema_sertifikasi.nama,
-              
-            }
+              id: it.id,
+              tipe: it.tipe,
+              tanggal: it.tanggal,
+              namaSkema: it.skema_sertifikasi.nama,
+            };
           });
           const jadwalSem = [].concat.apply([], list).map((item) => {
             return {
               jadwal_id: item.pivot.jadwal_id,
               email: item.email,
-              namaSkema : detailJadwal.find( ({ id }) => id === item.pivot.jadwal_id ),
+              namaSkema: detailJadwal.find(
+                ({ id }) => id === item.pivot.jadwal_id
+              ),
               peserta_id: item.pivot.peserta_id,
               status: item.pivot.status,
-              komentar:item.pivot.komentar,
+              komentar: item.pivot.komentar,
               image: item.pivot.bukti_pembayaran,
               berkas_apl02: item.pivot.berkas_apl02,
               berkas_verifikasi: item.pivot.berkas_verifikasi,
@@ -445,7 +445,7 @@ export default {
               kodeposKantor: item.biodata.kodeposPerusahaan,
               fax: item.biodata.faxPerusahaan,
               emailKantor: item.biodata.emailPerusahaan,
-              pekerjaan:item.biodata.pekerjaan,
+              pekerjaan: item.biodata.pekerjaan,
               ijazah: item.biodata.ijazah,
               photo: item.biodata.photo,
               identitas: item.biodata.kartu_identitas,
@@ -455,12 +455,12 @@ export default {
             return {
               jadwal_id: item.jadwal_id,
               email: item.email,
-              namaSkema : item.namaSkema.namaSkema,
-              tipe:item.namaSkema.tipe,
-              tanggalJadwal:item.namaSkema.tanggal,
+              namaSkema: item.namaSkema.namaSkema,
+              tipe: item.namaSkema.tipe,
+              tanggalJadwal: item.namaSkema.tanggal,
               peserta_id: item.peserta_id,
               status: item.status,
-              komentar:item.komentar,
+              komentar: item.komentar,
               image: item.image,
               berkas_apl02: item.berkas_apl02,
               berkas_verifikasi: item.berkas_verifikasi,
@@ -482,7 +482,7 @@ export default {
               kodeposKantor: item.kodeposKantor,
               fax: item.fax,
               emailKantor: item.emailKantor,
-              pekerjaan:item.pekerjaan,
+              pekerjaan: item.pekerjaan,
               ijazah: item.ijazah,
               photo: item.photo,
               identitas: item.identitas,
@@ -503,37 +503,37 @@ export default {
       this.APL01Item = Object.assign({}, item);
       this.dialogAPL01 = true;
     },
-    statusDialog(item){
+    statusDialog(item) {
       this.statusItem = Object.assign({}, item);
       this.dialogStatus = true;
     },
     saveStatus(item) {
-      var kom="-";
-      if(item.komentar!=""){
-        kom=item.komentar
+      var kom = "-";
+      if (item.komentar != "") {
+        kom = item.komentar;
       }
       const data = qs.stringify({
         jadwal_id: item.jadwal_id,
         peserta_id: item.peserta_id,
         status: item.status,
-        komentar:kom,
-      })
-        axios
-          .put(`${this.tunnel}updatestatus`, data, {
-            headers: {
-              Authorization: "Bearer " + this.$store.state.token,
-            },
-          })
-          .then((response) => {
-            this.error_message = response.data.message;
-            this.snackbar = true;
-            this.loadData();
-            this.closeStatus();
-          })
-          .catch((error) => {
-            this.error_message = error;
-            this.snackbar = true;
-          });
+        komentar: kom,
+      });
+      axios
+        .put(`${this.tunnel}updatestatus`, data, {
+          headers: {
+            Authorization: "Bearer " + this.$store.state.token,
+          },
+        })
+        .then((response) => {
+          this.error_message = response.data.message;
+          this.snackbar = true;
+          this.loadData();
+          this.closeStatus();
+        })
+        .catch((error) => {
+          this.error_message = error;
+          this.snackbar = true;
+        });
     },
     close() {
       this.dialog = false;
@@ -544,7 +544,6 @@ export default {
     closedialogAPL01() {
       this.dialogAPL01 = false;
     },
-    
   },
 };
 </script>

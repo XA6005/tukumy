@@ -21,7 +21,7 @@
                 <v-col md="auto">
                   :
                 </v-col>
-                <v-col md="auto">
+                <v-col md="2">
                   {{card.tempat}}
                 </v-col>
               </v-row>
@@ -86,7 +86,7 @@
               <v-btn
               color="#065139"
               class="mr-2 white--text"
-              :to="{ name: 'login-daftar', params: { id: card.id } }" >
+              @click="login(card.id)">
               Daftar
               </v-btn>
             </v-card-actions>
@@ -107,8 +107,40 @@ export default {
         cardSertifikasi:[],
       }
     },
+    methods:{
+      login(id){
+        localStorage.setItem('sertifikasi', id)
+        if(this.$store.getters.isLoggedInPeserta){
+          const formdata = new FormData();
+            formdata.append("jadwal_id", id);
+            axios
+              .post(`${this.tunnel}jadwalpeserta`, formdata, {
+                headers: {
+                  Authorization: "Bearer " + this.$store.state.token,
+                },
+              })
+              .then((response) => {
+                this.error_message = response.data.message;
+                this.snackbar = true;
+                localStorage.removeItem('sertifikasi');
+                this.$router.push({
+                  name: "form-daftar",
+
+                });
+              })
+              .catch((error) => {
+                this.error_message = error;
+                this.snackbar = true;
+              });
+      }else{
+        this.$router.push({
+                  name: "login-peserta",
+
+                });
+      }
+      }
+    },
     mounted () {
-    this.$store.dispatch('logout')
     this.tunnel = this.$store.state.tunnel;
     axios
     .get(this.tunnel+'jadwal',{
@@ -133,11 +165,3 @@ export default {
   },
   }
 </script>
-<style>
-#isi {
-  font-family: Roboto, sans-serif;
-  font-size: 15px;
-  color:black;
-  text-align: left
-}
-</style>

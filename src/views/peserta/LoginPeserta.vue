@@ -61,6 +61,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import { validationMixin } from "vuelidate";
 import { required, minLength, maxLength, email } from "vuelidate/lib/validators";
 export default {
@@ -111,9 +112,33 @@ export default {
         this.$store
         .dispatch("login", { email, password })
         .then(() => {
+          if(this.$store.getters.isSertifikasiPick){
+            const formdata = new FormData();
+            formdata.append("jadwal_id", this.$store.state.sertifikasi);
+            axios
+              .post(`${this.$store.state.tunnel}jadwalpeserta`, formdata, {
+                headers: {
+                  Authorization: "Bearer " + this.$store.state.token,
+                },
+              })
+              .then((response) => {
+                this.error_message = response.data.message;
+                this.snackbar = true;
+                localStorage.removeItem('sertifikasi');
+                this.$router.push({
+                  name: "form-daftar",
+
+                });
+              })
+              .catch((error) => {
+                this.error_message = error;
+                this.snackbar = true;
+              });
+          }else{
           this.$router.push("/dasboard-peserta");
           this.error_message = "Selamat datang " + this.email;
           this.snackbar = true;
+          }
         })
         .catch((err) => (this.error_message = err), (this.snackbar = true));
       }

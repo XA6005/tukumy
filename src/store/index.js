@@ -6,8 +6,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    tunnel: 'http://10.69.0.158:8000/',
+    tunnel: 'https://6aa3522f7f23.ngrok.io/',
     status: '',
+    sertifikasi: localStorage.getItem('sertifikasi') || '',
     admin: localStorage.getItem('admin') || '',
     peserta: localStorage.getItem('peserta') || '',
     token: localStorage.getItem('token') || '',
@@ -174,6 +175,7 @@ export default new Vuex.Store({
     },
   },
   getters: {
+    isSertifikasiPick: state => !!state.sertifikasi,
     isLoggedInPeserta: state => !!state.peserta,
     isLoggedInAdmin: state => !!state.admin,
     authStatus: state => state.status,

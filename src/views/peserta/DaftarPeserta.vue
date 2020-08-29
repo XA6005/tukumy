@@ -60,7 +60,7 @@ import { required, minLength, maxLength, email } from "vuelidate/lib/validators"
 export default {
   mixins: [validationMixin],
   validations: {
-    password: { required, minLength: minLength(8) ,maxLength: maxLength(20)},
+    password: { required, minLength: minLength(8) ,maxLength: maxLength(10)},
     email: { required, email },
   },
   data() {
@@ -79,7 +79,7 @@ export default {
       const errors = [];
       if (!this.$v.password.$dirty) return errors;
       !this.$v.password.minLength && errors.push("Password minimal 8 karakter");
-      !this.$v.password.maxLength && errors.push("Password maximal 20 karakter");
+      !this.$v.password.maxLength && errors.push("Password maximal 10 karakter");
       !this.$v.password.required && errors.push("Password diperlukan");
       return errors;
     },

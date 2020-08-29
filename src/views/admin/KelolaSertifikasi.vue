@@ -189,7 +189,7 @@ export default {
         id: "",
         namaSkema: "",
         tempat: "",
-        tanggal: "",
+        tanggal: "-",
         jam: null,
         biaya: null,
         tujuan: "",
@@ -336,14 +336,10 @@ export default {
 
     validate(item) {
       var skid = this.skemaid.find( ({ nama }) => nama === item.namaSkema );
-      var tempat ="-";
-      if(item.tipe=="Offline"){
-        tempat==item.tempat;
-      }
       var a =parseInt(item.biaya);
       if (this.editedIndex > -1) {
         const formdata = new FormData();
-        formdata.append("tempat", tempat);
+        formdata.append("tempat", item.tempat);
         formdata.append("tanggal", item.tanggal);
         formdata.append("jam", item.jam);
         formdata.append("tipe", item.tipe);
@@ -374,7 +370,7 @@ export default {
         this.$refs.form.validate(item);
         if (this.valid == true) {
           const formdata = new FormData();
-          formdata.append("tempat", tempat);
+          formdata.append("tempat", item.tempat);
           formdata.append("tanggal", item.tanggal);
           formdata.append("jam", item.jam);
           formdata.append("tipe", item.tipe);

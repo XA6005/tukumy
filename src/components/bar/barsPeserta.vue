@@ -10,6 +10,7 @@
       <template v-slot:extension>
        <v-tabs dark v-model="currentItem" fixed-tabs slider-color="white" style="padding-left:130px">
           <v-btn text href="/dasboard-peserta">Beranda</v-btn>
+          <v-btn text href="/daftar-sertifikasi">Daftar Jadwal Sertifikasi</v-btn>
           <v-spacer></v-spacer>
           <v-btn text @click="logout">keluar</v-btn>
         </v-tabs>

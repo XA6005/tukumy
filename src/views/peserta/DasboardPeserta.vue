@@ -52,8 +52,8 @@
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
-                    <v-btn color="blue darken-1" text @click="save(editedItem)">Save</v-btn>
+                    <v-btn color="red darken-1" text @click="close">Cancel</v-btn>
+                    <v-btn color="green darken-1" text @click="save(editedItem)">Save</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -116,8 +116,8 @@
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="closeBerkas">Cancel</v-btn>
-                    <v-btn color="blue darken-1" text @click="saveUpload(upItem)">Save</v-btn>
+                    <v-btn color="red darken-1" text @click="closeBerkas">Cancel</v-btn>
+                    <v-btn color="green darken-1" text @click="saveUpload(upItem)">Save</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -229,6 +229,9 @@ export default {
           headers: { Authorization: "Bearer " + this.$store.state.token },
         })
         .then((response) => {
+          if(response.data.jadwal==null){
+             this.$router.push("daftar-sertifikasi");
+          }
           this.sertifikasi = response.data.jadwal.map((item) => {
             return {
               id: item.id,
@@ -252,6 +255,7 @@ export default {
           });
         })
         .catch((error) => {
+          this.$router.push("daftar-sertifikasi");
           this.error_message = error;
           this.snackbar = true;
         });
@@ -367,6 +371,7 @@ export default {
         .then((response) => {
           this.error_message = response.data.message;
           this.snackbar = true;
+          this.loadPeserta();
         })
         .catch((error) => {
           this.error_message = error;
@@ -388,6 +393,7 @@ export default {
         .then((response) => {
           this.error_message = response.data.message;
           this.snackbar = true;
+          this.loadPeserta();
         })
         .catch((error) => {
           this.error_message = error;

@@ -5,12 +5,12 @@
   <br><br><br><br>
       <!-- card berita start !-->
     <v-container>
-      <v-row>
+      <v-row class="justify-center">
         <v-col
           v-for="(item, index) in cardberita"
           :key="index"
           :cols="4"
-        >
+        > 
           <v-card height="450" class="justify-center">
             <v-img
               :src="tunnel+'berita-image/'+item.image"
@@ -54,8 +54,8 @@ import karousel from '@/components/karousel.vue';
       }
     },
     mounted () {
-    this.$store.dispatch('logoutAdmin')
-    this.$store.dispatch('logoutPeserta')
+    this.$store.dispatch('logoutAdmin');
+    this.$store.dispatch('logoutPeserta');
     this.tunnel = this.$store.state.tunnel;
     axios
     .get(`${this.tunnel}berita`,{

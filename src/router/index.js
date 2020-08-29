@@ -18,9 +18,7 @@ import KelolaSkema from '../views/admin/KelolaSkema.vue'
 import KelolaAsesor from '../views/admin/KelolaAsesor.vue'
 import KelolaBerita from '../views/admin/KelolaBerita.vue'
 import KelolaPeserta from '../views/admin/KelolaPeserta.vue'
-import loginDaftar from '../views/sertifikasi/LoginDaftar.vue'
 import FormDaftar from '../views/sertifikasi/FormDaftar.vue'
-import DaftarAkun from '../views/sertifikasi/DaftarAkun.vue'
 import notFound from '../views/NotFound.vue'
 
 Vue.use(VueRouter)
@@ -77,7 +75,7 @@ const routes = [{
   },
   {
     path: '/login-peserta',
-    name: 'Login Peserta',
+    name: 'login-peserta',
     component: LoginPeserta
   },
   {
@@ -122,19 +120,9 @@ const routes = [{
     component: KelolaPeserta
   },
   {
-    path: '/login-daftar/:id',
-    name: 'login-daftar',
-    component: loginDaftar
-  },
-  {
     path: '/form-daftar',
     name: 'form-daftar',
     component: FormDaftar
-  },
-  {
-    path: '/daftar-akun/:id',
-    name: 'daftar-akun',
-    component: DaftarAkun
   },
 
 ]
