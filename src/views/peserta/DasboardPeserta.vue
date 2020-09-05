@@ -7,7 +7,6 @@
             <v-toolbar flat color="white">
               <v-toolbar-title>Selamat Datang di Dasboard Peserta</v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-btn color="#065139" dark href="/form-daftar">APL-01</v-btn>
               <v-dialog v-model="dialog" max-width="500px">
                 <v-card>
                   <v-card-title>
@@ -84,7 +83,7 @@
                         >{{upItem.berkas_verifikasi_lihat}}</a>
                         <br />
                       </div>
-                      <v-btn
+                      <!-- <v-btn
                         v-if="upItem.berkas_apl02_lihat==null"
                         class="mr-2 white--text"
                         color="#065139"
@@ -111,7 +110,7 @@
                       ></v-file-input>
                       <a
                         :href="tunnel+'sertifikat/'+upItem.sertifikat_lihat"
-                      >{{upItem.sertifikat_lihat}}</a>
+                      >{{upItem.sertifikat_lihat}}</a> -->
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
@@ -131,6 +130,7 @@
               @click="editItem(item,item.status)"
             >Upload Pembayaran</v-btn>
             <v-btn
+            v-if="item.tipe=='Online'"
               small
               class="mr-2 white--text"
               color="#065139"

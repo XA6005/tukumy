@@ -45,7 +45,7 @@
                               :rules="tanggalRules"
                               v-model="editedItem.tanggal"
                               label="Tanggal Sertifikasi"
-                              aprepend-icon="event"
+                              aprepend-icon="mdi-calendar"
                               readonly
                               v-bind="attrs"
                               v-on="on"
@@ -214,44 +214,6 @@ export default {
     if (this.$store.getters.isLoggedInAdmin) {
       this.loadSertifikasi();
       this.tunnel = this.$store.state.tunnel;
-      axios
-        .get(`${this.tunnel}jadwal`)
-        .then((response) => {
-          this.sertifikasi = response.data.jadwal.map((item) => {
-            return {
-              id: item.id,
-              tempat: item.tempat,
-              tanggal:item.tanggal,
-              jam : item.jam,
-              tipe: item.tipe,
-              biaya: parseInt(item.biaya),
-              tujuan : item.tujuanasessmen,
-              skemasertifikasi_id: item.skemasertifikasi_id,
-              namaSkema:item.skema_sertifikasi.nama
-            };
-          });
-        })
-        .catch((error) => {
-          this.error_message = error;
-          this.snackbar = true;
-        });
-      axios
-        .get(`${this.tunnel}skema`)
-        .then((response) => {
-          this.skemaid = response.data.data.SkemaSertifikasi.map((item) => {
-            return {
-              id: item.id,
-              nama: item.nama,
-            };
-          });
-          this.skema = response.data.data.SkemaSertifikasi.map((item) => {
-            return item.nama;
-          });
-        })
-        .catch((error) => {
-          this.error_message = error;
-          this.snackbar = true;
-        });
     } else {
       this.$router.push("login-admin");
     }

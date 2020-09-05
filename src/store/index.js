@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    tunnel: 'https://6aa3522f7f23.ngrok.io/',
+    tunnel: 'https://a87cdb927653.ngrok.io/',
     status: '',
     sertifikasi: localStorage.getItem('sertifikasi') || '',
     admin: localStorage.getItem('admin') || '',
@@ -144,6 +144,9 @@ export default new Vuex.Store({
           })
           .catch(err => {
             commit('auth_error')
+            localStorage.removeItem('token')
+            localStorage.removeItem('admin')
+            delete axios.defaults.headers.common['Authorization']
             reject(err)
           })
       })
@@ -169,6 +172,9 @@ export default new Vuex.Store({
           })
           .catch(err => {
             commit('auth_error')
+            localStorage.removeItem('token')
+            localStorage.removeItem('peserta')
+            delete axios.defaults.headers.common['Authorization']
             reject(err)
           })
       })

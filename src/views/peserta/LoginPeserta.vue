@@ -78,6 +78,7 @@ export default {
       error_message: "loading",
       email: "",
       password: "",
+      tunnel:"",
     };
   },
 
@@ -116,11 +117,11 @@ export default {
             const formdata = new FormData();
             formdata.append("jadwal_id", this.$store.state.sertifikasi);
             axios
-              .post(`${this.$store.state.tunnel}jadwalpeserta`, formdata, {
+              .post(`${this.tunnel}jadwalpeserta`, formdata, {
                 headers: {
                   Authorization: "Bearer " + this.$store.state.token,
                 },
-              })
+              }) 
               .then((response) => {
                 this.error_message = response.data.message;
                 this.snackbar = true;
@@ -147,6 +148,7 @@ export default {
 
   mounted() {
     this.$store.dispatch("logout");
+    this.tunnel = this.$store.state.tunnel;
   },
 };
 </script>

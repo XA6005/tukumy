@@ -197,25 +197,6 @@ export default {
     if (this.$store.getters.isLoggedInAdmin) {
       this.loadSertifikasi();
       this.tunnel = this.$store.state.tunnel;
-      axios
-        .get(`${this.tunnel}skema`)
-        .then((response) => {
-          this.sertifikasi = response.data.data.SkemaSertifikasi.map((item) => {
-            return {
-              id: item.id,
-              nama: item.nama,
-              deskripsi: item.deskripsi,
-              tujuan: item.tujuan,
-              detail_skema_lihat: item.detail_skema,
-              berkas_skema_lihat: item.berkas_skema,
-              berkas_apl02_lihat: item.berkas_apl02,
-            };
-          });
-        })
-        .catch((error) => {
-          this.error_message = error;
-          this.snackbar = true;
-        });
      } else {
       this.$router.push("login-admin");
     }

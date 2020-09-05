@@ -136,22 +136,6 @@ export default {
     if (this.$store.getters.isLoggedInAdmin) {
     this.loadBerita();
     this.tunnel = this.$store.state.tunnel;
-    axios
-      .get(`${this.tunnel}berita`)
-      .then((response) => {
-        this.berita = response.data.data.berita.map((item) => {
-          return {
-            id: item.id,
-            judul: item.judul,
-            isi: item.isi,
-            tanggal: item.update_at,
-          };
-        });
-      })
-      .catch((error) => {
-        this.error_message = error;
-        this.snackbar = true;
-      });
     } else {
     this.$router.push("login-admin");
     }

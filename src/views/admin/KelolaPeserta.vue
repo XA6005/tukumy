@@ -2,18 +2,72 @@
   <v-app id="Kelola Peserta">
     <v-main>
       <div class="container mt-5">
-        <v-data-table :headers="headers" :items="jadwal" :search="search" class="elevation-1">
+        <v-data-table
+          :headers="headers"
+          :items="jadwal"
+          :item-key="namaSkema"
+          class="elevation-1 pa-6"
+        >
           <template v-slot:top>
             <v-toolbar flat color="white">
               <v-toolbar-title>Kelola Peserta</v-toolbar-title>
-              <v-spacer></v-spacer>
-              <v-text-field
-                v-model="search"
-                append-icon="mdi-magnify"
-                label="Cari"
-                single-line
-                hide-details
-              ></v-text-field>
+              <v-row>
+                <v-spacer></v-spacer>
+                <v-col cols="3">
+                  <v-select
+                    :items="skema"
+                    v-model="cariSkema"
+                    label="cari nama skema"
+                  ></v-select>
+                </v-col>
+                <v-col cols="3">
+                  <v-menu
+                    v-model="menu"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="CariTanggal1"
+                        label="cari dari Tanggal"
+                        append-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="CariTanggal1" @input="menu = false"></v-date-picker>
+                  </v-menu>
+                </v-col>
+                <v-col cols="3">
+                  <v-menu
+                    v-model="menu2"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="CariTanggal2"
+                        label="cari sampai Tanggal"
+                        append-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="CariTanggal2" @input="menu2 = false"></v-date-picker>
+                  </v-menu>
+                </v-col>
+                <v-col cols="1">
+                  <v-btn color="red darken-1"  @click="hapusFilter">Hapus Filter</v-btn>
+                </v-col>
+              </v-row>
               <v-dialog v-model="dialog" max-width="700px">
                 <v-card>
                   <v-card-title>
@@ -75,6 +129,7 @@
                       <h2>a. Data Pribadi</h2>
                       <v-text-field v-model="APL01Item.email" label="Email" disabled="true"></v-text-field>
                       <v-text-field v-model="APL01Item.nama" label="Nama Lengkap" disabled="true"></v-text-field>
+                      <v-text-field v-model="APL01Item.nim" label="NIM" disabled="true"></v-text-field>
                       <v-text-field v-model="APL01Item.tempat" label="Tempat Lahir" disabled="true"></v-text-field>
                       <v-text-field
                         v-model="APL01Item.tanggal"
@@ -186,7 +241,7 @@
               class="mr-2 white--text"
               color="#065139"
               @click="lihatAPL01(item)"
-            >Lihat APL01</v-btn>
+            >Lihat Biodata</v-btn>
             <v-btn
               v-if="item.berkas_apl02!=null"
               small
@@ -226,21 +281,17 @@ export default {
       snackbar: "",
       error_message: "",
       tunnel: "",
-      search: "",
+      cariSkema: null,
+      CariTanggal1: "",
+      CariTanggal2: "",
+      menu: false,
+      menu2: false,
       tunnelgambar: this.tunnel + "bukti-pembayaran/",
       dialog: false,
       dialogStatus: false,
       dialogAPL01: false,
-      headers: [
-        { text: "Tanggal Jadwal", value: "tanggalJadwal", align: "start" },
-        { text: "nama Skema", value: "namaSkema" },
-        { text: "tipe Ujian", value: "tipe" },
-        { text: "Email Peserta", value: "email" },
-        { text: "Status", value: "status" },
-        { text: "Keterangan", value: "komentar" },
-        { text: "Action", value: "actions" },
-      ],
       stat: ["belum lengkap", "lengkap"],
+      skema: [],
       jadwal: [],
       detailJadwal: [],
       editedItem: {
@@ -261,6 +312,7 @@ export default {
       APL01Item: {
         email: "",
         nama: "",
+        nim: "",
         tempat: "",
         tanggal: "",
         jenisKelamin: "",
@@ -284,6 +336,27 @@ export default {
       },
     };
   },
+
+  computed: {
+    headers() {
+      return [
+        {
+          text: "Tanggal Jadwal",
+          value: "tanggalJadwal",
+          align: "start",
+          filter: this.filterTanggal,
+        },
+        { text: "nama Skema", value: "namaSkema",filter: this.filterSkema, },
+        { text: "tipe Ujian", value: "tipe" },
+        { text: "NIM Peserta", value: "nim" },
+        { text: "nama Peserta", value: "nama" },
+        { text: "Status", value: "status" },
+        { text: "Keterangan", value: "komentar" },
+        { text: "Action", value: "actions" },
+      ];
+    },
+  },
+
   watch: {
     dialog(val) {
       val || this.close();
@@ -292,104 +365,9 @@ export default {
 
   mounted() {
     if (this.$store.getters.isLoggedInAdmin) {
-      this.loadData();
       this.user = this.$store.state.user;
       this.tunnel = this.$store.state.tunnel;
-      axios
-        .get(`${this.tunnel}jadwalpeserta`, {
-          headers: { Authorization: "Bearer " + this.$store.state.token },
-        })
-        .then((response) => {
-          const list = response.data.data.jadwal.map((det) => {
-            return det.peserta;
-          });
-          const detailJadwal = response.data.data.jadwal.map((it) => {
-            return {
-              id: it.id,
-              tipe: it.tipe,
-              tanggal: it.tanggal,
-              namaSkema: it.skema_sertifikasi.nama,
-            };
-          });
-          const jadwalSem = [].concat.apply([], list).map((item) => {
-            return {
-              jadwal_id: item.pivot.jadwal_id,
-              email: item.email,
-              namaSkema: detailJadwal.find(
-                ({ id }) => id === item.pivot.jadwal_id
-              ),
-              peserta_id: item.pivot.peserta_id,
-              status: item.pivot.status,
-              komentar: item.pivot.komentar,
-              image: item.pivot.bukti_pembayaran,
-              berkas_apl02: item.pivot.berkas_apl02,
-              berkas_verifikasi: item.pivot.berkas_verifikasi,
-              sertifikat: item.pivot.sertifikat,
-              nama: item.biodata.namaLengkap,
-              tempat: item.biodata.tempatLahir,
-              tanggal: item.biodata.tanggalLahir,
-              jenisKelamin: item.biodata.jenisKelamin,
-              kebangsaan: item.biodata.kebangsaan,
-              alamat: item.biodata.alamatRumah,
-              kodepos: item.biodata.kodeposRumah,
-              notelpRumah: item.biodata.noTeleponRumah,
-              notelpHp: item.biodata.noHP,
-              notelpKantor: item.biodata.noTeleponPerusahaan,
-              pendidikan: item.biodata.pendidikanTerakhir,
-              perusahaan: item.biodata.namaPerusahaan,
-              jabatan: item.biodata.jabatandiPerusahaan,
-              alamatKantor: item.biodata.alamatPerusahaan,
-              kodeposKantor: item.biodata.kodeposPerusahaan,
-              fax: item.biodata.faxPerusahaan,
-              emailKantor: item.biodata.emailPerusahaan,
-              pekerjaan: item.biodata.pekerjaan,
-              ijazah: item.biodata.ijazah,
-              photo: item.biodata.photo,
-              identitas: item.biodata.kartu_identitas,
-            };
-          });
-          this.jadwal = jadwalSem.map((item) => {
-            return {
-              jadwal_id: item.jadwal_id,
-              email: item.email,
-              namaSkema: item.namaSkema.namaSkema,
-              tipe: item.namaSkema.tipe,
-              tanggalJadwal: item.namaSkema.tanggal,
-              peserta_id: item.peserta_id,
-              status: item.status,
-              komentar: item.komentar,
-              image: item.image,
-              berkas_apl02: item.berkas_apl02,
-              berkas_verifikasi: item.berkas_verifikasi,
-              sertifikat: item.sertifikat,
-              nama: item.nama,
-              tempat: item.tempat,
-              tanggal: item.tanggal,
-              jenisKelamin: item.jenisKelamin,
-              kebangsaan: item.kebangsaan,
-              alamat: item.alamat,
-              kodepos: item.kodepos,
-              notelpRumah: item.notelpRumah,
-              notelpHp: item.notelpHp,
-              notelpKantor: item.notelpKantor,
-              pendidikan: item.pendidikan,
-              perusahaan: item.perusahaan,
-              jabatan: item.jabatan,
-              alamatKantor: item.alamatKantor,
-              kodeposKantor: item.kodeposKantor,
-              fax: item.fax,
-              emailKantor: item.emailKantor,
-              pekerjaan: item.pekerjaan,
-              ijazah: item.ijazah,
-              photo: item.photo,
-              identitas: item.identitas,
-            };
-          });
-        })
-        .catch((error) => {
-          this.error_message = error;
-          this.snackbar = true;
-        });
+      this.loadData();
     } else {
       this.$router.push("login-admin");
     }
@@ -397,9 +375,20 @@ export default {
 
   methods: {
     loadData() {
+      axios
+        .get(`${this.tunnel}skema`)
+        .then((response) => {
+          this.skema = response.data.data.SkemaSertifikasi.map((item) => {
+            return item.nama;
+          });
+        })
+        .catch((error) => {
+          this.error_message = error;
+          this.snackbar = true;
+        });
       this.jadwal = [];
       axios
-        .get(`${this.tunnel}jadwalpeserta`, {
+        .get(this.tunnel + `jadwalpeserta`, {
           headers: { Authorization: "Bearer " + this.$store.state.token },
         })
         .then((response) => {
@@ -429,6 +418,7 @@ export default {
               berkas_verifikasi: item.pivot.berkas_verifikasi,
               sertifikat: item.pivot.sertifikat,
               nama: item.biodata.namaLengkap,
+              nim: item.biodata.nim,
               tempat: item.biodata.tempatLahir,
               tanggal: item.biodata.tanggalLahir,
               jenisKelamin: item.biodata.jenisKelamin,
@@ -465,7 +455,9 @@ export default {
               berkas_apl02: item.berkas_apl02,
               berkas_verifikasi: item.berkas_verifikasi,
               sertifikat: item.sertifikat,
+              biodata: item.biodata,
               nama: item.nama,
+              nim: item.nim,
               tempat: item.tempat,
               tanggal: item.tanggal,
               jenisKelamin: item.jenisKelamin,
@@ -491,6 +483,9 @@ export default {
         })
         .catch((error) => {
           this.error_message = error;
+          if(error.status==401){
+            this.error_message = "Login Lagi"
+          }
           this.snackbar = true;
         });
     },
@@ -543,6 +538,33 @@ export default {
     },
     closedialogAPL01() {
       this.dialogAPL01 = false;
+    },
+    hapusFilter() {
+      this.cariSkema=""
+      this.CariTanggal1=null
+      this.CariTanggal2=null
+    },
+    filterSkema(value) {
+      if (!this.cariSkema) {
+        return true;
+      }
+      return value === this.cariSkema;
+    },
+    filterTanggal(value) {
+      if (!this.CariTanggal1&&!this.CariTanggal2) {
+        return true;
+      }
+      if (!this.CariTanggal1&&this.CariTanggal2) {
+        return value<=this.CariTanggal2;
+      }
+      if (this.CariTanggal1&&!this.CariTanggal2) {
+        return this.CariTanggal1<=value;
+      }
+      console.log(value)
+      if(value>=this.CariTanggal1)
+      {
+        return value<=this.CariTanggal2;
+      }
     },
   },
 };

@@ -4,7 +4,7 @@
       <div class="container mt-5">
         <v-form v-model="valid" lazy-validation>
           <h1>
-            Rincian Data Pemohon Sertifikasi
+            Rincian Data Pemohon Sertifikasi {{nim}}
           </h1>
           <p>Pada bagian ini,  cantumkan data pribadi, data pendidikan formal serta data pekerjaan anda pada saat ini.</p>
           <h2>
@@ -18,6 +18,15 @@
             required
             @input="$v.nama.$touch()"
             @blur="$v.nama.$touch()"
+          ></v-text-field>
+          <v-text-field
+            v-model="nim"
+            :error-messages="nimErrors"
+            label="NIM *"
+            required
+            :counter="11"
+            @input="$v.nim.$touch()"
+            @blur="$v.nim.$touch()"
           ></v-text-field>
           <v-text-field
             v-model="tempat"
@@ -39,7 +48,7 @@
                 v-model="tanggal"
                 :error-messages="tanggalErrors"
                 label="Tanggal Lahir *"
-                :prepend-icon-cb="event"
+                aprepend-icon="mdi-calendar"
                 readonly
                 required
                 v-bind="attrs"
@@ -242,6 +251,7 @@ export default {
   mixins: [validationMixin],
   validations: {
     nama: { required, alphaSpace },
+    nim: { required, numeric, maxLength: maxLength(11) },
     tempat: { required, alpha },
     tanggal: { required },
     jenisKelamin: { required },
@@ -283,6 +293,7 @@ export default {
     menu2: false,
     error_message: "",
     nama: "",
+    nim:"",
     tempat: "",
     tanggal: null,
     jenisKelamin: null,
@@ -324,6 +335,14 @@ export default {
       if (!this.$v.nama.$dirty) return errors;
       !this.$v.nama.alphaSpace && errors.push("Data harus alfabet diperlukan");
       !this.$v.nama.required && errors.push("Data diperlukan");
+      return errors;
+    },
+    nimErrors() {
+      const errors = [];
+      if (!this.$v.nim.$dirty) return errors;
+      !this.$v.nim.numeric && errors.push("Data harus angka diperlukan");
+      !this.$v.nim.maxLength && errors.push("Data maximal 11 karakter ");
+      !this.$v.nim.required && errors.push("Data diperlukan");
       return errors;
     },
     tempatErrors() {
@@ -452,6 +471,7 @@ export default {
       } else {
         const data = new FormData();
         data.append("namaLengkap", this.nama);
+        data.append("nim", this.nim);
         data.append("tempatLahir", this.tempat);
         data.append("tanggalLahir", this.tanggal);
         if(this.jenisKelamin=="Perempuan"){
@@ -509,6 +529,7 @@ export default {
       } else {
         const data = new FormData();
         data.append("namaLengkap", this.nama);
+        data.append("nim", this.nim);
         data.append("tempatLahir", this.tempat);
         data.append("tanggalLahir", this.tanggal);
         if(this.jenisKelamin=="Perempuan"){
@@ -553,6 +574,7 @@ export default {
     clear() {
       this.$v.$reset();
       this.nama = "";
+      this.nim = "";
       this.tempat = "";
       (this.tanggal = null), (this.jenisKelamin = null);
       this.kebangsaan = "";
@@ -587,8 +609,10 @@ export default {
           headers: { Authorization: "bearer " + this.$store.state.token },
         })
         .then((response) => {
+          console.log(response.data)
           this.jenis = response.data.user.biodata.namaLengkap;
           this.nama = response.data.user.biodata.namaLengkap;
+          this.nim = response.data.user.biodata.nim;
           this.tempat = response.data.user.biodata.tempatLahir;
           this.tanggal = response.data.user.biodata.tanggalLahir;
           this.jenisKelamin = response.data.user.biodata.jenisKelamin;

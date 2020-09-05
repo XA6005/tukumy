@@ -139,40 +139,8 @@ export default {
 
   mounted() {
     if (this.$store.getters.isLoggedInAdmin) {
-      this.loadSertifikasi();
       this.tunnel = this.$store.state.tunnel;
-      axios
-        .get(`${this.tunnel}asesor`)
-        .then((response) => {
-          this.sertifikasi = response.data.data.asesor.map((item) => {
-            return {
-              id: item.id,
-              namaLengkap: item.namaLengkap,
-              ruangLingkup: item.skema_sertifikasi.nama,
-            };
-          });
-        })
-        .catch((error) => {
-          this.error_message = error;
-          this.snackbar = true;
-        });
-        axios
-        .get(`${this.tunnel}skema`)
-        .then((response) => {
-          this.skemaid = response.data.data.SkemaSertifikasi.map((item) => {
-            return {
-              id: item.id,
-              nama: item.nama,
-            };
-          });
-          this.skema = response.data.data.SkemaSertifikasi.map((item) => {
-            return item.nama;
-          });
-        })
-        .catch((error) => {
-          this.error_message = error;
-          this.snackbar = true;
-        });
+      this.loadSertifikasi();
      } else {
       this.$router.push("login-admin");
     } 
