@@ -113,6 +113,8 @@ export default {
         this.$store
         .dispatch("login", { email, password })
         .then(() => {
+          this.error_message = "Login Berhasil"
+          this.snackbar=true
           if(this.$store.getters.isSertifikasiPick){
             const formdata = new FormData();
             formdata.append("jadwal_id", this.$store.state.sertifikasi);
@@ -141,7 +143,11 @@ export default {
           this.snackbar = true;
           }
         })
-        .catch((err) => (this.error_message = err), (this.snackbar = true));
+        .catch((err) => {
+          this.error_message = err
+          this.error_message = this.$store.status 
+          this.snackbar = true
+        });
       }
     },
   },

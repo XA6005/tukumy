@@ -65,6 +65,7 @@ export default new Vuex.Store({
           })
           .catch(err => {
             commit('auth_error')
+            localStorage.setItem('status', err)
             localStorage.removeItem('token')
             reject(err)
           })
@@ -91,6 +92,7 @@ export default new Vuex.Store({
           })
           .catch(err => {
             commit('auth_error')
+            localStorage.setItem('status', err)
             localStorage.removeItem('token')
             localStorage.removeItem('admin')
             reject(err)
@@ -118,6 +120,7 @@ export default new Vuex.Store({
           })
           .catch(err => {
             commit('auth_error')
+            localStorage.setItem('status', err)
             localStorage.removeItem('token')
             reject(err)
           })

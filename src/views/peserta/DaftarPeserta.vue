@@ -105,7 +105,11 @@ export default {
       this.$store
         .dispatch("register", { email, password })
         .then(() => this.$router.push("dasboard-peserta"))
-        .catch((err) => (this.error_message = err), (this.snackbar = true));
+        .catch((err) => {
+          this.error_message = err
+          this.error_message = this.$store.status
+          this.snackbar = true
+          });
       }
     },
   },

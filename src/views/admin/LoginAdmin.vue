@@ -106,7 +106,11 @@ export default {
         this.$store
           .dispatch("loginAdmin", { email, password })
           .then(() => this.$router.push("/kelola-sertifikasi"))
-          .catch((err) => (this.error_message = err), (this.snackbar = true));
+          .catch((err) => {
+            this.error_message = err
+            this.error_message = this.$store.status 
+            this.snackbar = true
+          });
       }
     },
   },

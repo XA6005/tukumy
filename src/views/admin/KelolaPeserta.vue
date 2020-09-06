@@ -8,17 +8,16 @@
           :item-key="namaSkema"
           class="elevation-1 pa-6"
         >
+          <template v-slot:item.status="{ item }">
+            <v-chip :color="getColor(item.status)" dark>{{ item.status }}</v-chip>
+          </template>
           <template v-slot:top>
             <v-toolbar flat color="white">
               <v-toolbar-title>Kelola Peserta</v-toolbar-title>
               <v-row>
                 <v-spacer></v-spacer>
                 <v-col cols="3">
-                  <v-select
-                    :items="skema"
-                    v-model="cariSkema"
-                    label="cari nama skema"
-                  ></v-select>
+                  <v-select :items="skema" v-model="cariSkema" label="nama skema"></v-select>
                 </v-col>
                 <v-col cols="3">
                   <v-menu
@@ -32,7 +31,7 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
                         v-model="CariTanggal1"
-                        label="cari dari Tanggal"
+                        label="dari tanggal"
                         append-icon="mdi-calendar"
                         readonly
                         v-bind="attrs"
@@ -54,7 +53,7 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
                         v-model="CariTanggal2"
-                        label="cari sampai Tanggal"
+                        label="sampai tanggal"
                         append-icon="mdi-calendar"
                         readonly
                         v-bind="attrs"
@@ -65,7 +64,7 @@
                   </v-menu>
                 </v-col>
                 <v-col cols="1">
-                  <v-btn color="red darken-1"  @click="hapusFilter">Hapus Filter</v-btn>
+                  <v-btn color="red darken-1" dark small @click="hapusFilter">reset</v-btn>
                 </v-col>
               </v-row>
               <v-dialog v-model="dialog" max-width="700px">
@@ -346,7 +345,7 @@ export default {
           align: "start",
           filter: this.filterTanggal,
         },
-        { text: "nama Skema", value: "namaSkema",filter: this.filterSkema, },
+        { text: "nama Skema", value: "namaSkema", filter: this.filterSkema },
         { text: "tipe Ujian", value: "tipe" },
         { text: "NIM Peserta", value: "nim" },
         { text: "nama Peserta", value: "nama" },
@@ -384,7 +383,7 @@ export default {
         })
         .catch((error) => {
           this.error_message = error;
-          this.snackbar = true;
+          //this.snackbar = true;
         });
       this.jadwal = [];
       axios
@@ -482,11 +481,12 @@ export default {
           });
         })
         .catch((error) => {
-          this.error_message = error;
-          if(error.status==401){
-            this.error_message = "Login Lagi"
+          console.log(error);
+          
+          if (error.response.status === 404) {
+            this.error_message = "Login Lagi";
+            this.snackbar = true;
           }
-          this.snackbar = true;
         });
     },
 
@@ -540,9 +540,9 @@ export default {
       this.dialogAPL01 = false;
     },
     hapusFilter() {
-      this.cariSkema=""
-      this.CariTanggal1=null
-      this.CariTanggal2=null
+      this.cariSkema = "";
+      this.CariTanggal1 = null;
+      this.CariTanggal2 = null;
     },
     filterSkema(value) {
       if (!this.cariSkema) {
@@ -551,20 +551,32 @@ export default {
       return value === this.cariSkema;
     },
     filterTanggal(value) {
-      if (!this.CariTanggal1&&!this.CariTanggal2) {
+      if (!this.CariTanggal1 && !this.CariTanggal2) {
         return true;
       }
-      if (!this.CariTanggal1&&this.CariTanggal2) {
-        return value<=this.CariTanggal2;
+      else if (!this.CariTanggal1 && this.CariTanggal2) {
+        return value <= this.CariTanggal2;
       }
-      if (this.CariTanggal1&&!this.CariTanggal2) {
-        return this.CariTanggal1<=value;
+      else if (this.CariTanggal1 && !this.CariTanggal2) {
+        return this.CariTanggal1 <= value;
       }
-      console.log(value)
-      if(value>=this.CariTanggal1)
-      {
-        return value<=this.CariTanggal2;
+      else if(this.CariTanggal1>this.CariTanggal2){
+        this.error_message = "Pengisian filter tanggal salah";
+        this.snackbar = true;
+        this.CariTanggal1 = null;
+        this.CariTanggal2 = null;
+        return true;
       }
+      else{
+        if (value >= this.CariTanggal1) {
+        return value <= this.CariTanggal2;
+      }
+      }
+    },
+    getColor(status) {
+      if (status === "belum lengkap") return "red";
+      else if (status === "sedang proses") return "orange";
+      else return "green";
     },
   },
 };
