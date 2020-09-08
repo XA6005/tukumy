@@ -561,9 +561,8 @@ export default {
         return this.CariTanggal1 <= value;
       }
       else if(this.CariTanggal1>this.CariTanggal2){
-        this.error_message = "Pengisian filter tanggal salah";
+        this.error_message = "Pengisian filter tanggal sampai tidak boleh kurang dari dari tanggal";
         this.snackbar = true;
-        this.CariTanggal1 = null;
         this.CariTanggal2 = null;
         return true;
       }

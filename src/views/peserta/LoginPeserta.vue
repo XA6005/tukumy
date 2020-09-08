@@ -5,13 +5,13 @@
         <v-form v-model="valid" lazy-validation>
           <div class="grey lighten-3 rounded-xl col-md-5 mx-auto my-auto">
             <div >
-            <h1 class="text-center">MASUK</h1>
-            <h2 class="text-center">
+            <h1 class="text-center">LOGIN PESERTA</h1>
+            <h3 class="text-center">
               <br/>
-              PORTAL PESERTA TEMPAT UJI KOMPENTENSI(TUK)
+              TEMPAT UJI KOMPENTENSI(TUK)
               <br />
               PRODI TEKNOLOGI INFORMASI UMY
-            </h2>
+            </h3>
             <div class="jumbotron mt-4">
               <v-text-field
                 full-width="50"

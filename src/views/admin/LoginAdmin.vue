@@ -4,12 +4,12 @@
       <div class="container mt-5">
         <v-form v-model="valid" lazy-validation>
           <div class="grey lighten-3 rounded-xl col-md-5 mx-auto my-auto">
-            <h1 class="text-center">Masuk</h1>
-            <h2 class="text-center">
-              Portal ADMIN Tempat Uji Kompetensi(TUK)
+            <h1 class="text-center">LOGIN ADMIN</h1>
+            <h3 class="text-center">
+              TEMPAT UJI KOMPETENSI(TUK)
               <br />
-              <small style="font-size:11pt">Prodi Teknologi Informasi UMY</small>
-            </h2>
+              PRODI TEKNOLOGI INFORMASI UMY
+            </h3>
             <div class="jumbotron mt-4">
               <v-text-field
                 label="E-mail"
