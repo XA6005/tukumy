@@ -76,14 +76,13 @@ export default {
     axios
       .get(`${this.tunnel}skema`)
       .then((response) => {
-        this.skema = response.data.data.SkemaSertifikasi.map((item) => {
+        this.skema = response.data.skema.map((item) => {
           return {
             id: item.id,
             nama: item.nama,
             deskripsi: item.deskripsi,
             tujuan: item.tujuan,
-            detail:item.detail_skema,
-            asesor:item.asesors.namaLengkap,
+            detail:item.detail_skema
           };
         });
       })

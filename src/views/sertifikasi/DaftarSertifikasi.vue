@@ -157,8 +157,8 @@ export default {
               tipe: item.tipe,
               biaya: item.biaya,
               tujuan : item.tujuanasessmen,
-              skemasertifikasi_id: item.skemasertifikasi_id,
-              namaSkema:item.skema_sertifikasi.nama
+              skema_id: item.skema_id,
+              namaSkema:item.skema.nama
             };
           });
       }) 

@@ -45,7 +45,7 @@
                               :rules="tanggalRules"
                               v-model="editedItem.tanggal"
                               label="Tanggal Sertifikasi"
-                              aprepend-icon="mdi-calendar"
+                              append-icon="mdi-calendar"
                               readonly
                               v-bind="attrs"
                               v-on="on"
@@ -82,6 +82,7 @@
                           <v-time-picker
                             v-if="menu1"
                             v-model="editedItem.jam"
+                            use-seconds
                             full-width
                             @click:minute="$refs.menu.save(editedItem.jam)"
                           ></v-time-picker>
@@ -90,9 +91,9 @@
                           type="number" 
                           required
                           :rules="biayaRules"
-                          v-model="editedItem.biaya"
-                          label="Biaya"
-                        ></v-text-field>
+                          v-model.number="editedItem.biaya"
+                          label="Biaya"/>
+                        {{Number(editedItem.biaya).toLocaleString()}}
                         <v-select
                           required
                           :rules="tujuanRules"
@@ -142,6 +143,7 @@ export default {
       valid: true,
       skemaRules: [(v) => !!v || "Skema harus dipilih"],
       tanggalRules: [(v) => !!v || "Tanggal harus dipilih"],
+      biayaRules: [(v) => !!v || "biaya harus diisi angka"],
       jamRules: [(v) => !!v || "Jam harus dipilih"],
       tujuanRules: [(v) => !!v || "Tujuan harus dipilih"],
       tipeRules: [(v) => !!v || "Tipe harus dipilih"],
@@ -171,7 +173,9 @@ export default {
         { text: "Tujuan Assesmen", value: "tujuan" },
         { text: "Actions", value: "actions" },
       ],
-      sertifikasi: [],
+      sertifikasi: [
+        
+      ],
       skemaid: [],
       skema: [],
       editedIndex: -1,
@@ -179,7 +183,7 @@ export default {
         id: "",
         namaSkema: "",
         tempat: "",
-        tanggal: "",
+        tanggal: null,
         jam: null,
         biaya: null,
         tujuan: "",
@@ -189,7 +193,7 @@ export default {
         id: "",
         namaSkema: "",
         tempat: "",
-        tanggal: "-",
+        tanggal: null,
         jam: null,
         biaya: null,
         tujuan: "",
@@ -214,9 +218,9 @@ export default {
     if (this.$store.getters.isLoggedInAdmin) {
       this.loadSertifikasi();
       this.tunnel = this.$store.state.tunnel;
-    } else {
+     } else {
       this.$router.push("login-admin");
-    }
+    }  
   },
 
   methods: {
@@ -228,33 +232,37 @@ export default {
         .then((response) => {
           this.sertifikasi = response.data.jadwal.map((item) => {
             return {
-              id: item.id,
-              tempat: item.tempat,
-              tanggal:item.tanggal,
-              jam : item.jam,
-              tipe: item.tipe,
-              biaya: item.biaya,
-              tujuan : item.tujuanasessmen,
-              skemasertifikasi_id: item.skemasertifikasi_id,
-              namaSkema:item.skema_sertifikasi.nama
+              id: item.Id_Jadwal,
+              tempat: item.Tempat,
+              tanggal:item.Tanggal,
+              jam : item.Jam,
+              tipe: item.TipeUjian,
+              biaya: item.Biaya,
+              tujuan : item.TujuanAsesmen,
+              skema_id: item.Skema_Id,
+              namaSkema:item.skema.NamaSkema
             };
           });
         })
         .catch((error) => {
           this.error_message = error;
+          if (error.response.status === 404) {
+            this.error_message = "Data Kosong";
+            this.snackbar = true;
+          }
           this.snackbar = true;
         });
       axios
         .get(`${this.tunnel}skema`)
         .then((response) => {
-          this.skemaid = response.data.data.SkemaSertifikasi.map((item) => {
+          this.skemaid = response.data.skema.map((item) => {
             return {
-              id: item.id,
-              nama: item.nama,
+              id: item.Id_Skema,
+              nama: item.NamaSkema,
             };
           });
-          this.skema = response.data.data.SkemaSertifikasi.map((item) => {
-            return item.nama;
+          this.skema = response.data.skema.map((item) => {
+            return item.NamaSkema;
           });
         })
         .catch((error) => {
@@ -270,7 +278,7 @@ export default {
     },
 
     deleteItem(item) {
-      confirm("Kamu yakin mau menghapus sertifikasi ini?") &&
+      confirm("Kamu yakin mau menghapus jadwal ini?") &&
         axios
           .delete(`${this.tunnel}jadwal/` + item.id, {
             headers: {
@@ -301,13 +309,13 @@ export default {
       var a =parseInt(item.biaya);
       if (this.editedIndex > -1) {
         const formdata = new FormData();
-        formdata.append("tempat", item.tempat);
-        formdata.append("tanggal", item.tanggal);
-        formdata.append("jam", item.jam);
-        formdata.append("tipe", item.tipe);
-        formdata.append("biaya", a);
-        formdata.append("skemasertifikasi_id", skid.id);
-        formdata.append("tujuanasessmen", item.tujuan);
+        formdata.append("Tempat", item.tempat);
+        formdata.append("Tanggal", item.tanggal);
+        formdata.append("Jam", item.jam);
+        formdata.append("TipeUjian", item.tipe);
+        formdata.append("Biaya", a);
+        formdata.append("Skema_Id", skid.id);
+        formdata.append("TujuanAsesmen", item.tujuan);
         formdata.append("_method", "PUT");
         this.error_message = "Mohon tunggu";
         this.snackbar = true;
@@ -332,13 +340,13 @@ export default {
         this.$refs.form.validate(item);
         if (this.valid == true) {
           const formdata = new FormData();
-          formdata.append("tempat", item.tempat);
-          formdata.append("tanggal", item.tanggal);
-          formdata.append("jam", item.jam);
-          formdata.append("tipe", item.tipe);
-          formdata.append("biaya", item.biaya);
-          formdata.append("skemasertifikasi_id", skid.id);
-          formdata.append("tujuanasessmen", item.tujuan);
+          formdata.append("Tempat", item.tempat);
+          formdata.append("Tanggal", item.tanggal);
+          formdata.append("Jam", item.jam);
+          formdata.append("TipeUjian", item.tipe);
+          formdata.append("Biaya", item.biaya);
+          formdata.append("Skema_Id", skid.id);
+          formdata.append("TujuanAsesmen", item.tujuan);
           this.error_message = "Mohon tunggu";
           this.snackbar = true;
           axios

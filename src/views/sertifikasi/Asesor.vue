@@ -45,12 +45,12 @@ export default {
     axios
       .get(`${this.tunnel}asesor`)
       .then((response) => {
-        this.asesor = response.data.data.asesor.map((item) => {
+        this.asesor = response.data.asesor.map((item) => {
           return {
             id: item.id,
             namaLengkap: item.namaLengkap,
             image:item.photo,
-            ruangLingkup: item.skema_sertifikasi.nama,
+            ruangLingkup: item.skema.nama,
           };
         });
       })

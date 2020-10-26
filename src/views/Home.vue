@@ -63,7 +63,7 @@ import karousel from '@/components/karousel.vue';
       }
     })
       .then((response) => {
-        this.cardberita = response.data.data.berita
+        this.cardberita = response.data.berita
       }) 
   },
   }

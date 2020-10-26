@@ -2,7 +2,7 @@
   <v-app id="Kelola Asesor">
     <v-main>
       <div class="container mt-5">
-        <v-data-table :headers="headers" :items="sertifikasi" class="elevation-1">
+        <v-data-table :headers="headers" :items="asesor" class="elevation-1">
           <template v-slot:top>
             <v-toolbar flat color="white">
               <v-toolbar-title>Kelola Asesor</v-toolbar-title>
@@ -26,16 +26,16 @@
                     <v-container>
                       <v-form ref="form" v-model="valid" lazy-validation>
                         <v-text-field
-                          :rules="namaLengkapRules"
+                          :rules="NamaAsesorRules"
                           required
-                          v-model="editedItem.namaLengkap"
+                          v-model="editedItem.NamaAsesor"
                           label="Nama Lengkap Asesor"
                         ></v-text-field>
                         <v-select
                           required
                           :rules="skemaRules"
                           :items="skema"
-                          v-model="editedItem.namaSkema"
+                          v-model="editedItem.ruangLingkup"
                           label="Skema Sertifikasi"
                         ></v-select>
                         <v-file-input
@@ -91,7 +91,7 @@ export default {
   data() {
     return {
       valid: true,
-      namaLengkapRules: [(v) => !!v || "Nama Skema Harus Diisi"],
+      NamaAsesorRules: [(v) => !!v || "Nama Skema Harus Diisi"],
       skemaRules: [(v) => !!v || "Skema harus dipilih"],
       imageRules: [
       v => !!v || 'File diperlukan',
@@ -102,24 +102,24 @@ export default {
       tunnel: "",
       dialog: false,
       headers: [
-        { text: "Nama Asessor", value: "namaLengkap" },
+        { text: "Nama Asessor", value: "NamaAsesor" },
         { text: "Ruang Lingkup Sertifikasi", value: "ruangLingkup" },
         { text: "Actions", value: "actions" },
       ],
-      sertifikasi: [],
+      asesor: [],
       skemaid: [],
       skema: [],
       editedIndex: -1,
       editedItem: {
         id: "",
-        namaLengkap: "",
-        namaSkema: "",
+        NamaAsesor: "",
+        ruangLingkup: "",
         image:null,
       },
       defaultItem: {
         id: "",
-        namaLengkap: "",
-        namaSkema: "",
+        NamaAsesor: "",
+        ruangLingkup: "",
         image:null,
       },
     };
@@ -143,21 +143,21 @@ export default {
       this.loadSertifikasi();
      } else {
       this.$router.push("login-admin");
-    } 
+    }  
   },
 
   methods: {
     loadSertifikasi() {
-      this.sertifikasi = [];
+      this.asesor = [];
       this.tunnel = this.$store.state.tunnel;
       axios
         .get(`${this.tunnel}asesor`)
         .then((response) => {
-          this.sertifikasi = response.data.data.asesor.map((item) => {
+          this.asesor = response.data.asesor.map((item) => {
             return {
-              id: item.id,
-              namaLengkap: item.namaLengkap,
-              ruangLingkup: item.skema_sertifikasi.nama,
+              id: item.Id_Asesor,
+              NamaAsesor: item.NamaAsesor,
+              ruangLingkup: item.skema.NamaSkema,
             };
           });
         })
@@ -168,14 +168,14 @@ export default {
         axios
         .get(`${this.tunnel}skema`)
         .then((response) => {
-          this.skemaid = response.data.data.SkemaSertifikasi.map((item) => {
+          this.skemaid = response.data.skema.map((item) => {
             return {
-              id: item.id,
-              nama: item.nama,
+              id: item.Id_Skema,
+              nama: item.NamaSkema,
             };
           });
-          this.skema = response.data.data.SkemaSertifikasi.map((item) => {
-            return item.nama;
+          this.skema = response.data.skema.map((item) => {
+            return item.NamaSkema;
           });
         })
         .catch((error) => {
@@ -185,13 +185,13 @@ export default {
     },
 
     editItem(item) {
-      this.editedIndex = this.sertifikasi.indexOf(item);
+      this.editedIndex = this.asesor.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      confirm("Kamu yakin mau menghapus sertifikasi ini?") &&
+      confirm("Kamu yakin mau menghapus asesor ini?") &&
         axios
           .delete(`${this.tunnel}asesor/` + item.id, {
             headers: {
@@ -219,16 +219,16 @@ export default {
 
 
     validate(item) {
-      var skid = this.skemaid.find( ({ nama }) => nama === item.namaSkema );
+      var skid = this.skemaid.find( ({ nama }) => nama === item.ruangLingkup );
       if (this.editedIndex > -1) {
         const formdata = new FormData();
-          formdata.append("namaLengkap", item.namaLengkap);
-          formdata.append("skemasertifikasi_id", skid.id);
-          if (item.image != "") {
-          formdata.append("photo", item.image);
+          formdata.append("NamaAsesor", item.NamaAsesor);
+          formdata.append("Skema_Id", skid.id);
+          if (item.image!=null) {
+          formdata.append("Photo", item.image);
         }
           formdata.append("_method", "PUT");
-          this.error_message = "Mohon tunggu! sedang dalam proses update";
+          this.error_message = "Mohon tunggu! sedang dalam proses update ";
           this.snackbar = true;
           axios
             .post(`${this.tunnel}asesor/`+item.id, formdata, {
@@ -250,9 +250,9 @@ export default {
         this.$refs.form.validate(item);
           if (this.valid==true) {
           const formdata = new FormData();
-          formdata.append("photo", item.image);
-          formdata.append("namaLengkap", item.namaLengkap);
-          formdata.append("skemasertifikasi_id", skid.id);
+          formdata.append("Photo", item.image);
+          formdata.append("NamaAsesor", item.NamaAsesor);
+          formdata.append("Skema_Id", skid.id);
           this.error_message = "Mohon tunggu! sedang dalam proses tambah asesor";
           this.snackbar = true;
           axios

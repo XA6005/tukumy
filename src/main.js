@@ -8,6 +8,9 @@ import 'vuetify/dist/vuetify.min.css'
 import vuetify from './plugins/vuetify'
 import axios from 'axios'
 import CKEditor from '@ckeditor/ckeditor5-vue'
+import JsonExcel from 'vue-json-excel'
+
+Vue.component('downloadExcel', JsonExcel)
 
 Vue.use( CKEditor );
 Vue.use(Vuetify)

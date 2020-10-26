@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    tunnel: 'http://10.69.6.193:8000/',
+    tunnel: 'https://d8c6fddd14a3.ngrok.io/',
     status: '',
     sertifikasi: localStorage.getItem('sertifikasi') || '',
     admin: localStorage.getItem('admin') || '',
@@ -180,6 +180,18 @@ export default new Vuex.Store({
             delete axios.defaults.headers.common['Authorization']
             reject(err)
           })
+      })
+    },
+    logout({
+      commit
+    }) {
+      return new Promise((resolve) => {
+            commit('logout')
+            localStorage.removeItem('token')
+            localStorage.removeItem('admin')
+            localStorage.removeItem('peserta')
+            delete axios.defaults.headers.common['Authorization']
+            resolve()
       })
     },
   },

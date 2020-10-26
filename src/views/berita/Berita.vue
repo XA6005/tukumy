@@ -54,7 +54,7 @@ export default {
       }
     })
       .then((response) => {
-        this.cardberita = response.data.data.berita
+        this.cardberita = response.data.berita
       }) 
   },
   }

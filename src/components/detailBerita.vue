@@ -6,7 +6,7 @@
         <h1 style="text-align:center" class="center"><br>{{detailberita.judul}}</h1>
         <br><br>
         <v-img
-            :src="this.tunnel+'berita-image/'+detailberita.image"
+            :src="detailberita.image"
             contain
             height="600px"
             >
@@ -40,7 +40,7 @@ import axios from 'axios';
       }
     })
       .then((response) => {
-        this.detailberita = response.data.data.berita
+        this.detailberita = response.data.berita
       }) 
   },
   created() {

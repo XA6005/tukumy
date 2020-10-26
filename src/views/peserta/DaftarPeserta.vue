@@ -36,6 +36,21 @@
                 class="input-group--focused"
                 @click:append="show = !show"
               ></v-text-field>
+              <v-text-field
+                required
+                :error-messages="passwordErrors"
+                @input="$v.password.$touch()"
+                @blur="$v.password.$touch()"
+                :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="show ? 'text' : 'password'"
+                name="input-10-2"
+                label="Ulangi Password"
+                v-model="password"
+                hint="Minimal 8-20 Karakter"
+                value
+                class="input-group--focused"
+                @click:append="show = !show"
+              ></v-text-field>
               <br />
             </form>
             <div>

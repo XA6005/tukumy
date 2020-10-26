@@ -48,7 +48,7 @@
                 v-model="tanggal"
                 :error-messages="tanggalErrors"
                 label="Tanggal Lahir *"
-                aprepend-icon="mdi-calendar"
+                append-icon="mdi-calendar"
                 readonly
                 required
                 v-bind="attrs"
@@ -224,7 +224,7 @@
           ></v-checkbox>
           <v-btn v-if="jenis==''" :disabled="!valid" class="white--text" color="#065139" @click="submit">submit</v-btn>
           <v-btn v-else :disabled="!valid" class="white--text" color="#065139" @click="update">update</v-btn>
-          <v-btn text color="#065139" @click="clear">clear</v-btn>
+          <v-btn style="margin-left:10px" class="white--text" color="red darken-1" @click="clear">clear</v-btn>
           <br />
           <br />
           <br />
@@ -635,9 +635,9 @@ export default {
           this.error_message = error;
           this.snackbar = true;
         });
-    } else {
+     } else {
       this.$router.push("login-daftar");
-    }
+    } 
   },
 };
 </script>

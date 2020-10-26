@@ -3,21 +3,36 @@
     <v-main>
       <div class="container mt-5">
         <v-data-table
+          v-model="selected"
           :headers="headers"
           :items="jadwal"
-          :item-key="namaSkema"
-          class="elevation-1 pa-6"
+          item-key="namaSkema"
+          :show-select="true"
+          class="elevation-1"
         >
           <template v-slot:item.status="{ item }">
-            <v-chip :color="getColor(item.status)" dark>{{ item.status }}</v-chip>
+            <v-chip :color="getColor(item.status)" dark>{{
+              item.status
+            }}</v-chip>
           </template>
           <template v-slot:top>
             <v-toolbar flat color="white">
-              <v-toolbar-title>Kelola Peserta</v-toolbar-title>
+              <v-toolbar-title>Kelola Peserta </v-toolbar-title>
               <v-row>
                 <v-spacer></v-spacer>
+                <v-col cols="1">
+                  <v-btn small class="mr-2 white--text" color="#065139">
+                    <download-excel :data="selected">
+                      Download
+                    </download-excel>
+                  </v-btn>
+                </v-col>
                 <v-col cols="3">
-                  <v-select :items="skema" v-model="cariSkema" label="nama skema"></v-select>
+                  <v-select
+                    :items="skema"
+                    v-model="cariSkema"
+                    label="nama skema"
+                  ></v-select>
                 </v-col>
                 <v-col cols="3">
                   <v-menu
@@ -38,7 +53,10 @@
                         v-on="on"
                       ></v-text-field>
                     </template>
-                    <v-date-picker v-model="CariTanggal1" @input="menu = false"></v-date-picker>
+                    <v-date-picker
+                      v-model="CariTanggal1"
+                      @input="menu = false"
+                    ></v-date-picker>
                   </v-menu>
                 </v-col>
                 <v-col cols="3">
@@ -60,11 +78,16 @@
                         v-on="on"
                       ></v-text-field>
                     </template>
-                    <v-date-picker v-model="CariTanggal2" @input="menu2 = false"></v-date-picker>
+                    <v-date-picker
+                      v-model="CariTanggal2"
+                      @input="menu2 = false"
+                    ></v-date-picker>
                   </v-menu>
                 </v-col>
                 <v-col cols="1">
-                  <v-btn color="red darken-1" dark small @click="hapusFilter">reset</v-btn>
+                  <v-btn color="red darken-1" dark small @click="hapusFilter"
+                    >reset</v-btn
+                  >
                 </v-col>
               </v-row>
               <v-dialog v-model="dialog" max-width="700px">
@@ -75,13 +98,17 @@
                   <v-card-text>
                     <v-container>
                       <v-img
-                        v-if="editedItem.image!=null"
+                        v-if="editedItem.image != null"
                         height="600px"
                         contain
-                        :src="tunnel+'bukti-pembayaran/'+editedItem.image"
+                        :src="tunnel + 'bukti-pembayaran/' + editedItem.image"
                       ></v-img>
                       <v-sheet v-else color="grey" height="600px">
-                        <v-row class="fill-height" align="center" justify="center">
+                        <v-row
+                          class="fill-height"
+                          align="center"
+                          justify="center"
+                        >
                           <div>
                             <h1>Tidak Ada Gambar</h1>
                           </div>
@@ -91,7 +118,9 @@
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="red darken-1" text @click="close">Close</v-btn>
+                    <v-btn color="red darken-1" text @click="close"
+                      >Close</v-btn
+                    >
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -102,14 +131,30 @@
                   </v-card-title>
                   <v-card-text>
                     <v-container>
-                      <v-select required :items="stat" v-model="statusItem.status" label="Status"></v-select>
-                      <v-text-field required v-model="statusItem.komentar" label="Keterangan"></v-text-field>
+                      <v-select
+                        required
+                        :items="stat"
+                        v-model="statusItem.status"
+                        label="Status"
+                      ></v-select>
+                      <v-text-field
+                        required
+                        v-model="statusItem.keterangan"
+                        label="Keterangan"
+                      ></v-text-field>
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="red darken-1" text @click="closeStatus">Cancel</v-btn>
-                    <v-btn color="green darken-1" text @click="saveStatus(statusItem)">Save</v-btn>
+                    <v-btn color="red darken-1" text @click="closeStatus"
+                      >Cancel</v-btn
+                    >
+                    <v-btn
+                      color="green darken-1"
+                      text
+                      @click="saveStatus(statusItem)"
+                      >Save</v-btn
+                    >
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -126,10 +171,26 @@
                   <v-card-text>
                     <v-container>
                       <h2>a. Data Pribadi</h2>
-                      <v-text-field v-model="APL01Item.email" label="Email" disabled="true"></v-text-field>
-                      <v-text-field v-model="APL01Item.nama" label="Nama Lengkap" disabled="true"></v-text-field>
-                      <v-text-field v-model="APL01Item.nim" label="NIM" disabled="true"></v-text-field>
-                      <v-text-field v-model="APL01Item.tempat" label="Tempat Lahir" disabled="true"></v-text-field>
+                      <v-text-field
+                        v-model="APL01Item.email"
+                        label="Email"
+                        disabled="true"
+                      ></v-text-field>
+                      <v-text-field
+                        v-model="APL01Item.nama"
+                        label="Nama Lengkap"
+                        disabled="true"
+                      ></v-text-field>
+                      <v-text-field
+                        v-model="APL01Item.nim"
+                        label="NIM"
+                        disabled="true"
+                      ></v-text-field>
+                      <v-text-field
+                        v-model="APL01Item.tempat"
+                        label="Tempat Lahir"
+                        disabled="true"
+                      ></v-text-field>
                       <v-text-field
                         v-model="APL01Item.tanggal"
                         label="Tanggal Lahir"
@@ -145,7 +206,11 @@
                         label="Kebangsaan"
                         disabled="true"
                       ></v-text-field>
-                      <v-textarea v-model="APL01Item.alamat" label="Alamat Rumah" disabled="true"></v-textarea>
+                      <v-textarea
+                        v-model="APL01Item.alamat"
+                        label="Alamat Rumah"
+                        disabled="true"
+                      ></v-textarea>
                       <v-text-field
                         v-model="APL01Item.kodepos"
                         label="Kodepos Rumah"
@@ -156,22 +221,32 @@
                         label="No. Telepon Rumah"
                         disabled="true"
                       ></v-text-field>
-                      <v-text-field v-model="APL01Item.notelpHp" label="No. HP" disabled="true"></v-text-field>
+                      <v-text-field
+                        v-model="APL01Item.notelpHp"
+                        label="No. HP"
+                        disabled="true"
+                      ></v-text-field>
                       <v-text-field
                         v-model="APL01Item.pendidikan"
                         label="pendidikan Terakhir"
                         disabled="true"
                       ></v-text-field>
-                      <h2>
-                        <br />b. Data Pekerjaan Sekarang
-                      </h2>
-                      <v-text-field v-model="APL01Item.pekerjaan" label="Pekerjaan" disabled="true"></v-text-field>
+                      <h2><br />b. Data Pekerjaan Sekarang</h2>
+                      <v-text-field
+                        v-model="APL01Item.pekerjaan"
+                        label="Pekerjaan"
+                        disabled="true"
+                      ></v-text-field>
                       <v-text-field
                         v-model="APL01Item.perusahaan"
                         label="Nama Lembaga / Perusahaan"
                         disabled="true"
                       ></v-text-field>
-                      <v-text-field v-model="APL01Item.jabatan" label="Jabatan" disabled="true"></v-text-field>
+                      <v-text-field
+                        v-model="APL01Item.jabatan"
+                        label="Jabatan"
+                        disabled="true"
+                      ></v-text-field>
                       <v-textarea
                         v-model="APL01Item.alamatKantor"
                         label="Alamat Kantor"
@@ -187,33 +262,42 @@
                         label="No. Telepon Kantor"
                         disabled="true"
                       ></v-text-field>
-                      <v-text-field v-model="APL01Item.fax" label="Fax Kantor" disabled="true"></v-text-field>
+                      <v-text-field
+                        v-model="APL01Item.fax"
+                        label="Fax Kantor"
+                        disabled="true"
+                      ></v-text-field>
                       <v-text-field
                         v-model="APL01Item.emailKantor"
                         label="E-mail Kantor"
                         disabled="true"
                       ></v-text-field>
                       <v-btn
-                        v-if="APL01Item.ijazah!=null"
+                        v-if="APL01Item.ijazah != null"
                         small
                         class="mr-2 white--text"
                         color="#065139"
-                        :href="tunnel+'ijazah/'+APL01Item.ijazah"
-                      >Lihat Ijazah</v-btn>
+                        :href="tunnel + 'ijazah/' + APL01Item.ijazah"
+                        >Lihat Ijazah</v-btn
+                      >
                       <v-btn
-                        v-if="APL01Item.photo!=null"
+                        v-if="APL01Item.photo != null"
                         small
                         class="mr-2 white--text"
                         color="#065139"
-                        :href="tunnel+'photo/'+APL01Item.photo"
-                      >Lihat Pas Photo</v-btn>
+                        :href="tunnel + 'photo/' + APL01Item.photo"
+                        >Lihat Pas Photo</v-btn
+                      >
                       <v-btn
-                        v-if="APL01Item.identitas!=null"
+                        v-if="APL01Item.identitas != null"
                         small
                         class="mr-2 white--text"
                         color="#065139"
-                        :href="tunnel+'kartu-identitas/'+APL01Item.identitas"
-                      >Lihat Identitas</v-btn>
+                        :href="
+                          tunnel + 'kartu-identitas/' + APL01Item.identitas
+                        "
+                        >Lihat Identitas</v-btn
+                      >
                       <br />
                       <br />
                     </v-container>
@@ -228,43 +312,25 @@
               class="mr-2 white--text"
               color="#065139"
               @click="statusDialog(item)"
-            >Ubah Status</v-btn>
+              >Ubah Status</v-btn
+            >
             <v-btn
               small
               class="mr-2 white--text"
               color="#065139"
               @click="lihatItem(item)"
-            >Lihat Bukti</v-btn>
+              >Lihat Bukti</v-btn
+            >
             <v-btn
               small
               class="mr-2 white--text"
               color="#065139"
               @click="lihatAPL01(item)"
-            >Lihat Biodata</v-btn>
-            <v-btn
-              v-if="item.berkas_apl02!=null"
-              small
-              class="mr-2 white--text"
-              color="#065139"
-              :href="tunnel+'berkas-apl02-verifikasi/'+item.berkas_apl02"
-            >Lihat APL02</v-btn>
-            <v-btn
-              v-if="item.berkas_verifikasi!=null"
-              small
-              class="mr-2 white--text"
-              color="#065139"
-              :href="tunnel+'berkas-verifikasi/'+item.berkas_verifikasi"
-            >Lihat verifikasi online</v-btn>
-            <v-btn
-              v-if="item.sertifikat!=null"
-              small
-              class="mr-2 white--text"
-              color="#065139"
-              :href="tunnel+'sertifikat/'+item.sertifikat"
-            >Lihat sertifikat</v-btn>
+              >Lihat Biodata</v-btn
+            >
           </template>
         </v-data-table>
-        <v-snackbar v-model="snackbar">{{error_message}}</v-snackbar>
+        <v-snackbar v-model="snackbar">{{ error_message }}</v-snackbar>
       </div>
     </v-main>
   </v-app>
@@ -289,12 +355,14 @@ export default {
       dialog: false,
       dialogStatus: false,
       dialogAPL01: false,
-      stat: ["belum lengkap", "lengkap"],
-      skema: [],
-      jadwal: [],
+      selected: [],
+      stat: ["belum bayar", "bayar"],
+      skema: ["Programmer", "Netrowking"],
+      jadwal: [
+      ],
       detailJadwal: [],
       editedItem: {
-        skemasertifikasi_id: "",
+        skema_id: "",
         jadwal_id: "",
         email: "",
         peserta_id: "",
@@ -303,10 +371,10 @@ export default {
         sertifikat: "",
       },
       statusItem: {
-        skemasertifikasi_id: "",
+        skema_id: "",
         peserta_id: "",
         status: "",
-        komentar: "",
+        keterangan: "",
       },
       APL01Item: {
         email: "",
@@ -345,12 +413,12 @@ export default {
           align: "start",
           filter: this.filterTanggal,
         },
-        { text: "nama Skema", value: "namaSkema", filter: this.filterSkema },
-        { text: "tipe Ujian", value: "tipe" },
+        { text: "Nama Skema", value: "namaSkema", filter: this.filterSkema },
+        { text: "Tipe Ujian", value: "tipe" },
         { text: "NIM Peserta", value: "nim" },
-        { text: "nama Peserta", value: "nama" },
+        { text: "Nama Peserta", value: "nama" },
         { text: "Status", value: "status" },
-        { text: "Keterangan", value: "komentar" },
+        { text: "Keterangan", value: "keterangan" },
         { text: "Action", value: "actions" },
       ];
     },
@@ -364,9 +432,9 @@ export default {
 
   mounted() {
     if (this.$store.getters.isLoggedInAdmin) {
-      this.user = this.$store.state.user;
-      this.tunnel = this.$store.state.tunnel;
-      this.loadData();
+    this.user = this.$store.state.user;
+    this.tunnel = this.$store.state.tunnel;
+    this.loadData();
     } else {
       this.$router.push("login-admin");
     }
@@ -377,13 +445,13 @@ export default {
       axios
         .get(`${this.tunnel}skema`)
         .then((response) => {
-          this.skema = response.data.data.SkemaSertifikasi.map((item) => {
+          this.skema = response.data.skema.map((item) => {
             return item.nama;
           });
         })
         .catch((error) => {
           this.error_message = error;
-          //this.snackbar = true;
+          this.snackbar = true;
         });
       this.jadwal = [];
       axios
@@ -391,31 +459,38 @@ export default {
           headers: { Authorization: "Bearer " + this.$store.state.token },
         })
         .then((response) => {
-          const list = response.data.data.jadwal.map((det) => {
+          const list = response.data.jadwal.map((det) => {
             return det.peserta;
           });
-          const detailJadwal = response.data.data.jadwal.map((it) => {
+          const detailJadwal = response.data.jadwal.map((it) => {
             return {
               id: it.id,
               tipe: it.tipe,
               tanggal: it.tanggal,
-              namaSkema: it.skema_sertifikasi.nama,
+              namaSkema: it.skema.nama,
             };
           });
           const jadwalSem = [].concat.apply([], list).map((item) => {
             return {
-              jadwal_id: item.pivot.jadwal_id,
               email: item.email,
               namaSkema: detailJadwal.find(
                 ({ id }) => id === item.pivot.jadwal_id
               ),
+              pivot: item.pivot,
+              biodata: item.biodata,
+            };
+          });
+          this.jadwal = jadwalSem.map((item) => {
+            return {
+              email: item.email,
+              namaSkema: item.namaSkema.namaSkema,
+              tipe: item.namaSkema.tipe,
+              tanggalJadwal: item.namaSkema.tanggal,
+              jadwal_id: item.pivot.jadwal_id,
               peserta_id: item.pivot.peserta_id,
               status: item.pivot.status,
-              komentar: item.pivot.komentar,
+              keterangan: item.pivot.keterangan,
               image: item.pivot.bukti_pembayaran,
-              berkas_apl02: item.pivot.berkas_apl02,
-              berkas_verifikasi: item.pivot.berkas_verifikasi,
-              sertifikat: item.pivot.sertifikat,
               nama: item.biodata.namaLengkap,
               nim: item.biodata.nim,
               tempat: item.biodata.tempatLahir,
@@ -440,49 +515,10 @@ export default {
               identitas: item.biodata.kartu_identitas,
             };
           });
-          this.jadwal = jadwalSem.map((item) => {
-            return {
-              jadwal_id: item.jadwal_id,
-              email: item.email,
-              namaSkema: item.namaSkema.namaSkema,
-              tipe: item.namaSkema.tipe,
-              tanggalJadwal: item.namaSkema.tanggal,
-              peserta_id: item.peserta_id,
-              status: item.status,
-              komentar: item.komentar,
-              image: item.image,
-              berkas_apl02: item.berkas_apl02,
-              berkas_verifikasi: item.berkas_verifikasi,
-              sertifikat: item.sertifikat,
-              biodata: item.biodata,
-              nama: item.nama,
-              nim: item.nim,
-              tempat: item.tempat,
-              tanggal: item.tanggal,
-              jenisKelamin: item.jenisKelamin,
-              kebangsaan: item.kebangsaan,
-              alamat: item.alamat,
-              kodepos: item.kodepos,
-              notelpRumah: item.notelpRumah,
-              notelpHp: item.notelpHp,
-              notelpKantor: item.notelpKantor,
-              pendidikan: item.pendidikan,
-              perusahaan: item.perusahaan,
-              jabatan: item.jabatan,
-              alamatKantor: item.alamatKantor,
-              kodeposKantor: item.kodeposKantor,
-              fax: item.fax,
-              emailKantor: item.emailKantor,
-              pekerjaan: item.pekerjaan,
-              ijazah: item.ijazah,
-              photo: item.photo,
-              identitas: item.identitas,
-            };
-          });
         })
         .catch((error) => {
           console.log(error);
-          
+
           if (error.response.status === 404) {
             this.error_message = "Login Lagi";
             this.snackbar = true;
@@ -504,17 +540,17 @@ export default {
     },
     saveStatus(item) {
       var kom = "-";
-      if (item.komentar != "") {
-        kom = item.komentar;
+      if (item.keterangan != "") {
+        kom = item.keterangan;
       }
       const data = qs.stringify({
         jadwal_id: item.jadwal_id,
         peserta_id: item.peserta_id,
         status: item.status,
-        komentar: kom,
+        keterangan: kom,
       });
       axios
-        .put(`${this.tunnel}updatestatus`, data, {
+        .put(`${this.tunnel}jadwalpeserta/status`, data, {
           headers: {
             Authorization: "Bearer " + this.$store.state.token,
           },
@@ -553,27 +589,24 @@ export default {
     filterTanggal(value) {
       if (!this.CariTanggal1 && !this.CariTanggal2) {
         return true;
-      }
-      else if (!this.CariTanggal1 && this.CariTanggal2) {
+      } else if (!this.CariTanggal1 && this.CariTanggal2) {
         return value <= this.CariTanggal2;
-      }
-      else if (this.CariTanggal1 && !this.CariTanggal2) {
+      } else if (this.CariTanggal1 && !this.CariTanggal2) {
         return this.CariTanggal1 <= value;
-      }
-      else if(this.CariTanggal1>this.CariTanggal2){
-        this.error_message = "Pengisian filter tanggal sampai tidak boleh kurang dari dari tanggal";
+      } else if (this.CariTanggal1 > this.CariTanggal2) {
+        this.error_message =
+          "Pengisian filter tanggal sampai tidak boleh kurang dari dari tanggal";
         this.snackbar = true;
         this.CariTanggal2 = null;
         return true;
-      }
-      else{
+      } else {
         if (value >= this.CariTanggal1) {
-        return value <= this.CariTanggal2;
-      }
+          return value <= this.CariTanggal2;
+        }
       }
     },
     getColor(status) {
-      if (status === "belum lengkap") return "red";
+      if (status === "belum bayar") return "red";
       else if (status === "sedang proses") return "orange";
       else return "green";
     },

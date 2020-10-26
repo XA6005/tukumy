@@ -148,7 +148,7 @@ export default {
       axios
         .get(`${this.tunnel}berita`)
         .then((response) => {
-          this.berita = response.data.data.berita.map((item) => {
+          this.berita = response.data.berita.map((item) => {
             return {
               id: item.id,
               judul: item.judul,
