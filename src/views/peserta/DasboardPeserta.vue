@@ -59,7 +59,7 @@
             </v-toolbar>
           </template>
           <template v-slot:item.actions="{item}">
-            <v-btn
+            <v-btn v-if="item.status=='Belum Bayar'"
               small
               class="mr-2 white--text"
               color="#065139"
@@ -107,7 +107,7 @@ export default {
       editedItem: {
         skema_id: "",
         tipe: "",
-        jadwal_id: "",
+        id_jadwal: "",
         tempat: "",
         tanggal: null,
         jam: null,
@@ -125,7 +125,6 @@ export default {
 
   mounted() {
     if (this.$store.getters.isLoggedInPeserta) {
-      
       this.token = this.$store.state.token;
       this.tunnel = this.$store.state.tunnel;
      this.loadPeserta();
@@ -140,7 +139,7 @@ export default {
       this.token = this.$store.state.token;
       this.tunnel = this.$store.state.tunnel;
        axios
-        .get(`${this.tunnel}jadwalpeserta/me`, {
+        .get(`${this.tunnel}status/me`, {
           headers: { Authorization: "Bearer " + this.$store.state.token },
         })
         .then((response) => {
@@ -149,18 +148,18 @@ export default {
           } 
           this.sertifikasi = response.data.jadwal.map((item) => {
             return {
-              id: item.id,
+              id: item.id_jadwal,
               tempat: item.tempat,
-              tanggal: item.tanggal,
+              tanggal: item.tanggal_ujian,
               jam: item.jam,
-              tipe: item.tipe,
+              tipe: item.tipe_ujian,
               biaya: item.biaya,
               skema_id: item.skema_id,
-              namaSkema: item.skema.nama,
+              namaSkema: item.skema.nama_skema,
               image_lihat: item.pivot.bukti_pembayaran,
-              status: item.pivot.status,
-              komentar:item.pivot.komentar,
-              jadwal_id: item.pivot.jadwal_id,
+              status: item.pivot.status_bayar,
+              komentar:item.pivot.keterangan,
+              id_jadwal: item.pivot.id_jadwal,
             };
           });
         })
@@ -199,11 +198,11 @@ export default {
     },
     save(item) {
       const formdata = new FormData();
-      formdata.append("jadwal_id", item.jadwal_id);
+      formdata.append("jadwal_id", item.id);
       formdata.append("bukti_pembayaran", item.image);
       formdata.append("_method", "PUT");
       axios
-        .post(`${this.tunnel}jadwalpeserta/pembayaran`, formdata, {
+        .post(`${this.tunnel}status/pembayaran`, formdata, {
           headers: {
             Authorization: "Bearer " + this.$store.state.token,
           },

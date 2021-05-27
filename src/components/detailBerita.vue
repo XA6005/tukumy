@@ -6,7 +6,7 @@
         <h1 style="text-align:center" class="center"><br>{{detailberita.judul}}</h1>
         <br><br>
         <v-img
-            :src="detailberita.image"
+            :src="tunnelGambar+'berita-image/'+detailberita.image"
             contain
             height="600px"
             >
@@ -27,6 +27,7 @@ import axios from 'axios';
       data () {
       return {
         tunnel:"",
+        tunnelGambar:"",
         detailberita : [],
       }
     },
@@ -34,11 +35,9 @@ import axios from 'axios';
     this.$store.dispatch('logoutAdmin')
     this.$store.dispatch('logoutPeserta')
     this.tunnel = this.$store.state.tunnel;
+    this.tunnelGambar = this.$store.state.tunnelGambar;
     axios
-    .get(this.tunnel+'berita/'+ this.slug,{
-      headers:{
-      }
-    })
+    .get(this.tunnel+'berita/'+ this.slug)
       .then((response) => {
         this.detailberita = response.data.berita
       }) 

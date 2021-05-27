@@ -27,7 +27,9 @@ export default {
   methods: {
     logout: function () {
       this.$store.dispatch("logoutPeserta").then(() => {
-        this.$router.push("/");
+        this.$cookies.remove("sertifikasi");
+        this.$cookies.remove("bootcamp");
+        this.$router.push("/login-peserta");
       });
     },
   },

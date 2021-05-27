@@ -6,9 +6,11 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    tunnel: 'https://d8c6fddd14a3.ngrok.io/',
-    status: '',
+    tunnel: 'https://f1ea3bb5b8a2.ngrok.io/api/',
+    tunnelGambar: 'https://f1ea3bb5b8a2.ngrok.io/',
+    status: localStorage.getItem('status') || '',
     sertifikasi: localStorage.getItem('sertifikasi') || '',
+    bootcamp: localStorage.getItem('bootcamp') || '',
     admin: localStorage.getItem('admin') || '',
     peserta: localStorage.getItem('peserta') || '',
     token: localStorage.getItem('token') || '',
@@ -32,10 +34,12 @@ export default new Vuex.Store({
       state.user = user
     },
     auth_error(state) {
-      state.status = 'error'
+      state.status = 'Akun email dan password yang anda masukkan tidak ada di dalam database'
     },
     logout(state) {
       state.status = 'logout'
+      state.sertifikasi = ''
+      state.bootcamp = ''
       state.token = ''
       state.admin = ''
       state.peserta = ''
@@ -64,8 +68,7 @@ export default new Vuex.Store({
             resolve(response)
           })
           .catch(err => {
-            commit('auth_error')
-            localStorage.setItem('status', err)
+            commit('auth_error')  
             localStorage.removeItem('token')
             reject(err)
           })
@@ -91,8 +94,10 @@ export default new Vuex.Store({
             resolve(response)
           })
           .catch(err => {
-            commit('auth_error')
-            localStorage.setItem('status', err)
+            commit('auth_error',err.response.status)
+            if (err.response.status === 401) {
+              localStorage.setItem('status', "Email atau password salah")
+            }
             localStorage.removeItem('token')
             localStorage.removeItem('admin')
             reject(err)
@@ -196,8 +201,8 @@ export default new Vuex.Store({
     },
   },
   getters: {
-    isSertifikasiPick: state => !!state.sertifikasi,
     isLoggedInPeserta: state => !!state.peserta,
+    isPesertaPick: state => !!state.sertifikasi,
     isLoggedInAdmin: state => !!state.admin,
     authStatus: state => state.status,
   }

@@ -26,9 +26,9 @@
                     <v-container>
                       <v-form ref="form" v-model="valid" lazy-validation>
                         <v-text-field
-                          :rules="NamaAsesorRules"
+                          :rules="nama_asesorRules"
                           required
-                          v-model="editedItem.NamaAsesor"
+                          v-model="editedItem.nama_asesor"
                           label="Nama Lengkap Asesor"
                         ></v-text-field>
                         <v-select
@@ -46,7 +46,7 @@
                           show-size
                           color="#065139"
                           v-model="editedItem.image"
-                          label="Upload Photo Asesor"
+                          label="Upload photo Asesor"
                         ></v-file-input>
                         <v-file-input
                           v-else
@@ -91,7 +91,7 @@ export default {
   data() {
     return {
       valid: true,
-      NamaAsesorRules: [(v) => !!v || "Nama Skema Harus Diisi"],
+      nama_asesorRules: [(v) => !!v || "Nama Skema Harus Diisi"],
       skemaRules: [(v) => !!v || "Skema harus dipilih"],
       imageRules: [
       v => !!v || 'File diperlukan',
@@ -102,7 +102,7 @@ export default {
       tunnel: "",
       dialog: false,
       headers: [
-        { text: "Nama Asessor", value: "NamaAsesor" },
+        { text: "Nama Asessor", value: "nama_asesor" },
         { text: "Ruang Lingkup Sertifikasi", value: "ruangLingkup" },
         { text: "Actions", value: "actions" },
       ],
@@ -112,13 +112,13 @@ export default {
       editedIndex: -1,
       editedItem: {
         id: "",
-        NamaAsesor: "",
+        nama_asesor: "",
         ruangLingkup: "",
         image:null,
       },
       defaultItem: {
         id: "",
-        NamaAsesor: "",
+        nama_asesor: "",
         ruangLingkup: "",
         image:null,
       },
@@ -151,31 +151,38 @@ export default {
       this.asesor = [];
       this.tunnel = this.$store.state.tunnel;
       axios
-        .get(`${this.tunnel}asesor`)
+        .get(`${this.tunnel}skema`)
         .then((response) => {
-          this.asesor = response.data.asesor.map((item) => {
+          this.skemaid = response.data.skema.map((item) => {
             return {
-              id: item.Id_Asesor,
-              NamaAsesor: item.NamaAsesor,
-              ruangLingkup: item.skema.NamaSkema,
+              id: item.id_skema,
+              nama: item.nama_skema,
             };
+          });
+          this.skema = response.data.skema.map((item) => {
+            return item.nama_skema;
           });
         })
         .catch((error) => {
           this.error_message = error;
           this.snackbar = true;
         });
-        axios
-        .get(`${this.tunnel}skema`)
+      axios
+        .get(`${this.tunnel}asesor`)
         .then((response) => {
-          this.skemaid = response.data.skema.map((item) => {
+          const asesorSem = response.data.asesor.map((item) => {
             return {
-              id: item.Id_Skema,
-              nama: item.NamaSkema,
+              detail : item,
+              skema_id :item.skema_id,
+              nama: this.skemaid.find(({ id }) => id === item.skema_id)
             };
           });
-          this.skema = response.data.skema.map((item) => {
-            return item.NamaSkema;
+          this.asesor = asesorSem.map((item) => {
+            return {
+              id: item.detail.id_asesor,
+              nama_asesor: item.detail.nama_asesor,
+              ruangLingkup: item.nama.nama,
+            };
           });
         })
         .catch((error) => {
@@ -222,10 +229,10 @@ export default {
       var skid = this.skemaid.find( ({ nama }) => nama === item.ruangLingkup );
       if (this.editedIndex > -1) {
         const formdata = new FormData();
-          formdata.append("NamaAsesor", item.NamaAsesor);
-          formdata.append("Skema_Id", skid.id);
+          formdata.append("nama_asesor", item.nama_asesor);
+          formdata.append("skema_id", skid.id);
           if (item.image!=null) {
-          formdata.append("Photo", item.image);
+          formdata.append("photo", item.image);
         }
           formdata.append("_method", "PUT");
           this.error_message = "Mohon tunggu! sedang dalam proses update ";
@@ -250,9 +257,9 @@ export default {
         this.$refs.form.validate(item);
           if (this.valid==true) {
           const formdata = new FormData();
-          formdata.append("Photo", item.image);
-          formdata.append("NamaAsesor", item.NamaAsesor);
-          formdata.append("Skema_Id", skid.id);
+          formdata.append("photo", item.image);
+          formdata.append("nama_asesor", item.nama_asesor);
+          formdata.append("skema_id", skid.id);
           this.error_message = "Mohon tunggu! sedang dalam proses tambah asesor";
           this.snackbar = true;
           axios

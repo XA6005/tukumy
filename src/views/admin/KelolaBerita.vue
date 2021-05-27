@@ -106,7 +106,7 @@ export default {
     berita: [],
     editedIndex: -1,
     editedItem: {
-      id: "",
+      id_berita: "",
       judul: "",
       isi: "",
       image: "",
@@ -150,7 +150,7 @@ export default {
         .then((response) => {
           this.berita = response.data.berita.map((item) => {
             return {
-              id: item.id,
+              id_berita: item.id_berita,
               judul: item.judul,
               isi: item.isi,
               tanggal: item.update_at,
@@ -172,7 +172,7 @@ export default {
     deleteItem(item) {
       confirm("Kamu yakin akan menghapus berita ini?") &&
         axios
-          .delete(`${this.tunnel}berita/` + item.id, {
+          .delete(`${this.tunnel}berita/` + item.id_berita, {
             headers: {
               Authorization: "Bearer " + this.$store.state.token,
             },
@@ -206,7 +206,7 @@ export default {
         formdata.append("isi", item.isi);
         formdata.append("_method", "PUT");
         axios
-          .post(`${this.tunnel}berita/` + item.id, formdata, {
+          .post(`${this.tunnel}berita/` + item.id_berita, formdata, {
             headers: {
               Authorization: "Bearer " + this.$store.state.token,
               "Content-Type": "multipart/form-data",

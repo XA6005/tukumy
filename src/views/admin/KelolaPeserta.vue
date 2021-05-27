@@ -6,8 +6,8 @@
           v-model="selected"
           :headers="headers"
           :items="jadwal"
-          item-key="namaSkema"
-          :show-select="true"
+          item-key="idku"
+          show-select
           class="elevation-1"
         >
           <template v-slot:item.status="{ item }">
@@ -22,7 +22,11 @@
                 <v-spacer></v-spacer>
                 <v-col cols="1">
                   <v-btn small class="mr-2 white--text" color="#065139">
-                    <download-excel :data="selected">
+                    <download-excel 
+                    :data="selected"
+                    :fields="selected_field"
+                    name="DaftarPesertaSertifikasi.xls"
+                    >
                       Download
                     </download-excel>
                   </v-btn>
@@ -201,11 +205,6 @@
                         label="Jenis Kelamin "
                         disabled="true"
                       ></v-text-field>
-                      <v-text-field
-                        v-model="APL01Item.kebangsaan"
-                        label="Kebangsaan"
-                        disabled="true"
-                      ></v-text-field>
                       <v-textarea
                         v-model="APL01Item.alamat"
                         label="Alamat Rumah"
@@ -217,87 +216,10 @@
                         disabled="true"
                       ></v-text-field>
                       <v-text-field
-                        v-model="APL01Item.notelpRumah"
-                        label="No. Telepon Rumah"
-                        disabled="true"
-                      ></v-text-field>
-                      <v-text-field
                         v-model="APL01Item.notelpHp"
                         label="No. HP"
                         disabled="true"
                       ></v-text-field>
-                      <v-text-field
-                        v-model="APL01Item.pendidikan"
-                        label="pendidikan Terakhir"
-                        disabled="true"
-                      ></v-text-field>
-                      <h2><br />b. Data Pekerjaan Sekarang</h2>
-                      <v-text-field
-                        v-model="APL01Item.pekerjaan"
-                        label="Pekerjaan"
-                        disabled="true"
-                      ></v-text-field>
-                      <v-text-field
-                        v-model="APL01Item.perusahaan"
-                        label="Nama Lembaga / Perusahaan"
-                        disabled="true"
-                      ></v-text-field>
-                      <v-text-field
-                        v-model="APL01Item.jabatan"
-                        label="Jabatan"
-                        disabled="true"
-                      ></v-text-field>
-                      <v-textarea
-                        v-model="APL01Item.alamatKantor"
-                        label="Alamat Kantor"
-                        disabled="true"
-                      ></v-textarea>
-                      <v-text-field
-                        v-model="APL01Item.kodeposKantor"
-                        label="Kodepos Kantor"
-                        disabled="true"
-                      ></v-text-field>
-                      <v-text-field
-                        v-model="APL01Item.notelpKantor"
-                        label="No. Telepon Kantor"
-                        disabled="true"
-                      ></v-text-field>
-                      <v-text-field
-                        v-model="APL01Item.fax"
-                        label="Fax Kantor"
-                        disabled="true"
-                      ></v-text-field>
-                      <v-text-field
-                        v-model="APL01Item.emailKantor"
-                        label="E-mail Kantor"
-                        disabled="true"
-                      ></v-text-field>
-                      <v-btn
-                        v-if="APL01Item.ijazah != null"
-                        small
-                        class="mr-2 white--text"
-                        color="#065139"
-                        :href="tunnel + 'ijazah/' + APL01Item.ijazah"
-                        >Lihat Ijazah</v-btn
-                      >
-                      <v-btn
-                        v-if="APL01Item.photo != null"
-                        small
-                        class="mr-2 white--text"
-                        color="#065139"
-                        :href="tunnel + 'photo/' + APL01Item.photo"
-                        >Lihat Pas Photo</v-btn
-                      >
-                      <v-btn
-                        v-if="APL01Item.identitas != null"
-                        small
-                        class="mr-2 white--text"
-                        color="#065139"
-                        :href="
-                          tunnel + 'kartu-identitas/' + APL01Item.identitas
-                        "
-                        >Lihat Identitas</v-btn
-                      >
                       <br />
                       <br />
                     </v-container>
@@ -356,14 +278,29 @@ export default {
       dialogStatus: false,
       dialogAPL01: false,
       selected: [],
-      stat: ["belum bayar", "bayar"],
+      selected_field:{
+        "Nama Skema":"namaSkema",
+        "Tanggal Ujian" : "tanggalJadwal",
+        "Tipe Ujian" : "tipe_ujian",
+         Email : "email",
+         "Status Bootcamp" :"bootcamp",
+        "Status Pembayaran" :"status",
+        "NIM Peserta" :"nim",
+        "Nama Peserta" :"nama",
+        "Tempat Lahir" : "tempat",
+        "Tanggal Lahir" :"tanggal",
+        "Jenis Kelamin" :"jenisKelamin",
+        Alamat :"alamat",
+        Kodepos :"kodepos",
+        "No Telp HP" : "notelpHp"
+      },
+      stat: ["Belum Bayar", "Bayar"],
       skema: ["Programmer", "Netrowking"],
       jadwal: [
       ],
-      detailJadwal: [],
       editedItem: {
         skema_id: "",
-        jadwal_id: "",
+        id_jadwal: "",
         email: "",
         peserta_id: "",
         status: "",
@@ -372,7 +309,7 @@ export default {
       },
       statusItem: {
         skema_id: "",
-        peserta_id: "",
+        nim: "",
         status: "",
         keterangan: "",
       },
@@ -383,23 +320,9 @@ export default {
         tempat: "",
         tanggal: "",
         jenisKelamin: "",
-        kebangsaan: "",
         alamat: "",
         kodepos: "",
-        notelpRumah: "",
         notelpHp: "",
-        notelpKantor: "",
-        pendidikan: "",
-        perusahaan: "",
-        jabatan: "",
-        alamatKantor: "",
-        kodeposKantor: "",
-        fax: "",
-        emailKantor: "",
-        pekerjaan: "",
-        ijazah: null,
-        photo: null,
-        identitas: null,
       },
     };
   },
@@ -414,10 +337,11 @@ export default {
           filter: this.filterTanggal,
         },
         { text: "Nama Skema", value: "namaSkema", filter: this.filterSkema },
-        { text: "Tipe Ujian", value: "tipe" },
+        { text: "Tipe Ujian", value: "tipe_ujian" },
         { text: "NIM Peserta", value: "nim" },
         { text: "Nama Peserta", value: "nama" },
-        { text: "Status", value: "status" },
+        { text: "Status Bootcamp", value: "bootcamp" },
+        { text: "Status Pembayaran", value: "status" },
         { text: "Keterangan", value: "keterangan" },
         { text: "Action", value: "actions" },
       ];
@@ -446,7 +370,7 @@ export default {
         .get(`${this.tunnel}skema`)
         .then((response) => {
           this.skema = response.data.skema.map((item) => {
-            return item.nama;
+            return item.nama_skema;
           });
         })
         .catch((error) => {
@@ -455,26 +379,26 @@ export default {
         });
       this.jadwal = [];
       axios
-        .get(this.tunnel + `jadwalpeserta`, {
+        .get(this.tunnel + `status`, {
           headers: { Authorization: "Bearer " + this.$store.state.token },
         })
         .then((response) => {
-          const list = response.data.jadwal.map((det) => {
+          /* const list = response.data.jadwal.map((det) => {
             return det.peserta;
           });
           const detailJadwal = response.data.jadwal.map((it) => {
             return {
-              id: it.id,
-              tipe: it.tipe,
-              tanggal: it.tanggal,
-              namaSkema: it.skema.nama,
+              id: it.id_jadwal,
+              tipe_ujian: it.tipe_ujian,
+              tanggal: it.tanggal_ujian,
+              namaSkema: it.skema.nama_skema,
             };
           });
           const jadwalSem = [].concat.apply([], list).map((item) => {
             return {
-              email: item.email,
+              //email: item.email,
               namaSkema: detailJadwal.find(
-                ({ id }) => id === item.pivot.jadwal_id
+                ({ id }) => id === item.pivot.id_jadwal
               ),
               pivot: item.pivot,
               biodata: item.biodata,
@@ -482,39 +406,67 @@ export default {
           });
           this.jadwal = jadwalSem.map((item) => {
             return {
-              email: item.email,
-              namaSkema: item.namaSkema.namaSkema,
-              tipe: item.namaSkema.tipe,
-              tanggalJadwal: item.namaSkema.tanggal,
-              jadwal_id: item.pivot.jadwal_id,
+              //email: item.email,
+              namaSkema: item.namaSkema.nama_skema,
+              tipe_ujian: item.namaSkema.tipe_ujian,
+              tanggalJadwal: item.namaSkema.tanggal_ujian,
+              id_jadwal: item.pivot.id_jadwal,
               peserta_id: item.pivot.peserta_id,
-              status: item.pivot.status,
+              status: item.pivot.status_bayar,
               keterangan: item.pivot.keterangan,
               image: item.pivot.bukti_pembayaran,
-              nama: item.biodata.namaLengkap,
-              nim: item.biodata.nim,
-              tempat: item.biodata.tempatLahir,
-              tanggal: item.biodata.tanggalLahir,
-              jenisKelamin: item.biodata.jenisKelamin,
-              kebangsaan: item.biodata.kebangsaan,
-              alamat: item.biodata.alamatRumah,
-              kodepos: item.biodata.kodeposRumah,
-              notelpRumah: item.biodata.noTeleponRumah,
-              notelpHp: item.biodata.noHP,
-              notelpKantor: item.biodata.noTeleponPerusahaan,
-              pendidikan: item.biodata.pendidikanTerakhir,
-              perusahaan: item.biodata.namaPerusahaan,
-              jabatan: item.biodata.jabatandiPerusahaan,
-              alamatKantor: item.biodata.alamatPerusahaan,
-              kodeposKantor: item.biodata.kodeposPerusahaan,
-              fax: item.biodata.faxPerusahaan,
-              emailKantor: item.biodata.emailPerusahaan,
-              pekerjaan: item.biodata.pekerjaan,
-              ijazah: item.biodata.ijazah,
-              photo: item.biodata.photo,
-              identitas: item.biodata.kartu_identitas,
+              nama: item.biodata.nama_peserta,
+              nim: item.biodata.NIM,
+              tempat: item.biodata.tempat_lahir,
+              tanggal: item.biodata.tanggal_lahir,
+              jenisKelamin: item.biodata.jenis_kelamin,
+              alamat: item.biodata.alamat_rumah,
+              kodepos: item.biodata.kodepos_rumah,
+              notelpHp: item.biodata.no_hp,
+            };
+          }); */
+           const list = response.data.jadwal.map((det) => {
+            return det.biodata;
+          });
+          const detailJadwal = response.data.jadwal.map((it) => {
+            return {
+              id: it.id_jadwal,
+              tipe_ujian: it.tipe_ujian,
+              tanggal: it.tanggal_ujian,
+              namaSkema: it.skema.nama_skema,
             };
           });
+          const jadwalSem = [].concat.apply([], list).map((item) => {
+            return {
+              namaSkema: detailJadwal.find(
+                ({ id }) => id === item.pivot.jadwal_id
+              ),
+              biodata: item,
+            };
+          });
+           this.jadwal = jadwalSem.map((item) => {
+            return {
+              idku:item.biodata.peserta.id_peserta+item.namaSkema.namaSkema+item.namaSkema.tipe_ujian,
+              namaSkema: item.namaSkema.namaSkema,
+              tipe_ujian: item.namaSkema.tipe_ujian,
+              tanggalJadwal: item.namaSkema.tanggal,
+              peserta_id: item.biodata.peserta.id_peserta,
+              email: item.biodata.peserta.email,
+              id_jadwal: item.biodata.pivot.jadwal_id,
+              status: item.biodata.pivot.status_bayar,
+              keterangan: item.biodata.pivot.keterangan,
+              bootcamp: item.biodata.pivot.status_bootcamp,
+              image: item.biodata.pivot.bukti_pembayaran,
+              nama: item.biodata.nama_peserta,
+              nim: item.biodata.NIM,
+              tempat: item.biodata.tempat_lahir,
+              tanggal: item.biodata.tanggal_lahir,
+              jenisKelamin: item.biodata.jenis_kelamin,
+              alamat: item.biodata.alamat_rumah,
+              kodepos: item.biodata.kodepos_rumah,
+              notelpHp: item.biodata.no_hp,
+            };
+          }); 
         })
         .catch((error) => {
           console.log(error);
@@ -544,13 +496,13 @@ export default {
         kom = item.keterangan;
       }
       const data = qs.stringify({
-        jadwal_id: item.jadwal_id,
-        peserta_id: item.peserta_id,
-        status: item.status,
+        jadwal_id: item.id_jadwal,
+        NIM: item.nim,
+        status_bayar: item.status,
         keterangan: kom,
       });
       axios
-        .put(`${this.tunnel}jadwalpeserta/status`, data, {
+        .put(`${this.tunnel}status/bayar`, data, {
           headers: {
             Authorization: "Bearer " + this.$store.state.token,
           },
@@ -579,14 +531,17 @@ export default {
       this.cariSkema = "";
       this.CariTanggal1 = null;
       this.CariTanggal2 = null;
+      this.selected= [];
     },
     filterSkema(value) {
+      this.selected= [];
       if (!this.cariSkema) {
         return true;
       }
       return value === this.cariSkema;
     },
     filterTanggal(value) {
+      this.selected= [];
       if (!this.CariTanggal1 && !this.CariTanggal2) {
         return true;
       } else if (!this.CariTanggal1 && this.CariTanggal2) {
@@ -606,8 +561,8 @@ export default {
       }
     },
     getColor(status) {
-      if (status === "belum bayar") return "red";
-      else if (status === "sedang proses") return "orange";
+      if (status === "Belum Bayar") return "red";
+      else if (status === "Sedang Proses") return "orange";
       else return "green";
     },
   },

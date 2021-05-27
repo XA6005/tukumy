@@ -31,22 +31,22 @@
                 name="input-10-2"
                 label="Password"
                 v-model="password"
-                hint="Minimal 8-20 Karakter"
+                hint="Minimal 8-10 Karakter"
                 value
                 class="input-group--focused"
                 @click:append="show = !show"
               ></v-text-field>
               <v-text-field
                 required
-                :error-messages="passwordErrors"
-                @input="$v.password.$touch()"
-                @blur="$v.password.$touch()"
+                :error-messages="passwordUlangErrors"
+                @input="$v.passwordUlang.$touch()"
+                @blur="$v.passwordUlang.$touch()"
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="show ? 'text' : 'password'"
                 name="input-10-2"
                 label="Ulangi Password"
-                v-model="password"
-                hint="Minimal 8-20 Karakter"
+                v-model="passwordUlang"
+                hint="Minimal 8-10 Karakter"
                 value
                 class="input-group--focused"
                 @click:append="show = !show"
@@ -71,12 +71,13 @@
 </template>
 <script>
 import { validationMixin } from "vuelidate";
-import { required, minLength, maxLength, email } from "vuelidate/lib/validators";
+import { required, minLength, maxLength, email, sameAs } from "vuelidate/lib/validators";
 export default {
   mixins: [validationMixin],
   validations: {
-    password: { required, minLength: minLength(8) ,maxLength: maxLength(10)},
     email: { required, email },
+    password: { required, minLength: minLength(8) ,maxLength: maxLength(10)},
+    passwordUlang: { required, sameAsPassword: sameAs('password')},
   },
   data() {
     return {
@@ -86,6 +87,7 @@ export default {
       error_message: "loading",
       email: "",
       password: "",
+      passwordUlang:"",
     };
   },
 
@@ -96,6 +98,13 @@ export default {
       !this.$v.password.minLength && errors.push("Password minimal 8 karakter");
       !this.$v.password.maxLength && errors.push("Password maximal 10 karakter");
       !this.$v.password.required && errors.push("Password diperlukan");
+      return errors;
+    },
+    passwordUlangErrors() {
+      const errors = [];
+      if (!this.$v.password.$dirty) return errors;
+      !this.$v.passwordUlang.sameAsPassword && errors.push("Password harus sama");
+      !this.$v.passwordUlang.required && errors.push("Password diperlukan");
       return errors;
     },
     emailErrors() {

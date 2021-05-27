@@ -14,7 +14,7 @@
         >
           <v-card height="650">
             <v-img
-              :src="tunnel+'berita-image/'+item.image"
+              :src="tunnelGambar+'berita-image/'+item.image"
               height="500px">
             </v-img>
             <v-card-title style="text-align:center" class="justify-center" v-text="item.judul"></v-card-title>
@@ -41,6 +41,7 @@ export default {
     data () {
       return {
         tunnel:"",
+        tunnelGambar:"",
         cardberita : [],
       }
     },
@@ -48,6 +49,7 @@ export default {
     this.$store.dispatch('logoutAdmin')
     this.$store.dispatch('logoutPeserta')
     this.tunnel = this.$store.state.tunnel;
+    this.tunnelGambar = this.$store.state.tunnelGambar;
     axios
     .get(this.tunnel+'berita',{
       headers:{

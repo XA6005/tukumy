@@ -29,7 +29,7 @@
                 :type="show ? 'text' : 'password'"
                 name="input-10-2"
                 label="Password"
-                hint="Minimal 8-20 Karakter"
+                hint="Minimal 8-10 Karakter"
                 value
                 v-model="password"
                 class="input-group--focused"
@@ -41,9 +41,6 @@
                   <v-btn :disabled="!valid" class="white--text" color="#065139" @click="login">masuk</v-btn>
                 </div>
                 <br />
-                <div align="right">
-                  <v-btn text color="#065139" href="/login-peserta">masuk sebagai peserta</v-btn>
-                </div>
               </div>
             </div>
           </div>
@@ -93,6 +90,7 @@ export default {
     },
   },
 
+
   methods: {
     login: function () {
       this.error_message = "";
@@ -108,7 +106,7 @@ export default {
           .then(() => this.$router.push("/kelola-sertifikasi"))
           .catch((err) => {
             this.error_message = err
-            this.error_message = this.$store.status 
+            this.error_message = this.$store.state.status 
             this.snackbar = true
           });
       }

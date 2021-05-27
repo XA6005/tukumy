@@ -16,17 +16,6 @@
             <v-expansion-panel v-for="card in skema" :key="card.id">
               <v-expansion-panel-header><h4>{{card.nama}}</h4></v-expansion-panel-header>
               <v-expansion-panel-content>
-                <v-row >
-                <v-col lg="2">
-                  Tujuan Skema
-                </v-col>
-                <v-col md="auto">
-                  :
-                </v-col>
-                <v-col>
-                  {{card.tujuan}}
-                </v-col>
-              </v-row>
               <v-row >
                 <v-col lg="2">
                   Deskripsi Skema
@@ -46,7 +35,7 @@
                   :
                 </v-col>
                 <v-col>
-                  <v-btn class="mr-2 white--text" color="#065139" :href="tunnel+'detail-skema/'+card.detail">
+                  <v-btn class="mr-2 white--text" color="#065139" :href="tunnelGambar+'detail-skema/'+card.detail">
                     Unduh
                   </v-btn>
                 </v-col>
@@ -66,6 +55,7 @@ export default {
   data() {
     return {
       tunnel: "",
+      tunnelGambar:"",
       skema: [],
       panel:[0],
     };
@@ -73,15 +63,15 @@ export default {
   mounted() {
     this.$store.dispatch("logout");
     this.tunnel = this.$store.state.tunnel;
+    this.tunnelGambar = this.$store.state.tunnelGambar;
     axios
       .get(`${this.tunnel}skema`)
       .then((response) => {
         this.skema = response.data.skema.map((item) => {
           return {
-            id: item.id,
-            nama: item.nama,
+            id: item.id_skema,
+            nama: item.nama_skema,
             deskripsi: item.deskripsi,
-            tujuan: item.tujuan,
             detail:item.detail_skema
           };
         });

@@ -35,7 +35,7 @@
                           show-size
                           required
                           v-model="editedItem.deskripsi"
-                          label="Deskripsi Skema"
+                          label="deskripsi Skema"
                         ></v-textarea>
                         <div v-if="formTitle=='Tambah Skema'">
                         <v-file-input
@@ -103,7 +103,7 @@ export default {
       dialog: false,
       headers: [
         { text: "Nama Sertifikasi", value: "nama" },
-        { text: "Deskripsi", value: "deskripsi" },
+        { text: "deskripsi", value: "deskripsi" },
         { text: "Actions", value: "actions" },
       ],
       skema: [],
@@ -153,9 +153,9 @@ export default {
         .then((response) => {
           this.skema = response.data.skema.map((item) => {
             return {
-              id: item.Id_Skema,
-              nama: item.NamaSkema,
-              deskripsi: item.Deskripsi,
+              id: item.id_skema,
+              nama: item.nama_skema,
+              deskripsi: item.deskripsi,
             };
           });
         })
@@ -189,7 +189,10 @@ export default {
             this.loadSkema();
           })
           .catch((error) => {
-            this.error_message = error;
+            this.error_message = error.response.status;
+            if(error.response.status=="400"){
+              this.error_message = "Tidak dapat menghapus data, karena ada jadwal yang memakai skema "
+            }
             this.snackbar = true;
           });
     },
@@ -206,10 +209,10 @@ export default {
     validate(item) {
       if (this.editedIndex > -1) {
         const formdata = new FormData();
-          formdata.append("NamaSkema", item.nama);
-          formdata.append("Deskripsi", item.deskripsi);
+          formdata.append("nama_skema", item.nama);
+          formdata.append("deskripsi", item.deskripsi);
           if(item.detail_skema!=null){
-          formdata.append("Detail_Skema", item.detail_skema);
+          formdata.append("detail_skema", item.detail_skema);
           }
           formdata.append("_method", "PUT");
           this.error_message = "Mohon tunggu! sedang dalam proses update";
@@ -234,9 +237,9 @@ export default {
         this.$refs.form.validate(item);
           if (this.valid==true) {
           const formdata = new FormData();
-          formdata.append("NamaSkema", item.nama);
-          formdata.append("Deskripsi", item.deskripsi);
-          formdata.append("Detail_Skema", item.detail_skema);
+          formdata.append("nama_skema", item.nama);
+          formdata.append("deskripsi", item.deskripsi);
+          formdata.append("detail_skema", item.detail_skema);
           this.error_message = "Mohon tunggu! sedang dalam proses tambah skema";
           this.snackbar = true;
           axios

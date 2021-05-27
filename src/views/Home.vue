@@ -13,7 +13,7 @@
         > 
           <v-card height="450" class="justify-center">
             <v-img
-              :src="tunnel+'berita-image/'+item.image"
+              :src="tunnelGambar+'berita-image/'+item.image"
               height="300px">
             </v-img>
             <v-card-title class="justify-center">{{item.judul}}</v-card-title>
@@ -46,6 +46,7 @@ import karousel from '@/components/karousel.vue';
     data () {
       return {
         tunnel :'',
+        tunnelGambar:'',
         cardberita: [],
         slides: [
           { src: require('@/assets/banner-tuk-1.png'),},
@@ -57,6 +58,7 @@ import karousel from '@/components/karousel.vue';
     this.$store.dispatch('logoutAdmin');
     this.$store.dispatch('logoutPeserta');
     this.tunnel = this.$store.state.tunnel;
+    this.tunnelGambar = this.$store.state.tunnelGambar;
     axios
     .get(`${this.tunnel}berita`,{
       headers:{
